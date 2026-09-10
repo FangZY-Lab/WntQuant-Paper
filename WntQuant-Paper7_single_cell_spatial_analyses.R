@@ -1,5 +1,5 @@
 # ==============================================================================
-# WntAct7 -- Single-cell and spatial analyses
+# WntQuant-Paper7 -- Single-cell and spatial analyses
 # ------------------------------------------------------------------------------
 # Purpose:    Resolve Wnt pathway activity at single-cell and spatial resolution using Seurat, harmony, and SCP-based workflows.
 # Inputs:     Single-cell RNA-seq object and cell metadata.

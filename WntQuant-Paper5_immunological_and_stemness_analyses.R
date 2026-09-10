@@ -1,5 +1,5 @@
 # ==============================================================================
-# WntAct5 -- Immunological and stemness analyses
+# WntQuant-Paper5 -- Immunological and stemness analyses
 # ------------------------------------------------------------------------------
 # Purpose:    Link Wnt activity to immune subtypes, MSI status, stemness signatures, and the tumor microenvironment.
 # Inputs:     Pan-cancer Wnt activity scores and immune/stemness annotations.

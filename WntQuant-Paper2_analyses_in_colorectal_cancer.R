@@ -1,7 +1,7 @@
 # ==============================================================================
-# WntAct2 -- Colorectal cancer analyses
+# WntQuant-Paper2 -- Colorectal cancer analyses
 # ------------------------------------------------------------------------------
-# Purpose:    Large-scale validation of the WntAct score in colorectal cancer, including stratification by CMS molecular subtypes and association with molecular and clinical features.
+# Purpose:    Large-scale validation of the WntQuant-Paper score in colorectal cancer, including stratification by CMS molecular subtypes and association with molecular and clinical features.
 # Inputs:     Processed CRC expression matrices with CMS subtype annotations.
 # Outputs:    Wnt activity scores and subtype-level statistical results.
 # NOTE:       Part of the code involves the core interests of the laboratory and is not open source at this time.

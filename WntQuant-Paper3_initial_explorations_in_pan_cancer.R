@@ -1,5 +1,5 @@
 # ==============================================================================
-# WntAct3 -- Initial pan-cancer explorations
+# WntQuant-Paper3 -- Initial pan-cancer explorations
 # ------------------------------------------------------------------------------
 # Purpose:    Compute Wnt activity scores across TCGA and TARGET pan-cancer atlases and perform initial cross-cancer comparisons.
 # Inputs:     Pan-cancer expression matrices (TCGA / TARGET) and annotations.

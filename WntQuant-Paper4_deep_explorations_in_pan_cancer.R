@@ -1,5 +1,5 @@
 # ==============================================================================
-# WntAct4 -- Deep pan-cancer explorations
+# WntQuant-Paper4 -- Deep pan-cancer explorations
 # ------------------------------------------------------------------------------
 # Purpose:    Pan-cancer subtyping by k-means clustering of Wnt activity scores and deep multi-omic characterization of the resulting subtypes.
 # Inputs:     Pan-cancer Wnt activity scores and group annotations.

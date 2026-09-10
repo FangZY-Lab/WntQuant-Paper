@@ -1,7 +1,7 @@
 # ==============================================================================
-# WntAct1 -- Integrated Wnt signature construction
+# WntQuant-Paper1 -- Integrated Wnt signature construction
 # ------------------------------------------------------------------------------
-# Purpose:    Construct the integrated, direction-aware Wnt pathway signature (WntAct score) from curated activation (WPAGS) and inhibition (WPIGS) gene sets, with PCA-based training-data quality control.
+# Purpose:    Construct the integrated, direction-aware Wnt pathway signature (WntQuant-Paper score) from curated activation (WPAGS) and inhibition (WPIGS) gene sets, with PCA-based training-data quality control.
 # Inputs:     Expression matrices and group annotations for 24 training cohorts.
 # Outputs:    Directional gene-set GMT files and per-sample Wnt activity scores.
 # NOTE:       Part of the code involves the core interests of the laboratory and is not open source at this time.

@@ -1,10 +1,10 @@
-# WntAct
+# WntQuant-Paper
 
-![WntAct overview](https://github.com/user-attachments/assets/216f94f6-23ce-4a21-a294-3a39412a9267)
+![WntQuant-Paper overview](https://github.com/user-attachments/assets/216f94f6-23ce-4a21-a294-3a39412a9267)
 
 ## Overview
 
-WntAct is an end-to-end, multi-omics analytical framework for quantifying
+WntQuant-Paper is an end-to-end, multi-omics analytical framework for quantifying
 Wnt/β-catenin pathway activity and translating it into an interpretable,
 clinically actionable biomarker. It implements a **context-insensitive and
 directionally resolved activity score** that separates pathway activation from
@@ -13,7 +13,7 @@ multiple biological resolutions.
 
 ## Highlights
 
-- **Directional activity quantification.** WntAct models activation
+- **Directional activity quantification.** WntQuant-Paper models activation
   (WPAGS, Wnt Pathway Activation Gene Sets) and inhibition (WPIGS, Wnt Pathway
   Inhibition Gene Sets) separately and combines them into a single signed
   activity score, preserving the biological direction of Wnt signaling.
@@ -52,14 +52,14 @@ The analyses are organized as a numbered, ordered pipeline:
 
 | Script | Purpose |
 | --- | --- |
-| `WntAct1_integrated_Wnt_signature_construction.R` | PCA-based training-data quality control and construction of the integrated directional Wnt signature. |
-| `WntAct2_analyses_in_colorectal_cancer.R` | Large-scale validation in colorectal cancer, including CMS molecular-subtype stratification. |
-| `WntAct3_initial_explorations_in_pan_cancer.R` | Pan-cancer (TCGA and TARGET) Wnt activity scoring and initial cross-cancer comparisons. |
-| `WntAct4_deep_explorations_in_pan_cancer.R` | Pan-cancer subtyping (k-means clustering) and deep multi-omic characterization. |
-| `WntAct5_immunological_and_stemness_analyses.R` | Immunological subtypes, MSI status, and stemness analyses. |
-| `WntAct6_metabolic_flux_analyses.R` | Metabolic flux analysis linking Wnt activity to metabolic reprogramming. |
-| `WntAct7_single_cell_spatial_analyses.R` | Single-cell RNA-seq and spatial analyses at cellular resolution. |
-| `WntAct8_spatial_transcriptomics_visualization.py` | Visium HD spatial transcriptomics visualization and statistics. |
+| `WntQuant-Paper1_integrated_Wnt_signature_construction.R` | PCA-based training-data quality control and construction of the integrated directional Wnt signature. |
+| `WntQuant-Paper2_analyses_in_colorectal_cancer.R` | Large-scale validation in colorectal cancer, including CMS molecular-subtype stratification. |
+| `WntQuant-Paper3_initial_explorations_in_pan_cancer.R` | Pan-cancer (TCGA and TARGET) Wnt activity scoring and initial cross-cancer comparisons. |
+| `WntQuant-Paper4_deep_explorations_in_pan_cancer.R` | Pan-cancer subtyping (k-means clustering) and deep multi-omic characterization. |
+| `WntQuant-Paper5_immunological_and_stemness_analyses.R` | Immunological subtypes, MSI status, and stemness analyses. |
+| `WntQuant-Paper6_metabolic_flux_analyses.R` | Metabolic flux analysis linking Wnt activity to metabolic reprogramming. |
+| `WntQuant-Paper7_single_cell_spatial_analyses.R` | Single-cell RNA-seq and spatial analyses at cellular resolution. |
+| `WntQuant-Paper8_spatial_transcriptomics_visualization.py` | Visium HD spatial transcriptomics visualization and statistics. |
 
 ## Data requirements
 
@@ -74,15 +74,15 @@ project root; adjust the working directory to your local environment.
 Run the scripts in numerical order, adjusting input paths to your local setup:
 
 ```r
-source("WntAct1_integrated_Wnt_signature_construction.R")
-source("WntAct2_analyses_in_colorectal_cancer.R")
-# ... continue through WntAct7
+source("WntQuant-Paper1_integrated_Wnt_signature_construction.R")
+source("WntQuant-Paper2_analyses_in_colorectal_cancer.R")
+# ... continue through WntQuant-Paper7
 ```
 
 Spatial visualization is run with Python:
 
 ```bash
-python WntAct8_spatial_transcriptomics_visualization.py
+python WntQuant-Paper8_spatial_transcriptomics_visualization.py
 ```
 
 ## Notes

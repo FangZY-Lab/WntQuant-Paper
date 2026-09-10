@@ -1,5 +1,5 @@
 # ==============================================================================
-# WntAct6 -- Metabolic flux analyses
+# WntQuant-Paper6 -- Metabolic flux analyses
 # ------------------------------------------------------------------------------
 # Purpose:    Infer metabolic flux (METAFlux) and link Wnt activity to metabolic reprogramming across cell lines and tumor cohorts.
 # Inputs:     Expression matrices (TCGA, TARGET, GDSC, CCLE, CTRP) and Wnt scores.
