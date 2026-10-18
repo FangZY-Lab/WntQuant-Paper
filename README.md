@@ -61,6 +61,29 @@ The analyses are organized as a numbered, ordered pipeline:
 | `WntQuant-Paper7_single_cell_spatial_analyses.R` | Single-cell RNA-seq and spatial analyses at cellular resolution. |
 | `WntQuant-Paper8_spatial_transcriptomics_visualization.py` | Visium HD spatial transcriptomics visualization and statistics. |
 
+### Revision materials
+
+`revision/` holds the code and supplementary tables produced during revision.
+It is kept separate from the numbered pipeline because these scripts extend
+and re-run the analyses above rather than adding new pipeline stages. The
+file names follow the same convention as the root scripts.
+
+| File | Purpose |
+| --- | --- |
+| `revision/WntQuant-Revision1_wnt_subtype_comparison_and_validation.R` | Benchmarks the Wnt signature against published signatures, runs fGSEA, and validates the subtypes in large CMS and iCMS colorectal cohorts. |
+| `revision/WntQuant-Revision2_per_cohort_immunotherapy_analyses.R` | Runs the classification and survival workflow cohort by cohort across the public immunotherapy datasets. |
+| `revision/WntQuant-Revision3_immunotherapy_response_and_prognosis.R` | Relates Wnt activity to response (R vs NR) and to OS/PFS across immunotherapy cohorts, including ESTIMATE-adjusted analyses. |
+| `revision/WntQuant-Revision4_metabolic_analysis_and_robustness_tests.R` | Links Wnt activity to TCGA metabolic programmes and quantifies robustness to gene and cohort dropout and to added noise. |
+| `revision/WntQuant-Revision5_pan_cancer_wnt_score_comparison.R` | Compares Wnt activity across the TCGA and TARGET pan-cancer cohorts and correlates it with immune, stemness and Hallmark programmes. |
+| `revision/WntQuant-Revision6_revised_immunotherapy_prognostic_analysis.R` | Re-runs the immunotherapy response analyses with the revised Hot/Cold assignment and per-cohort KNN + surv_cutpoint evaluation. |
+| `revision/WntQuant-Revision7_wss_and_panwss_subtype_definition.R` | Defines the transferable WSS and panWSS subtypes, tests their internal validity, and projects them onto TCGA, TARGET and additional cohorts. |
+| `revision/spatial_visium_hd_luad1_workflow.html` | Rendered LUAD1 Visium HD spatial transcriptomics workflow (Python/scanpy notebook export). |
+| `revision/supplementary material/` | Five workbooks: Wnt pathway gene sets, biological signatures and hallmarks, immune infiltration and stemness signatures, immunotherapy signatures, and the selected Wnt activity / iCMS signatures. |
+
+The scripts were written against the authors' local layout and point at an
+absolute `input` directory, so adjust those paths (and the working directory)
+before running them elsewhere.
+
 ## Data requirements
 
 The scripts read expression matrices, survival/group annotations, and the
