@@ -70,7 +70,7 @@ file names follow the same convention as the root scripts.
 
 | File | Purpose |
 | --- | --- |
-| `revision/WntQuant-Revision1_wnt_subtype_comparison_and_validation.R` | Benchmarks the Wnt signature against published signatures, runs fGSEA, and validates the subtypes in large CMS and iCMS colorectal cohorts. |
+| `revision/WntQuant-Revision1_wnt_subtype_comparison_and_validation.R` | Benchmarks the Wnt signature against published signatures, runs fGSEA, validates the subtypes in large CMS and iCMS colorectal cohorts, assembles the TCGA pan-cancer clinical table, and renders the multivariable OS/DSS/DFI/PFI Cox forest plots. |
 | `revision/WntQuant-Revision2_per_cohort_immunotherapy_analyses.R` | Runs the classification and survival workflow cohort by cohort across the public immunotherapy datasets. |
 | `revision/WntQuant-Revision3_immunotherapy_response_and_prognosis.R` | Relates Wnt activity to response (R vs NR) and to OS/PFS across immunotherapy cohorts, including ESTIMATE-adjusted analyses. |
 | `revision/WntQuant-Revision4_metabolic_analysis_and_robustness_tests.R` | Links Wnt activity to TCGA metabolic programmes and quantifies robustness to gene and cohort dropout and to added noise. |
