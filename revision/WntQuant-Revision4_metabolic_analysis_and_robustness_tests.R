@@ -12,9 +12,9 @@
 ################################################################################
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/TCGA_metabolism.Rdata")
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/TCGA_metabolism.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_cluster.Rdata")
 library(limma)
 library(dplyr)
 limma.one.sided = function(fit, lower = FALSE){
@@ -237,7 +237,7 @@ p4=ggplot(result, aes(x = logFC, y = -log10(P.Value))) +
         legend.text = element_text(size = 16, color = "black"),
         legend.position = "none",
         plot.margin = margin(10, 20, 10, 20))
-setwd("C:/Users/赵定康/Desktop/input_wnt/pictures")
+setwd("C:/Users/user/Desktop/input_wnt/pictures")
 ggsave("panWSS1_meta.pdf",
        plot = p1,
        width = 5.5,
@@ -263,11 +263,11 @@ rm(list=ls())
 gc()
 library(reshape2)
 library(IOBR)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/pancancer_cluster.Rdata")
 group=pancancer_cluster
 colnames(group)=c("Tag","group")
-load("C:/Users/赵定康/Desktop/input/TCGA_metabolism.Rdata")
+load("C:/Users/user/Desktop/input/TCGA_metabolism.Rdata")
 tme_all=as.data.frame(t(TCGA_metabolism))
 biomarker_group=merge(tme_all,group,by.x="row.names",by.y="Tag",all=T)
 print(colnames(biomarker_group))
@@ -309,7 +309,7 @@ p=ggplot(WNT, aes(x = cluster, y = `Xenobiotics metabolism`, fill = cluster)) +
   scale_fill_manual(values = c("#d71345","#f47920","#145b7d","#6950a1")) +
   ggtitle("TCGA-Pancancer")
 print(p)
-setwd("C:/Users/赵定康/Desktop/input_wnt/pictures")
+setwd("C:/Users/user/Desktop/input_wnt/pictures")
 ggsave("Xenobiotics_boxplot.pdf",
        plot = p,
        width = 5.5,
@@ -320,10 +320,10 @@ rm(list=ls())
 gc()
 library(reshape2)
 library(IOBR)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_Score.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/pancancer_WNT_Score.Rdata")
 activity_score=pancancer_WNT_Score$final_activity_score
-load("C:/Users/赵定康/Desktop/input/TCGA_metabolism.Rdata")
+load("C:/Users/user/Desktop/input/TCGA_metabolism.Rdata")
 tme_all=as.data.frame(t(TCGA_metabolism))
 biomarker_group=merge(tme_all,activity_score,by="row.names")
 p <- ggscatter(biomarker_group, x = "Xenobiotics metabolism", y = "activity_score",
@@ -348,7 +348,7 @@ p <- ggscatter(biomarker_group, x = "Xenobiotics metabolism", y = "activity_scor
   xlab("Xenobiotics metabolism") +
   ylab("Wnt/β-catenin pathway activity score")
 p
-setwd("C:/Users/赵定康/Desktop/input_wnt/pictures")
+setwd("C:/Users/user/Desktop/input_wnt/pictures")
 ggsave("Xenobiotics_corrplot.pdf",
        plot = p,
        width = 5,
@@ -358,7 +358,7 @@ ggsave("Xenobiotics_corrplot.pdf",
 rm(list=ls())
 gc()
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 
 # Load all datasets
 vector_all <- c("GSE232944_a","GSE232944_b","GSE199835_a","GSE199835_b","GSE199835_c",
@@ -400,10 +400,10 @@ for (repeat_idx in 1:n_repeats) {
   group_HL <- read.delim("WNT_HL.txt", header = TRUE, sep = '\t', check.names = F)
 
   # Generate the de novo gene sets
-  source("C:/Users/赵定康/Desktop/要整合成包的函数/Get_denovo_genesets.R")
+  source("C:/Users/user/Desktop/functions_to_package/Get_denovo_genesets.R")
 
   up.denovo_genesets <- Get_denovo_genesets(
-    file_paths = "C:/Users/赵定康/Desktop/input",
+    file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_remaining,
     group_HL = group_HL,
     gene_difference_method = c("limma"),
@@ -417,7 +417,7 @@ for (repeat_idx in 1:n_repeats) {
   )
 
   dn.denovo_genesets <- Get_denovo_genesets(
-    file_paths = "C:/Users/赵定康/Desktop/input",
+    file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_remaining,
     group_HL = group_HL,
     gene_difference_method = c("limma"),
@@ -493,16 +493,16 @@ for (repeat_idx in 1:n_repeats) {
   save(all_wnt_genesets, file = "all_wnt_genesets.Rdata")
 
   # Load and process the gene sets
-  load("C:/Users/赵定康/Desktop/input/all_wnt_genesets.Rdata")
+  load("C:/Users/user/Desktop/input/all_wnt_genesets.Rdata")
   all_genesets <- all_wnt_genesets[-1, ]
   UP.genesets <- all_genesets
   DN.genesets <- all_genesets
 
   # Clean the environment
-  source("C:/Users/赵定康/Desktop/要整合成包的函数/Precise_cleaning_system.R")
+  source("C:/Users/user/Desktop/functions_to_package/Precise_cleaning_system.R")
 
   UP.clean_genesets_rank <- Precise_cleaning_system(
-    file_paths = "C:/Users/赵定康/Desktop/input",
+    file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_remaining,
     group_HL = group_HL,
     gene_difference_method = c("limma"),
@@ -525,7 +525,7 @@ for (repeat_idx in 1:n_repeats) {
   )
 
   DN.clean_genesets_rank <- Precise_cleaning_system(
-    file_paths = "C:/Users/赵定康/Desktop/input",
+    file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_remaining,
     group_HL = group_HL,
     gene_difference_method = c("limma"),
@@ -551,10 +551,10 @@ for (repeat_idx in 1:n_repeats) {
   DN.clean_genesets <- DN.clean_genesets_rank$update_inhibition_geneset
 
   # Combined gene set
-  source("C:/Users/赵定康/Desktop/要整合成包的函数/Joint_genesets.R")
+  source("C:/Users/user/Desktop/functions_to_package/Joint_genesets.R")
 
   joint_genesets <- Joint_genesets(
-    file_paths = "C:/Users/赵定康/Desktop/input",
+    file_paths = "C:/Users/user/Desktop/input",
     activation_geneset = UP.clean_genesets,
     inhibition_geneset = DN.clean_genesets,
     delete_GN = T,
@@ -603,19 +603,19 @@ for (repeat_idx in 1:n_repeats) {
     writeLines(gs.lines, con = file)
   }
 
-  write.gmt(wpags_wpigs, file = "C:/Users/赵定康/Desktop/input/wpags_wpigs_r.gmt")
+  write.gmt(wpags_wpigs, file = "C:/Users/user/Desktop/input/wpags_wpigs_r.gmt")
 
   # Load the test data and compute the activity score
-  load("C:/Users/赵定康/Desktop/input/exp_data/UCSC.CRC_CMS2_CMS.Rdata")
+  load("C:/Users/user/Desktop/input/exp_data/UCSC.CRC_CMS2_CMS.Rdata")
 
   crc_data_all <- UCSC.CRC_CMS2_CMS
 
-  source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+  source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
 
   geneSets <- getGmt("wpags_wpigs_r.gmt")
 
   WNT_Score <- Calculate_bioactivity_scores(
-    file_paths = "C:/Users/赵定康/Desktop/input",
+    file_paths = "C:/Users/user/Desktop/input",
     expression_profile = crc_data_all,
     foundation = c("relative_ssGSEA"),
     activation_geneset = NA,
@@ -644,7 +644,7 @@ print("Robustness test complete")
 rm(list=ls())
 gc()
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 
 # Load all datasets
 vector_all <- c("GSE232944_a","GSE232944_b","GSE199835_a","GSE199835_b","GSE199835_c",
@@ -702,10 +702,10 @@ for (repeat_idx in 1:n_repeats) {
   group_HL <- read.delim("WNT_HL.txt", header = TRUE, sep = '\t', check.names = F)
 
   # Generate the de novo gene sets
-  source("C:/Users/赵定康/Desktop/要整合成包的函数/Get_denovo_genesets.R")
+  source("C:/Users/user/Desktop/functions_to_package/Get_denovo_genesets.R")
 
   up.denovo_genesets <- Get_denovo_genesets(
-    file_paths = "C:/Users/赵定康/Desktop/input",
+    file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_all,
     group_HL = group_HL,
     gene_difference_method = c("limma"),
@@ -719,7 +719,7 @@ for (repeat_idx in 1:n_repeats) {
   )
 
   dn.denovo_genesets <- Get_denovo_genesets(
-    file_paths = "C:/Users/赵定康/Desktop/input",
+    file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_all,
     group_HL = group_HL,
     gene_difference_method = c("limma"),
@@ -795,16 +795,16 @@ for (repeat_idx in 1:n_repeats) {
   save(all_wnt_genesets, file = "all_wnt_genesets.Rdata")
 
   # Load and process the gene sets
-  load("C:/Users/赵定康/Desktop/input/all_wnt_genesets.Rdata")
+  load("C:/Users/user/Desktop/input/all_wnt_genesets.Rdata")
   all_genesets <- all_wnt_genesets[-1, ]
   UP.genesets <- all_genesets
   DN.genesets <- all_genesets
 
   # Clean the environment
-  source("C:/Users/赵定康/Desktop/要整合成包的函数/Precise_cleaning_system.R")
+  source("C:/Users/user/Desktop/functions_to_package/Precise_cleaning_system.R")
 
   UP.clean_genesets_rank <- Precise_cleaning_system(
-    file_paths = "C:/Users/赵定康/Desktop/input",
+    file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_all,
     group_HL = group_HL,
     gene_difference_method = c("limma"),
@@ -827,7 +827,7 @@ for (repeat_idx in 1:n_repeats) {
   )
 
   DN.clean_genesets_rank <- Precise_cleaning_system(
-    file_paths = "C:/Users/赵定康/Desktop/input",
+    file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_all,
     group_HL = group_HL,
     gene_difference_method = c("limma"),
@@ -853,10 +853,10 @@ for (repeat_idx in 1:n_repeats) {
   DN.clean_genesets <- DN.clean_genesets_rank$update_inhibition_geneset
 
   # Combined gene set
-  source("C:/Users/赵定康/Desktop/要整合成包的函数/Joint_genesets.R")
+  source("C:/Users/user/Desktop/functions_to_package/Joint_genesets.R")
 
   joint_genesets <- Joint_genesets(
-    file_paths = "C:/Users/赵定康/Desktop/input",
+    file_paths = "C:/Users/user/Desktop/input",
     activation_geneset = UP.clean_genesets,
     inhibition_geneset = DN.clean_genesets,
     delete_GN = T,
@@ -905,19 +905,19 @@ for (repeat_idx in 1:n_repeats) {
     writeLines(gs.lines, con = file)
   }
 
-  write.gmt(wpags_wpigs, file = "C:/Users/赵定康/Desktop/input/wpags_wpigs_r.gmt")
+  write.gmt(wpags_wpigs, file = "C:/Users/user/Desktop/input/wpags_wpigs_r.gmt")
 
   # Load the test data and compute the activity score
-  load("C:/Users/赵定康/Desktop/input/exp_data/UCSC.CRC_CMS2_CMS.Rdata")
+  load("C:/Users/user/Desktop/input/exp_data/UCSC.CRC_CMS2_CMS.Rdata")
 
   crc_data_all <- UCSC.CRC_CMS2_CMS
 
-  source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+  source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
 
   geneSets <- getGmt("wpags_wpigs_r.gmt")
 
   WNT_Score <- Calculate_bioactivity_scores(
-    file_paths = "C:/Users/赵定康/Desktop/input",
+    file_paths = "C:/Users/user/Desktop/input",
     expression_profile = crc_data_all,
     foundation = c("relative_ssGSEA"),
     activation_geneset = NA,
@@ -951,7 +951,7 @@ print("Gene-level robustness test complete")
 rm(list=ls())
 gc()
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 
 # Load all datasets
 vector_all <- c("GSE232944_a","GSE232944_b","GSE199835_a","GSE199835_b","GSE199835_c",
@@ -1020,10 +1020,10 @@ for (repeat_idx in 1:n_repeats) {
   group_HL <- read.delim("WNT_HL.txt", header = TRUE, sep = '\t', check.names = F)
 
   # Generate the de novo gene sets
-  source("C:/Users/赵定康/Desktop/要整合成包的函数/Get_denovo_genesets.R")
+  source("C:/Users/user/Desktop/functions_to_package/Get_denovo_genesets.R")
 
   up.denovo_genesets <- Get_denovo_genesets(
-    file_paths = "C:/Users/赵定康/Desktop/input",
+    file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_all,
     group_HL = group_HL,
     gene_difference_method = c("limma"),
@@ -1037,7 +1037,7 @@ for (repeat_idx in 1:n_repeats) {
   )
 
   dn.denovo_genesets <- Get_denovo_genesets(
-    file_paths = "C:/Users/赵定康/Desktop/input",
+    file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_all,
     group_HL = group_HL,
     gene_difference_method = c("limma"),
@@ -1113,16 +1113,16 @@ for (repeat_idx in 1:n_repeats) {
   save(all_wnt_genesets, file = "all_wnt_genesets.Rdata")
 
   # Load and process the gene sets
-  load("C:/Users/赵定康/Desktop/input/all_wnt_genesets.Rdata")
+  load("C:/Users/user/Desktop/input/all_wnt_genesets.Rdata")
   all_genesets <- all_wnt_genesets[-1, ]
   UP.genesets <- all_genesets
   DN.genesets <- all_genesets
 
   # Clean the environment
-  source("C:/Users/赵定康/Desktop/要整合成包的函数/Precise_cleaning_system.R")
+  source("C:/Users/user/Desktop/functions_to_package/Precise_cleaning_system.R")
 
   UP.clean_genesets_rank <- Precise_cleaning_system(
-    file_paths = "C:/Users/赵定康/Desktop/input",
+    file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_all,
     group_HL = group_HL,
     gene_difference_method = c("limma"),
@@ -1145,7 +1145,7 @@ for (repeat_idx in 1:n_repeats) {
   )
 
   DN.clean_genesets_rank <- Precise_cleaning_system(
-    file_paths = "C:/Users/赵定康/Desktop/input",
+    file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_all,
     group_HL = group_HL,
     gene_difference_method = c("limma"),
@@ -1171,10 +1171,10 @@ for (repeat_idx in 1:n_repeats) {
   DN.clean_genesets <- DN.clean_genesets_rank$update_inhibition_geneset
 
   # Combined gene set
-  source("C:/Users/赵定康/Desktop/要整合成包的函数/Joint_genesets.R")
+  source("C:/Users/user/Desktop/functions_to_package/Joint_genesets.R")
 
   joint_genesets <- Joint_genesets(
-    file_paths = "C:/Users/赵定康/Desktop/input",
+    file_paths = "C:/Users/user/Desktop/input",
     activation_geneset = UP.clean_genesets,
     inhibition_geneset = DN.clean_genesets,
     delete_GN = T,
@@ -1223,19 +1223,19 @@ for (repeat_idx in 1:n_repeats) {
     writeLines(gs.lines, con = file)
   }
 
-  write.gmt(wpags_wpigs, file = "C:/Users/赵定康/Desktop/input/wpags_wpigs_r.gmt")
+  write.gmt(wpags_wpigs, file = "C:/Users/user/Desktop/input/wpags_wpigs_r.gmt")
 
   # Load the test data and compute the activity score
-  load("C:/Users/赵定康/Desktop/input/exp_data/UCSC.CRC_CMS2_CMS.Rdata")
+  load("C:/Users/user/Desktop/input/exp_data/UCSC.CRC_CMS2_CMS.Rdata")
 
   crc_data_all <- UCSC.CRC_CMS2_CMS
 
-  source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+  source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
 
   geneSets <- getGmt("wpags_wpigs_r.gmt")
 
   WNT_Score <- Calculate_bioactivity_scores(
-    file_paths = "C:/Users/赵定康/Desktop/input",
+    file_paths = "C:/Users/user/Desktop/input",
     expression_profile = crc_data_all,
     foundation = c("relative_ssGSEA"),
     activation_geneset = NA,
@@ -1271,14 +1271,14 @@ print("Gaussian-noise robustness test complete")
 rm(list=ls())
 gc()
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/robustness_30percent_30repeats.Rdata")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-load("C:/Users/赵定康/Desktop/input/exp_data/UCSC.CRC_CMS2_CMS.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/robustness_30percent_30repeats.Rdata")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+load("C:/Users/user/Desktop/input/exp_data/UCSC.CRC_CMS2_CMS.Rdata")
 crc_data_all=UCSC.CRC_CMS2_CMS
 geneSets <- getGmt("wpags_wpigs.gmt")
 WNT_Score <- Calculate_bioactivity_scores(
-  file_paths = "C:/Users/赵定康/Desktop/input",
+  file_paths = "C:/Users/user/Desktop/input",
   expression_profile = crc_data_all,
   foundation = c("relative_ssGSEA"),
   activation_geneset = NA,
@@ -1373,14 +1373,14 @@ print(p)
 rm(list=ls())
 gc()
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/robustness_30percent_genes_30repeats.Rdata")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-load("C:/Users/赵定康/Desktop/input/exp_data/UCSC.CRC_CMS2_CMS.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/robustness_30percent_genes_30repeats.Rdata")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+load("C:/Users/user/Desktop/input/exp_data/UCSC.CRC_CMS2_CMS.Rdata")
 crc_data_all=UCSC.CRC_CMS2_CMS
 geneSets <- getGmt("wpags_wpigs.gmt")
 WNT_Score <- Calculate_bioactivity_scores(
-  file_paths = "C:/Users/赵定康/Desktop/input",
+  file_paths = "C:/Users/user/Desktop/input",
   expression_profile = crc_data_all,
   foundation = c("relative_ssGSEA"),
   activation_geneset = NA,
@@ -1475,14 +1475,14 @@ print(p)
 rm(list=ls())
 gc()
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/robustness_gaussian_noise_30repeats.Rdata")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-load("C:/Users/赵定康/Desktop/input/exp_data/UCSC.CRC_CMS2_CMS.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/robustness_gaussian_noise_30repeats.Rdata")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+load("C:/Users/user/Desktop/input/exp_data/UCSC.CRC_CMS2_CMS.Rdata")
 crc_data_all=UCSC.CRC_CMS2_CMS
 geneSets <- getGmt("wpags_wpigs.gmt")
 WNT_Score <- Calculate_bioactivity_scores(
-  file_paths = "C:/Users/赵定康/Desktop/input",
+  file_paths = "C:/Users/user/Desktop/input",
   expression_profile = crc_data_all,
   foundation = c("relative_ssGSEA"),
   activation_geneset = NA,
@@ -1577,7 +1577,7 @@ print(p)
 rm(list=ls())
 gc()
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 
 # Load all datasets
 vector_all <- c("GSE232944_a","GSE232944_b","GSE199835_a","GSE199835_b","GSE199835_c",
@@ -1614,10 +1614,10 @@ for (sim in similarity_values) {
   group_HL <- read.delim("WNT_HL.txt", header = TRUE, sep = '\t', check.names = F)
 
   # Generate the de novo gene sets
-  source("C:/Users/赵定康/Desktop/要整合成包的函数/Get_denovo_genesets.R")
+  source("C:/Users/user/Desktop/functions_to_package/Get_denovo_genesets.R")
 
   up.denovo_genesets <- Get_denovo_genesets(
-    file_paths = "C:/Users/赵定康/Desktop/input",
+    file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_remaining,
     group_HL = group_HL,
     gene_difference_method = c("limma"),
@@ -1631,7 +1631,7 @@ for (sim in similarity_values) {
   )
 
   dn.denovo_genesets <- Get_denovo_genesets(
-    file_paths = "C:/Users/赵定康/Desktop/input",
+    file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_remaining,
     group_HL = group_HL,
     gene_difference_method = c("limma"),
@@ -1707,16 +1707,16 @@ for (sim in similarity_values) {
   save(all_wnt_genesets, file = "all_wnt_genesets.Rdata")
 
   # Load and process the gene sets
-  load("C:/Users/赵定康/Desktop/input/all_wnt_genesets.Rdata")
+  load("C:/Users/user/Desktop/input/all_wnt_genesets.Rdata")
   all_genesets <- all_wnt_genesets[-1, ]
   UP.genesets <- all_genesets
   DN.genesets <- all_genesets
 
   # Clean the environment
-  source("C:/Users/赵定康/Desktop/要整合成包的函数/Precise_cleaning_system.R")
+  source("C:/Users/user/Desktop/functions_to_package/Precise_cleaning_system.R")
 
   UP.clean_genesets_rank <- Precise_cleaning_system(
-    file_paths = "C:/Users/赵定康/Desktop/input",
+    file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_remaining,
     group_HL = group_HL,
     gene_difference_method = c("limma"),
@@ -1739,7 +1739,7 @@ for (sim in similarity_values) {
   )
 
   DN.clean_genesets_rank <- Precise_cleaning_system(
-    file_paths = "C:/Users/赵定康/Desktop/input",
+    file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_remaining,
     group_HL = group_HL,
     gene_difference_method = c("limma"),
@@ -1765,10 +1765,10 @@ for (sim in similarity_values) {
   DN.clean_genesets <- DN.clean_genesets_rank$update_inhibition_geneset
 
   # Combined gene set
-  source("C:/Users/赵定康/Desktop/要整合成包的函数/Joint_genesets.R")
+  source("C:/Users/user/Desktop/functions_to_package/Joint_genesets.R")
 
   joint_genesets <- Joint_genesets(
-    file_paths = "C:/Users/赵定康/Desktop/input",
+    file_paths = "C:/Users/user/Desktop/input",
     activation_geneset = UP.clean_genesets,
     inhibition_geneset = DN.clean_genesets,
     delete_GN = T,
@@ -1832,19 +1832,19 @@ for (sim in similarity_values) {
     writeLines(gs.lines, con = file)
   }
 
-  write.gmt(wpags_wpigs, file = "C:/Users/赵定康/Desktop/input/wpags_wpigs_r.gmt")
+  write.gmt(wpags_wpigs, file = "C:/Users/user/Desktop/input/wpags_wpigs_r.gmt")
 
   # Load the test data and compute the activity score
-  load("C:/Users/赵定康/Desktop/input/exp_data/UCSC.CRC_CMS2_CMS.Rdata")
+  load("C:/Users/user/Desktop/input/exp_data/UCSC.CRC_CMS2_CMS.Rdata")
 
   crc_data_all <- UCSC.CRC_CMS2_CMS
 
-  source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+  source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
 
   geneSets <- getGmt("wpags_wpigs_r.gmt")
 
   WNT_Score <- Calculate_bioactivity_scores(
-    file_paths = "C:/Users/赵定康/Desktop/input",
+    file_paths = "C:/Users/user/Desktop/input",
     expression_profile = crc_data_all,
     foundation = c("relative_ssGSEA"),
     activation_geneset = NA,
@@ -2021,7 +2021,7 @@ p
 rm(list=ls())
 gc()
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 
 # Load all datasets
 vector_all <- c("GSE232944_a","GSE232944_b","GSE199835_a","GSE199835_b","GSE199835_c",
@@ -2069,10 +2069,10 @@ for (method_idx in 1:length(de_redundant_methods)) {
   group_HL <- read.delim("WNT_HL.txt", header = TRUE, sep = '\t', check.names = F)
 
   # Generate the de novo gene sets
-  source("C:/Users/赵定康/Desktop/要整合成包的函数/Get_denovo_genesets.R")
+  source("C:/Users/user/Desktop/functions_to_package/Get_denovo_genesets.R")
 
   up.denovo_genesets <- Get_denovo_genesets(
-    file_paths = "C:/Users/赵定康/Desktop/input",
+    file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_remaining,
     group_HL = group_HL,
     gene_difference_method = c("limma"),
@@ -2086,7 +2086,7 @@ for (method_idx in 1:length(de_redundant_methods)) {
   )
 
   dn.denovo_genesets <- Get_denovo_genesets(
-    file_paths = "C:/Users/赵定康/Desktop/input",
+    file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_remaining,
     group_HL = group_HL,
     gene_difference_method = c("limma"),
@@ -2162,16 +2162,16 @@ for (method_idx in 1:length(de_redundant_methods)) {
   save(all_wnt_genesets, file = "all_wnt_genesets.Rdata")
 
   # Load and process the gene sets
-  load("C:/Users/赵定康/Desktop/input/all_wnt_genesets.Rdata")
+  load("C:/Users/user/Desktop/input/all_wnt_genesets.Rdata")
   all_genesets <- all_wnt_genesets[-1, ]
   UP.genesets <- all_genesets
   DN.genesets <- all_genesets
 
   # Clean the environment
-  source("C:/Users/赵定康/Desktop/要整合成包的函数/Precise_cleaning_system.R")
+  source("C:/Users/user/Desktop/functions_to_package/Precise_cleaning_system.R")
 
   UP.clean_genesets_rank <- Precise_cleaning_system(
-    file_paths = "C:/Users/赵定康/Desktop/input",
+    file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_remaining,
     group_HL = group_HL,
     gene_difference_method = c("limma"),
@@ -2194,7 +2194,7 @@ for (method_idx in 1:length(de_redundant_methods)) {
   )
 
   DN.clean_genesets_rank <- Precise_cleaning_system(
-    file_paths = "C:/Users/赵定康/Desktop/input",
+    file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_remaining,
     group_HL = group_HL,
     gene_difference_method = c("limma"),
@@ -2220,10 +2220,10 @@ for (method_idx in 1:length(de_redundant_methods)) {
   DN.clean_genesets <- DN.clean_genesets_rank$update_inhibition_geneset
 
   # Combined gene set (current de_redundant_basis with similarity fixed at 0.5)
-  source("C:/Users/赵定康/Desktop/要整合成包的函数/Joint_genesets.R")
+  source("C:/Users/user/Desktop/functions_to_package/Joint_genesets.R")
 
   joint_genesets <- Joint_genesets(
-    file_paths = "C:/Users/赵定康/Desktop/input",
+    file_paths = "C:/Users/user/Desktop/input",
     activation_geneset = UP.clean_genesets,
     inhibition_geneset = DN.clean_genesets,
     delete_GN = T,
@@ -2287,19 +2287,19 @@ for (method_idx in 1:length(de_redundant_methods)) {
     writeLines(gs.lines, con = file)
   }
 
-  write.gmt(wpags_wpigs, file = "C:/Users/赵定康/Desktop/input/wpags_wpigs_r.gmt")
+  write.gmt(wpags_wpigs, file = "C:/Users/user/Desktop/input/wpags_wpigs_r.gmt")
 
   # Load the test data and compute the activity score
-  load("C:/Users/赵定康/Desktop/input/exp_data/UCSC.CRC_CMS2_CMS.Rdata")
+  load("C:/Users/user/Desktop/input/exp_data/UCSC.CRC_CMS2_CMS.Rdata")
 
   crc_data_all <- UCSC.CRC_CMS2_CMS
 
-  source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+  source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
 
   geneSets <- getGmt("wpags_wpigs_r.gmt")
 
   WNT_Score <- Calculate_bioactivity_scores(
-    file_paths = "C:/Users/赵定康/Desktop/input",
+    file_paths = "C:/Users/user/Desktop/input",
     expression_profile = crc_data_all,
     foundation = c("relative_ssGSEA"),
     activation_geneset = NA,

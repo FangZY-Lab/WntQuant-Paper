@@ -13,11 +13,11 @@
 ################################################################################WSS: save a transferable subtype definition####
 rm(list=ls()); gc()
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/crc_data_all.Rdata")
-load("C:/Users/赵定康/Desktop/input/WNT_Score.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/crc_data_all.Rdata")
+load("C:/Users/user/Desktop/input/WNT_Score.Rdata")
 WNT_score_sig <- WNT_Score$single_score_matrix
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
+load("C:/Users/user/Desktop/input/cluster.Rdata")
 
 library(factoextra)
 genesets <- as.matrix(WNT_score_sig)
@@ -73,8 +73,8 @@ cat("Centre row names: ", paste(rownames(WSS_centers), collapse=", "), "\n")
 rm(list=ls()); gc()
 library(GSVA); library(GSEABase)
 
-dir_input    <- "C:/Users/赵定康/Desktop/input"
-dir_exp_data <- "C:/Users/赵定康/Desktop/input/exp_data"   # <- your actual path
+dir_input    <- "C:/Users/user/Desktop/input"
+dir_exp_data <- "C:/Users/user/Desktop/input/exp_data"   # <- your actual path
 
 stopifnot(dir.exists(dir_input), dir.exists(dir_exp_data))
 
@@ -83,7 +83,7 @@ load(file.path(dir_input, "WSS_subtype_definition.Rdata"))
 # WSS_centers rownames are now WSS1..WSS4, so raw_to_WSS is no longer needed
 
 geneSets <- getGmt(file.path(dir_input, "wpags_wpigs.gmt"))
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
 
 vector <- c("GSE44076","GSE44861","GSE21510",
             "GSE68468","GSE37178","GSE18105",
@@ -188,7 +188,7 @@ cat("Baseline self-consistency: ",
 print(table(pred = base$subtype, orig = cluster$cluster))
 ################################################################################Proportion visualisation####
 rm(list=ls()); gc()
-load("C:/Users/赵定康/Desktop/input/all_cohorts_subtype.Rdata")
+load("C:/Users/user/Desktop/input/all_cohorts_subtype.Rdata")
 library(dplyr); library(tidyr); library(ggplot2)
 
 prop_df <- subtype_df %>%
@@ -232,8 +232,8 @@ ggplot(prop_df, aes(dataset, prop, fill = subtype)) +
 rm(list=ls()); gc()
 library(GSVA); library(GSEABase); library(dplyr)
 
-dir_input    <- "C:/Users/赵定康/Desktop/input"
-dir_exp_data <- "C:/Users/赵定康/Desktop/input/exp_data"
+dir_input    <- "C:/Users/user/Desktop/input"
+dir_exp_data <- "C:/Users/user/Desktop/input/exp_data"
 load(file.path(dir_input, "all_cohorts_subtype.Rdata"))
 geneSets_NM <- getGmt(file.path(dir_input, "NM_genesets.gmt"))
 
@@ -330,7 +330,7 @@ ggplot(res, aes(reorder(dataset, -spearman_rho), spearman_rho, fill = spearman_r
 
 ################################################################################Internal structural validity: between/within group distance ratio + permutation test####
 rm(list=ls()); gc()
-load("C:/Users/赵定康/Desktop/input/all_cohorts_subtype.Rdata")
+load("C:/Users/user/Desktop/input/all_cohorts_subtype.Rdata")
 library(dplyr)
 
 # Distance-ratio helper
@@ -388,13 +388,13 @@ rm(list=ls()); gc()
 library(GSVA); library(GSEABase)
 library(survival); library(survminer)
 
-dir_input    <- "C:/Users/赵定康/Desktop/input"
-dir_exp_data <- "C:/Users/赵定康/Desktop/prognosis/CRC_data"
-dir_prog     <- "C:/Users/赵定康/Desktop/prognosis"
+dir_input    <- "C:/Users/user/Desktop/input"
+dir_exp_data <- "C:/Users/user/Desktop/prognosis/CRC_data"
+dir_prog     <- "C:/Users/user/Desktop/prognosis"
 
 load(file.path(dir_input, "WSS_subtype_definition.Rdata"))
 geneSets <- getGmt(file.path(dir_input, "wpags_wpigs.gmt"))
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
 
 # ---- 1. Load the GSE16125 expression matrix and classify
 load(file.path(dir_exp_data, "GSE16125_os_exp.Rdata"))
@@ -497,9 +497,9 @@ print(g2)
 rm(list=ls()); gc()
 library(GSEABase); library(factoextra)
 
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_Score.Rdata")
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/pancancer_WNT_Score.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_group.Rdata")
 
 genesets <- as.matrix(pancancer_WNT_Score$single_score_matrix)
 pancancer_group <- pancancer_group[pancancer_group$Group == "Tumor", ]
@@ -574,7 +574,7 @@ cat("pancancer_labels rows: ", nrow(pancancer_labels), "\n")
 rm(list=ls()); gc()
 library(data.table); library(limma); library(sva)
 
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 
 files <- c("TARGET-AML.star_tpm.tsv","TARGET-ALL-P1.star_tpm.tsv",
            "TARGET-ALL-P2.star_tpm.tsv","TARGET-ALL-P3.star_tpm.tsv",
@@ -610,7 +610,7 @@ rownames(mat) <- rt_ann$gene
 mat <- avereps(mat)
 cat("Dimensions after de-duplication: ", dim(mat), "\n")
 
-load("C:/Users/赵定康/Desktop/input/pancancer_exp.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_exp.Rdata")
 cat("Genes in pancancer_exp: ", nrow(pancancer_exp), "\n")
 
 common_genes <- intersect(rownames(mat), rownames(pancancer_exp))
@@ -669,7 +669,7 @@ cat("Saved\n")
 rm(list=ls()); gc()
 library(data.table); library(ggplot2); library(patchwork)
 
-dir_input <- "C:/Users/赵定康/Desktop/input"
+dir_input <- "C:/Users/user/Desktop/input"
 setwd(dir_input)
 
 files <- c("TARGET-AML.star_tpm.tsv","TARGET-ALL-P1.star_tpm.tsv",
@@ -786,14 +786,14 @@ p_before + p_after + plot_layout(guides = "collect")
 rm(list=ls()); gc()
 library(GSVA); library(GSEABase)
 
-dir_input <- "C:/Users/赵定康/Desktop/input"
+dir_input <- "C:/Users/user/Desktop/input"
 
 # ---- Load the panWSS definition
 load(file.path(dir_input, "panWSS_subtype_definition.Rdata"))
 # panWSS_centers, panWSS_features, train_mean_pan, train_sd_pan
 
 geneSets <- getGmt(file.path(dir_input, "wpags_wpigs.gmt"))
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
 
 # ---- Nearest-centre assignment
 assign_by_centroid <- function(x, centers) {
@@ -883,7 +883,7 @@ save(sm_z, file = file.path(dir_input, "TARGET_sm_z.Rdata"))
 cat("Saved: TARGET_sm_z.Rdata (63 standardised scores)\n")
 ################################################################################Visualising the panWSS subtype proportions in TARGET####
 rm(list=ls()); gc()
-load("C:/Users/赵定康/Desktop/input/TARGET_panWSS_subtype.Rdata")
+load("C:/Users/user/Desktop/input/TARGET_panWSS_subtype.Rdata")
 library(dplyr); library(ggplot2)
 
 # ---- Proportions
@@ -938,7 +938,7 @@ rm(list=ls()); gc()
 library(GSVA); library(GSEABase); library(dplyr); library(tidyr)
 library(tibble); library(ggplot2)
 
-dir_input <- "C:/Users/赵定康/Desktop/input"
+dir_input <- "C:/Users/user/Desktop/input"
 
 # ---- 1. Hallmark gene sets, dropping WNT_beta_catenin_signaling
 geneSets_H <- getGmt(file.path(dir_input, "geneset_hallmark.gmt"))
@@ -1073,7 +1073,7 @@ ggplot(prof_long, aes(feature, subtype, fill = z)) +
 rm(list=ls()); gc()
 library(GSVA); library(GSEABase)
 
-dir_input <- "C:/Users/赵定康/Desktop/input"
+dir_input <- "C:/Users/user/Desktop/input"
 
 # ---- Load the panWSS definition
 load(file.path(dir_input, "TARGET_panWSS_subtype.Rdata"))
@@ -1189,14 +1189,14 @@ print(p)
 rm(list=ls()); gc()
 library(GSVA); library(GSEABase)
 
-dir_input <- "C:/Users/赵定康/Desktop/input"
+dir_input <- "C:/Users/user/Desktop/input"
 
 # ---- Load the panWSS definition
 load(file.path(dir_input, "panWSS_subtype_definition.Rdata"))
 # panWSS_centers, panWSS_features, train_mean_pan, train_sd_pan
 
 geneSets <- getGmt(file.path(dir_input, "wpags_wpigs.gmt"))
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
 
 # ---- Nearest-centre assignment
 assign_by_centroid <- function(x, centers) {
@@ -1210,7 +1210,7 @@ assign_by_centroid <- function(x, centers) {
 }
 
 library(data.table)
-rt <- as.data.frame(fread("C:/Users/赵定康/Desktop/input/donor_exp_seq.all_projects.donor.USonly.xena.tsv.gz"))
+rt <- as.data.frame(fread("C:/Users/user/Desktop/input/donor_exp_seq.all_projects.donor.USonly.xena.tsv.gz"))
 rownames(rt)=rt[,1]
 rt=rt[,-1]
 # ---- 1. Wnt scoring
@@ -1263,12 +1263,12 @@ cat("Saved: ICGC_sm_z.Rdata (63 standardised scores)\n")
 rm(list=ls()); gc()
 library(GSVA); library(GSEABase)
 
-dir_input <- "C:/Users/赵定康/Desktop/input"
+dir_input <- "C:/Users/user/Desktop/input"
 
 # ---- Load the panWSS definition
 load(file.path(dir_input, "ICGC_panWSS_subtype.Rdata"))
-ICGC_sur=as.data.frame(fread("C:/Users/赵定康/Desktop/input/sp_donor.all_projects.overallSurvival_transfer_specimen.gz"))
-ICGC_nor=as.data.frame(fread("C:/Users/赵定康/Desktop/input/sp_donor.all_projects.phenotype_transfer_specimen.gz"))
+ICGC_sur=as.data.frame(fread("C:/Users/user/Desktop/input/sp_donor.all_projects.overallSurvival_transfer_specimen.gz"))
+ICGC_nor=as.data.frame(fread("C:/Users/user/Desktop/input/sp_donor.all_projects.phenotype_transfer_specimen.gz"))
 ICGC_nor <- ICGC_nor[!grepl("TCGA", ICGC_nor$submitted_donor_id), ]
 ICGC_sur=data.frame(Tag=ICGC_sur$xena_sample,OS.time=ICGC_sur$OS.time,OS=ICGC_sur$OS)
 ICGC_sur=ICGC_sur[ICGC_sur$Tag%in%ICGC_nor$xena_sample,]
@@ -1350,9 +1350,9 @@ print(p)
 rm(list=ls()); gc()
 library(GSEABase); library(factoextra)
 
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_Score.Rdata")
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/pancancer_WNT_Score.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_group.Rdata")
 
 genesets <- as.matrix(pancancer_WNT_Score$single_score_matrix)
 pancancer_group <- pancancer_group[pancancer_group$Group == "Tumor", ]
@@ -1520,7 +1520,7 @@ cat("          pancancer_labels, pca_fit(slim), centers_pc, n_pc, temp_pan\n")
 rm(list=ls()); gc()
 library(GSVA); library(GSEABase)
 
-dir_input <- "C:/Users/赵定康/Desktop/input"
+dir_input <- "C:/Users/user/Desktop/input"
 
 # ---- Load the panWSS definition (route A)
 load(file.path(dir_input, "panWSS_subtype_definition.Rdata"))
@@ -1528,7 +1528,7 @@ load(file.path(dir_input, "panWSS_subtype_definition.Rdata"))
 #       pancancer_labels, pca_fit(slim), centers_pc, n_pc, temp_pan
 
 geneSets <- getGmt(file.path(dir_input, "wpags_wpigs.gmt"))
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
 
 # ---- Transfer function: PCA projection + RBF soft assignment + MAP subtype
 project_pca <- function(x, pca_fit) {

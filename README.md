@@ -80,9 +80,9 @@ file names follow the same convention as the root scripts.
 | `revision/WntQuant-Revision8_spatial_visium_hd_luad1_workflow.py` | Reads one Visium HD sample, runs spot-level QC, projects the Scissor, AST and WntQuant scores onto the tissue, and exports the per-feature PDFs plus the LUAD-like vs LUSC-like pathway comparison. |
 | `revision/supplementary material/` | Five workbooks: Wnt pathway gene sets, biological signatures and hallmarks, immune infiltration and stemness signatures, immunotherapy signatures, and the selected Wnt activity / iCMS signatures. |
 
-The scripts were written against the authors' local layout and point at an
-absolute `input` directory, so adjust those paths (and the working directory)
-before running them elsewhere.
+The scripts use an absolute path of the form `C:/Users/user/Desktop/input`
+as a placeholder; replace `user` (and the folder names, if you reorganise
+your data) with your own input location before running them elsewhere.
 
 ## Data requirements
 

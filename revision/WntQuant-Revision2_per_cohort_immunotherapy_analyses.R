@@ -12,11 +12,11 @@
 ################################################################################IMvigor####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/IMvigor210CoreBiologies.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/IMvigor210CoreBiologies.Rdata")
 rm(annoData)
 rm(exprSet)
-load("C:/Users/赵定康/Desktop/input/IMvigor.Rdata")
+load("C:/Users/user/Desktop/input/IMvigor.Rdata")
 IMVigor210=log2(IMvigor+1)
 save(IMVigor210,file="IMVigor210.Rdata")
 IMVigor210_info=data.frame(tag=rownames(phenoData),
@@ -28,7 +28,7 @@ IMVigor210_info=data.frame(tag=rownames(phenoData),
                         pfs.status=NA)
 IMVigor210_info$responder=ifelse(IMVigor210_info$responder%in%c("CR/PR"),"TRUE",
                               ifelse(IMVigor210_info$responder%in%c("SD/PD"),"FALSE",NA))
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 save(IMVigor210,file="IMVigor210.Rdata")
 save(IMVigor210_info,file="IMVigor210_info.Rdata")
 ################################################################################PRECOG####
@@ -69,8 +69,8 @@ convert_counts_to_cpm = function(expr_matrix) {
     return(mat)
   }
 }
-setwd("C:/Users/赵定康/Desktop/input")
-ici_precog_exp=readRDS("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/ici_precog_all_patient_expression_data_FOR_DOWNLOAD.rds")
+setwd("C:/Users/user/Desktop/input")
+ici_precog_exp=readRDS("C:/Users/user/Desktop/input/Wnt_immunotherapy/ici_precog_all_patient_expression_data_FOR_DOWNLOAD.rds")
 ici_precog_info=read.csv("ici_precog_all_patient_clinical_data_FOR_DOWNLOAD.csv")
 datasets=unique(ici_precog_info$Dataset)
 for(i in 1:length(datasets)){
@@ -128,7 +128,7 @@ for(i in 1:length(datasets)){
   colnames(ici_precog_info_single)=c("tag","cancer","responder","os.time","os.status","pfs.time","pfs.status")
   assign(paste0(datasets[i],"_info"),ici_precog_info_single)
 }
-setwd("C:/Users/赵定康/Desktop/input/ICI")
+setwd("C:/Users/user/Desktop/input/ICI")
 datasets = datasets[datasets != c("IMVigor210","Zhao_NatMed_2019","Gide_Cell_2019")]
 for(dataset in datasets) {
   if(exists(dataset)) {
@@ -146,14 +146,14 @@ for(dataset in datasets) {
 ################################################################################PRJNA482620####
 rm(list=ls())
 gc()
-PRJNA482620 = readRDS("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/GBM-PRJNA482620.Response.Rds")
+PRJNA482620 = readRDS("C:/Users/user/Desktop/input/Wnt_immunotherapy/GBM-PRJNA482620.Response.Rds")
 PRJNA482620$GENE_SYMBOL = sub("_.*", "", PRJNA482620$GENE_SYMBOL)
 PRJNA482620=PRJNA482620[!grepl("^[0-9]", PRJNA482620$GENE_SYMBOL), ]
 PRJNA482620=aggregate(. ~ GENE_SYMBOL, data = PRJNA482620, FUN = mean)
 rownames(PRJNA482620)=PRJNA482620[,1]
 PRJNA482620=PRJNA482620[,-1]
 PRJNA482620=log2(PRJNA482620+1)
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 anno=read.delim("GBM-PRJNA482620.Response.tsv")
 Zhao_NatMed_2019=PRJNA482620
 Zhao_NatMed_2019_info=data.frame(tag=anno$sample_id,
@@ -171,14 +171,14 @@ save(Zhao_NatMed_2019_info,file="Zhao_NatMed_2019_info.Rdata")
 ################################################################################PRJEB25780####
 rm(list=ls())
 gc()
-PRJEB25780 = readRDS("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/STAD-PRJEB25780.Response.Rds")
+PRJEB25780 = readRDS("C:/Users/user/Desktop/input/Wnt_immunotherapy/STAD-PRJEB25780.Response.Rds")
 PRJEB25780$GENE_SYMBOL = sub("_.*", "", PRJEB25780$GENE_SYMBOL)
 PRJEB25780=PRJEB25780[!grepl("^[0-9]", PRJEB25780$GENE_SYMBOL), ]
 PRJEB25780=aggregate(. ~ GENE_SYMBOL, data = PRJEB25780, FUN = mean)
 rownames(PRJEB25780)=PRJEB25780[,1]
 PRJEB25780=PRJEB25780[,-1]
 PRJEB25780=log2(PRJEB25780+1)
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 anno=read.delim("STAD-PRJEB25780.Response.tsv")
 Kim_NatMed_2018=PRJEB25780
 Kim_NatMed_2018_info=data.frame(tag=anno$sample_id,
@@ -195,13 +195,13 @@ save(Kim_NatMed_2018_info,file="Kim_NatMed_2018_info.Rdata")
 ################################################################################GSE67501####
 rm(list=ls())
 gc()
-GSE67501 = readRDS("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/RCC-GSE67501.Response.Rds")
+GSE67501 = readRDS("C:/Users/user/Desktop/input/Wnt_immunotherapy/RCC-GSE67501.Response.Rds")
 GSE67501 = GSE67501[!grepl("^[0-9]", GSE67501$GENE_SYMBOL), ]
 GSE67501 = GSE67501[!apply(GSE67501[, -1], 1, function(x) all(is.na(x))), ]
 GSE67501 = aggregate(. ~ GENE_SYMBOL, data = GSE67501, FUN = mean)
 rownames(GSE67501)=GSE67501[,1]
 GSE67501=GSE67501[,-1]
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 anno=read.delim("RCC-GSE67501.Response.tsv")
 GSE67501_info=data.frame(tag=anno$sample_id,
                          cancer="KIRC",
@@ -217,14 +217,14 @@ save(GSE67501_info,file="GSE67501_info.Rdata")
 ################################################################################Braun_2020####
 rm(list=ls())
 gc()
-Braun_NatMed_2020 = readRDS("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/RCC-Braun_2020.Response.Rds")
+Braun_NatMed_2020 = readRDS("C:/Users/user/Desktop/input/Wnt_immunotherapy/RCC-Braun_2020.Response.Rds")
 Braun_NatMed_2020 = Braun_NatMed_2020[!grepl("^[0-9]", Braun_NatMed_2020$GENE_SYMBOL), ]
 Braun_NatMed_2020 = Braun_NatMed_2020[!apply(Braun_NatMed_2020[, -1], 1, function(x) all(is.na(x))), ]
 Braun_NatMed_2020 = aggregate(. ~ GENE_SYMBOL, data = Braun_NatMed_2020, FUN = mean)
 rownames(Braun_NatMed_2020)=Braun_NatMed_2020[,1]
 Braun_NatMed_2020=Braun_NatMed_2020[,-1]
 Braun_NatMed_2020=log2(Braun_NatMed_2020+1)
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 anno=read.delim("RCC-Braun_2020.Response.tsv")
 Braun_NatMed_2020_info=data.frame(tag=anno$sample_id,
                          cancer="KIRC",
@@ -241,13 +241,13 @@ save(Braun_NatMed_2020_info,file="Braun_NatMed_2020_info.Rdata")
 ################################################################################GSE93157####
 rm(list=ls())
 gc()
-GSE93157 = readRDS("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/nonsqNSCLC-GSE93157.Response.Rds")
+GSE93157 = readRDS("C:/Users/user/Desktop/input/Wnt_immunotherapy/nonsqNSCLC-GSE93157.Response.Rds")
 GSE93157 = GSE93157[!grepl("^[0-9]", GSE93157$GENE_SYMBOL), ]
 GSE93157 = GSE93157[!apply(GSE93157[, -1], 1, function(x) all(is.na(x))), ]
 GSE93157 = aggregate(. ~ GENE_SYMBOL, data = GSE93157, FUN = mean)
 rownames(GSE93157)=GSE93157[,1]
 GSE93157=GSE93157[,-1]
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 anno=read.delim("nonsqNSCLC-GSE93157.Response.tsv")
 GSE93157_info=data.frame(tag=anno$sample_id,
                                   cancer="NSCLC",
@@ -264,14 +264,14 @@ save(GSE93157_info,file="GSE93157_info.Rdata")
 ################################################################################PRJEB23709####
 rm(list=ls())
 gc()
-PRJEB23709 = readRDS("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/Melanoma-PRJEB23709.Response.Rds")
+PRJEB23709 = readRDS("C:/Users/user/Desktop/input/Wnt_immunotherapy/Melanoma-PRJEB23709.Response.Rds")
 PRJEB23709$GENE_SYMBOL = sub("_.*", "", PRJEB23709$GENE_SYMBOL)
 PRJEB23709=PRJEB23709[!grepl("^[0-9]", PRJEB23709$GENE_SYMBOL), ]
 PRJEB23709=aggregate(. ~ GENE_SYMBOL, data = PRJEB23709, FUN = mean)
 rownames(PRJEB23709)=PRJEB23709[,1]
 PRJEB23709=PRJEB23709[,-1]
 PRJEB23709=log2(PRJEB23709+1)
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 anno=read.delim("Melanoma-PRJEB23709.Response.tsv")
 Gide_CancerCell_2019=PRJEB23709
 Gide_CancerCell_2019_info=data.frame(tag=anno$sample_id,
@@ -289,13 +289,13 @@ save(Gide_CancerCell_2019_info,file="Gide_CancerCell_2019_info.Rdata")
 ################################################################################GSE115821####
 rm(list=ls())
 gc()
-GSE115821 = readRDS("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/Melanoma-GSE115821.Response.Rds")
+GSE115821 = readRDS("C:/Users/user/Desktop/input/Wnt_immunotherapy/Melanoma-GSE115821.Response.Rds")
 GSE115821 = GSE115821[!grepl("^[0-9]", GSE115821$GENE_SYMBOL), ]
 GSE115821 = GSE115821[!apply(GSE115821[, -1], 1, function(x) all(is.na(x))), ]
 GSE115821 = aggregate(. ~ GENE_SYMBOL, data = GSE115821, FUN = mean)
 rownames(GSE115821)=GSE115821[,1]
 GSE115821=GSE115821[,-1]
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 anno=read.delim("Melanoma-GSE115821.Response.tsv")
 GSE115821_info=data.frame(tag=anno$sample_id,
                          cancer="SKCM",
@@ -312,7 +312,7 @@ save(GSE115821_info,file="GSE115821_info.Rdata")
 ################################################################################GSE106128####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 GSE106128 = read.delim("GSE106128_series_matrix.txt")
 ann=read.delim("GSE106128_family.soft")
 ann=ann[,c(1,7)]
@@ -324,7 +324,7 @@ GSE106128 = GSE106128[!grepl("^[0-9]", GSE106128$ILMN_Gene), ]
 rownames(GSE106128)=GSE106128[,1]
 GSE106128=GSE106128[,-1]
 GSE106128=log2(GSE106128+1)
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 anno=read.delim("Melanoma-GSE106128.Response.tsv")
 GSE106128_info=data.frame(tag=anno$sample_id,
                           cancer="SKCM",
@@ -341,13 +341,13 @@ save(GSE106128_info,file="GSE106128_info.Rdata")
 ################################################################################GSE100797####
 rm(list=ls())
 gc()
-GSE100797 = readRDS("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/Melanoma-GSE100797.Response.Rds")
+GSE100797 = readRDS("C:/Users/user/Desktop/input/Wnt_immunotherapy/Melanoma-GSE100797.Response.Rds")
 GSE100797 = GSE100797[!grepl("^[0-9]", GSE100797$GENE_SYMBOL), ]
 GSE100797 = GSE100797[!apply(GSE100797[, -1], 1, function(x) all(is.na(x))), ]
 GSE100797 = aggregate(. ~ GENE_SYMBOL, data = GSE100797, FUN = mean)
 rownames(GSE100797)=GSE100797[,1]
 GSE100797=GSE100797[,-1]
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 anno=read.delim("Melanoma-GSE100797.Response.tsv")
 GSE100797_info=data.frame(tag=anno$sample_id,
                           cancer="SKCM",
@@ -364,13 +364,13 @@ save(GSE100797_info,file="GSE100797_info.Rdata")
 ################################################################################GSE93157####
 rm(list=ls())
 gc()
-GSE93157 = readRDS("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/Melanoma-GSE93157.Response.Rds")
+GSE93157 = readRDS("C:/Users/user/Desktop/input/Wnt_immunotherapy/Melanoma-GSE93157.Response.Rds")
 GSE93157 = GSE93157[!grepl("^[0-9]", GSE93157$GENE_SYMBOL), ]
 GSE93157 = GSE93157[!apply(GSE93157[, -1], 1, function(x) all(is.na(x))), ]
 GSE93157 = aggregate(. ~ GENE_SYMBOL, data = GSE93157, FUN = mean)
 rownames(GSE93157)=GSE93157[,1]
 GSE93157=GSE93157[,-1]
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 anno=read.delim("Melanoma-GSE93157.Response.tsv")
 GSE93157_info=data.frame(tag=anno$sample_id,
                           cancer="LUSC",
@@ -387,14 +387,14 @@ save(GSE93157_info,file="GSE93157_info.Rdata")
 ################################################################################E-MTAB-6270####
 rm(list=ls())
 gc()
-Müller_JCI_2018 = readRDS("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/LGG_E-MTAB-6270.Response.Rds")
+Müller_JCI_2018 = readRDS("C:/Users/user/Desktop/input/Wnt_immunotherapy/LGG_E-MTAB-6270.Response.Rds")
 Müller_JCI_2018 = Müller_JCI_2018[!grepl("^[0-9]", Müller_JCI_2018$GENE_SYMBOL), ]
 Müller_JCI_2018 = Müller_JCI_2018[!apply(Müller_JCI_2018[, -1], 1, function(x) all(is.na(x))), ]
 Müller_JCI_2018 = aggregate(. ~ GENE_SYMBOL, data = Müller_JCI_2018, FUN = mean)
 rownames(Müller_JCI_2018)=Müller_JCI_2018[,1]
 Müller_JCI_2018=Müller_JCI_2018[,-1]
 Müller_JCI_2018=log2(Müller_JCI_2018+1)
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 anno=read.delim("LGG_E-MTAB-6270.Response.tsv")
 Müller_JCI_2018_info=data.frame(tag=anno$sample_id,
                          cancer="LGG",
@@ -411,7 +411,7 @@ save(Müller_JCI_2018_info,file="Müller_JCI_2018_info.Rdata")
 ################################################################################GSE100797####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 exp=read.delim("GSE100797_ProcessedData.txt")
 rownames(exp)=exp[,1]
 exp=exp[,-1]
@@ -440,7 +440,7 @@ gc()
 library(IOBR)
 library(dplyr)
 library(stringr)
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 exp=read.delim("GSE135222_norm_counts_TPM_GRCh38.p13_NCBI.tsv")
 ann=read.delim("Human.GRCh38.p13.annot.tsv")[,c(1,2)]
 exp=merge(ann,exp,by="GeneID")
@@ -449,8 +449,8 @@ exp=aggregate(. ~ Symbol, data = exp, FUN = mean)
 rownames(exp)=exp[,1]
 exp=exp[,-1]
 exp=log2(exp+1)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/ICI/GSE135222_info.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/ICI/GSE135222_info.Rdata")
 GSE135222_info1=read.delim("GSE135222_series_matrix.txt")
 GSE135222_info1=as.data.frame(t(GSE135222_info1[c(12,13,41),]))
 GSE135222_info1=GSE135222_info1[-1,]
@@ -466,7 +466,7 @@ GSE135222_info=data.frame(tag=GSE135222_info$tag,
                           pfs.time=GSE135222_info$time,
                           pfs.status=GSE135222_info$status)
 GSE135222=exp
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 save(GSE135222,file="GSE135222.Rdata")
 save(GSE135222_info,file="GSE135222_info.Rdata")
 ################################################################################GSE19423####
@@ -474,7 +474,7 @@ rm(list=ls())
 gc()
 library(dplyr)
 library(stringr)
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 exp=read.delim("GSE19423_GPL6102_1_13_1_Matrix.matrix.txt")
 rownames(exp)=exp[,1]
 exp=exp[,-1]
@@ -495,13 +495,13 @@ GSE19423_info=data.frame(tag=data$tag,
 GSE19423_info$responder=ifelse(GSE19423_info$responder=="previous mapki: N","FALSE","TRUE")
 GSE19423_info$os.status=ifelse(GSE19423_info$os.status=="overall survival: death",1,0)
 GSE19423=exp
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 save(GSE19423,file="GSE19423.Rdata")
 save(GSE19423_info,file="GSE19423_info.Rdata")
 ################################################################################GSE100797####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 exp=read.delim("GSE100797_ProcessedData.txt")
 rownames(exp)=exp[,1]
 exp=exp[,-1]
@@ -528,7 +528,7 @@ save(GSE100797_info,file="GSE100797_info.Rdata")
 ################################################################################GSE78220####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 library(readxl)
 exp=as.data.frame(read_excel("GSE78220_PatientFPKM.xlsx"))
 rownames(exp)=exp[,1]
@@ -556,11 +556,11 @@ save(GSE78220_info,file="GSE78220_info.Rdata")
 rm(list=ls())
 gc()
 library(IOBR)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/IMvigor210CoreBiologies.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/IMvigor210CoreBiologies.Rdata")
 rm(annoData)
 rm(exprSet)
-load("C:/Users/赵定康/Desktop/input/IMvigor.Rdata")
+load("C:/Users/user/Desktop/input/IMvigor.Rdata")
 IMvigor=log2(IMvigor+1)
 im_xcell=deconvo_tme(eset = IMvigor, method = "xcell")
 im_xcell=as.data.frame(im_xcell)
@@ -628,7 +628,7 @@ resultup=resultup[!resultup$gene_id%in%c("Sebocytes","GMP","Keratinocytes","Astr
 save(resultup,file="resultup.Rdata")
 exp_im=exp_im[c(resultup$gene_id),]
 exp_im=as.data.frame(t(exp_im))
-load("C:/Users/赵定康/Desktop/input/hot_cancer_sig.Rdata")
+load("C:/Users/user/Desktop/input/hot_cancer_sig.Rdata")
 exp_hot=IMvigor[hot_cancer_sig$gene_id,]
 cor_matrix <- cor(t(exp_hot), method = "pearson")
 dist_matrix <- as.dist(1 - cor_matrix)
@@ -775,11 +775,11 @@ assignInNamespace(
 )
 # ===== End of patch
 
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/IMvigor210CoreBiologies.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/IMvigor210CoreBiologies.Rdata")
 rm(annoData)
 rm(exprSet)
-load("C:/Users/赵定康/Desktop/input/IMvigor.Rdata")
+load("C:/Users/user/Desktop/input/IMvigor.Rdata")
 IMvigor=log2(IMvigor+1)
 im_xcell=deconvo_tme(eset = IMvigor, method = "xcell")
 
@@ -921,11 +921,11 @@ print(p)
 rm(list=ls())
 gc()
 library(IOBR)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/IMvigor210CoreBiologies.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/IMvigor210CoreBiologies.Rdata")
 rm(annoData)
 rm(exprSet)
-load("C:/Users/赵定康/Desktop/input/IMvigor.Rdata")
+load("C:/Users/user/Desktop/input/IMvigor.Rdata")
 IMvigor=log2(IMvigor+1)
 im_xcell=deconvo_tme(eset = IMvigor, method = "xcell")
 im_xcell=as.data.frame(im_xcell)
@@ -977,8 +977,8 @@ save(xcell_pheno,file="xcell_pheno.Rdata")
 ################################################################################Building the random-forest model####
 rm(list = ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/xcell_pheno.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/xcell_pheno.Rdata")
 library(randomForest)
 library(caret)
 library(pROC)
@@ -1070,8 +1070,8 @@ ggplot(AUC_all, aes(x = mtry, y = auc)) +
 ################################################################################Visualising the model####
 rm(list = ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/xcell_pheno.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/xcell_pheno.Rdata")
 library(randomForest)
 library(caret)
 library(pROC)
@@ -1256,9 +1256,9 @@ print(importance_plot)
 rm(list=ls())
 gc()
 library(IOBR)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/pancancer_exp.Rdata")
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/pancancer_exp.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_group.Rdata")
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
 fs=unique(pancancer_group$Project)
 
@@ -1349,7 +1349,7 @@ for(i in 1:length(fs)){
                 gaps_col = cold_count,
                 silent = TRUE)
 
-  output_dir <- "C:/Users/赵定康/Desktop/input/heatmaps"
+  output_dir <- "C:/Users/user/Desktop/input/heatmaps"
   if(!dir.exists(output_dir)) {
     dir.create(output_dir)
   }
@@ -1361,9 +1361,9 @@ for(i in 1:length(fs)){
 rm(list=ls())
 gc()
 library(IOBR)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/pancancer_exp.Rdata")
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/pancancer_exp.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_group.Rdata")
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
 fs=unique(pancancer_group$Project)
 
@@ -1454,7 +1454,7 @@ for(i in 1:length(fs)){
                 gaps_col = cold_count,
                 silent = TRUE)
 
-  output_dir <- "C:/Users/赵定康/Desktop/input/heatmaps"
+  output_dir <- "C:/Users/user/Desktop/input/heatmaps"
   if(!dir.exists(output_dir)) {
     dir.create(output_dir)
   }
@@ -1466,9 +1466,9 @@ for(i in 1:length(fs)){
 rm(list=ls())
 gc()
 library(IOBR)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/pancancer_exp.Rdata")
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/pancancer_exp.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_group.Rdata")
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
 fs=unique(pancancer_group$Project)
 cold_hot_all=data.frame()
@@ -1533,7 +1533,7 @@ rm(list=ls())
 gc()
 
 # Set the working directory and load packages
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 library(reshape2)
 library(ggplot2)
 library(ggsignif)
@@ -1606,8 +1606,8 @@ if(length(vector_survival) == 0) {
 }
 
 # Load the required functions and gene sets
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-geneSets <- getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+geneSets <- getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
 
 os_test_result_all=data.frame()
 vector_survival=vector_survival[-22]
@@ -1622,9 +1622,9 @@ for(i in 1:length(vector_survival)){
   im_timer <- im_timer[,-1]
   colnames(im_timer) <- gsub("_xCell$", "", colnames(im_timer))
   im_timer <- as.data.frame(scale(im_timer))
-  load("C:/Users/赵定康/Desktop/input/resultup.Rdata")
+  load("C:/Users/user/Desktop/input/resultup.Rdata")
   im_timer=im_timer[,c(resultup$gene_id)]
-  load("C:/Users/赵定康/Desktop/input/Hot_cancer_signature_list.Rdata")
+  load("C:/Users/user/Desktop/input/Hot_cancer_signature_list.Rdata")
   library(GSVA)
   scores=ssgseaParam(exprData=as.matrix(exp),geneSets=Hot_cancer_signature_list,minSize=1,maxSize=10000)
   scores=gsva(scores)
@@ -1632,14 +1632,14 @@ for(i in 1:length(vector_survival)){
   im_timer=merge(im_timer,scores,by="row.names")
   rownames(im_timer)=im_timer[,1]
   im_timer=im_timer[,-1]
-  load("C:/Users/赵定康/Desktop/input/rf_model_final.Rdata")
+  load("C:/Users/user/Desktop/input/rf_model_final.Rdata")
   im_timer$subtype = predict(object = rf_model_final,
                              newdata = as.matrix(im_timer),type = "prob")[, "hot"]
   im_timer$subtype=ifelse(im_timer$subtype>0.5,"hot","cold")
   table(im_timer$subtype)
   im_timer=im_timer[im_timer$subtype=="cold",]
   exp_responder=exp[,rownames(im_timer)]
-  WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+  WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                          expression_profile=exp_responder,
                                          foundation="relative_ssGSEA",
                                          activation_geneset=NA,
@@ -1670,7 +1670,7 @@ rm(list=ls())
 gc()
 
 # Set the working directory and load packages
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 library(reshape2)
 library(ggplot2)
 library(ggsignif)
@@ -1743,8 +1743,8 @@ if(length(vector_survival) == 0) {
 }
 
 # Load the required functions and gene sets
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-geneSets <- getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+geneSets <- getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
 
 pfs_test_result_all=data.frame()
 vector_survival=vector_survival[-19]
@@ -1759,9 +1759,9 @@ for(i in 1:length(vector_survival)){
   im_timer <- im_timer[,-1]
   colnames(im_timer) <- gsub("_xCell$", "", colnames(im_timer))
   im_timer <- as.data.frame(scale(im_timer))
-  load("C:/Users/赵定康/Desktop/input/resultup.Rdata")
+  load("C:/Users/user/Desktop/input/resultup.Rdata")
   im_timer=im_timer[,c(resultup$gene_id)]
-  load("C:/Users/赵定康/Desktop/input/Hot_cancer_signature_list.Rdata")
+  load("C:/Users/user/Desktop/input/Hot_cancer_signature_list.Rdata")
   library(GSVA)
   scores=ssgseaParam(exprData=as.matrix(exp),geneSets=Hot_cancer_signature_list,minSize=1,maxSize=10000)
   scores=gsva(scores)
@@ -1769,14 +1769,14 @@ for(i in 1:length(vector_survival)){
   im_timer=merge(im_timer,scores,by="row.names")
   rownames(im_timer)=im_timer[,1]
   im_timer=im_timer[,-1]
-  load("C:/Users/赵定康/Desktop/input/rf_model_final.Rdata")
+  load("C:/Users/user/Desktop/input/rf_model_final.Rdata")
   im_timer$subtype = predict(object = rf_model_final,
                              newdata = as.matrix(im_timer),type = "prob")[, "hot"]
   im_timer$subtype=ifelse(im_timer$subtype>0.5,"hot","cold")
   table(im_timer$subtype)
   im_timer=im_timer[im_timer$subtype=="cold",]
   exp_responder=exp[,rownames(im_timer)]
-  WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+  WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                          expression_profile=exp_responder,
                                          foundation="relative_ssGSEA",
                                          activation_geneset=NA,
@@ -1805,11 +1805,11 @@ save(pfs_test_result_all,file="pfs_test_result_all.Rdata")
 ################################################################################Integrated prognostic analysis across datasets (grouped)####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 load("pfs_test_result_all.Rdata")
 load("os_test_result_all.Rdata")
 
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=unique(c("GSE253260","Dai_2025","Prins_GBM_2019_RNAseq","GSE135222","Dai_2025",
                 "GSE253260","PORTER_2025","Zhao_NatMed_2019","Braun_NatMed_2020","GSE78220"))
 for (q in 1:length(vector)) {
@@ -1835,9 +1835,9 @@ for(i in 1:length(vector)){
   im_timer = im_timer[,-1]
   colnames(im_timer) = gsub("_xCell$", "", colnames(im_timer))
   im_timer = as.data.frame(scale(im_timer))
-  load("C:/Users/赵定康/Desktop/input/resultup.Rdata")
+  load("C:/Users/user/Desktop/input/resultup.Rdata")
   im_timer=im_timer[,c(resultup$gene_id)]
-  load("C:/Users/赵定康/Desktop/input/Hot_cancer_signature_list.Rdata")
+  load("C:/Users/user/Desktop/input/Hot_cancer_signature_list.Rdata")
   library(GSVA)
   scores=ssgseaParam(exprData=as.matrix(exp),geneSets=Hot_cancer_signature_list,minSize=1,maxSize=10000)
   scores=gsva(scores)
@@ -1845,7 +1845,7 @@ for(i in 1:length(vector)){
   im_timer=merge(im_timer,scores,by="row.names")
   rownames(im_timer)=im_timer[,1]
   im_timer=im_timer[,-1]
-  load("C:/Users/赵定康/Desktop/input/rf_model_final.Rdata")
+  load("C:/Users/user/Desktop/input/rf_model_final.Rdata")
   im_timer$subtype = predict(object = rf_model_final,
                              newdata = as.matrix(im_timer),type = "prob")[, "hot"]
   im_timer$subtype=ifelse(im_timer$subtype>0.5,"hot","cold")
@@ -1857,7 +1857,7 @@ for(i in 1:length(vector)){
 ################################################################################Group percentages####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 
 vector <- unique(c("GSE253260","Dai_2025","Prins_GBM_2019_RNAseq","Dai_2025",
                    "GSE253260","PORTER_2025","Zhao_NatMed_2019","Braun_NatMed_2020","GSE78220","IMvigor"))
@@ -1949,10 +1949,10 @@ print(p)
 ################################################################################Single dataset (GSE135222)####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 load("pfs_test_result_all.Rdata")
 load("os_test_result_all.Rdata")
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("GSE135222")
 for (q in 1:length(vector)) {
   data_file = paste0(vector[q], ".Rdata")
@@ -1965,9 +1965,9 @@ for (q in 1:length(vector)) {
 GSE135222_G=GSE135222_G[GSE135222_G$group=="cold",]
 GSE135222=GSE135222[,colnames(GSE135222)%in%GSE135222_G$Tag]
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=GSE135222,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -2032,12 +2032,12 @@ print(p)
 rm(list = ls())
 gc()
 library(GSVA)
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("GSE135222")
 for (l in 1:length(vector)) {
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],".Rdata"))
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],"_info.Rdata"))
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],"_G.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],".Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],"_info.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],"_G.Rdata"))
 }
 group=GSE78220_G
 group=group[group$group=="cold",]
@@ -2068,9 +2068,9 @@ gene_p$signature=gene
 colnames(gene_p)=c("value","ID")
 exp_cal=exp[,group$Tag]
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=exp_cal,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -2185,10 +2185,10 @@ save(Jung_NatCommun_2019_pfs_p,file="Jung_NatCommun_2019_pfs_p.Rdata")
 ################################################################################Single dataset (Dai_Nature_2025_os)####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 load("pfs_test_result_all.Rdata")
 load("os_test_result_all.Rdata")
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("Dai_2025")
 for (q in 1:length(vector)) {
   data_file = paste0(vector[q], ".Rdata")
@@ -2201,9 +2201,9 @@ for (q in 1:length(vector)) {
 Dai_2025_G=Dai_2025_G[Dai_2025_G$group=="cold",]
 Dai_2025=Dai_2025[,colnames(Dai_2025)%in%Dai_2025_G$Tag]
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=Dai_2025,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -2268,12 +2268,12 @@ print(p)
 rm(list = ls())
 gc()
 library(GSVA)
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("Dai_2025")
 for (l in 1:length(vector)) {
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],".Rdata"))
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],"_info.Rdata"))
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],"_G.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],".Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],"_info.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],"_G.Rdata"))
 }
 group=Dai_2025_G
 group=group[group$group=="cold",]
@@ -2304,9 +2304,9 @@ gene_p$signature=gene
 colnames(gene_p)=c("value","ID")
 exp_cal=exp[,group$Tag]
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=exp_cal,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -2419,10 +2419,10 @@ save(Dai_Nature_2025_os_p,file="Dai_Nature_2025_os_p.Rdata")
 ################################################################################Single dataset (Nicolle_EBioMedicine_2024_os)####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 load("pfs_test_result_all.Rdata")
 load("os_test_result_all.Rdata")
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("GSE253260")
 for (q in 1:length(vector)) {
   data_file = paste0(vector[q], ".Rdata")
@@ -2435,9 +2435,9 @@ for (q in 1:length(vector)) {
 GSE253260_G=GSE253260_G[GSE253260_G$group=="cold",]
 GSE253260=GSE253260[,colnames(GSE253260)%in%GSE253260_G$Tag]
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=GSE253260,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -2502,12 +2502,12 @@ print(p)
 rm(list = ls())
 gc()
 library(GSVA)
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("GSE253260")
 for (l in 1:length(vector)) {
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],".Rdata"))
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],"_info.Rdata"))
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],"_G.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],".Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],"_info.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],"_G.Rdata"))
 }
 group=GSE253260_G
 group=group[group$group=="cold",]
@@ -2548,9 +2548,9 @@ gene_p$signature=gene
 colnames(gene_p)=c("value","ID")
 exp_cal=exp[,group$Tag]
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=exp_cal,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -2663,10 +2663,10 @@ save(Nicolle_EBioMedicine_2024_os_p,file="Nicolle_EBioMedicine_2024_os_p.Rdata")
 ################################################################################Single dataset (Nicolle_EBioMedicine_2024_pfs)####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 load("pfs_test_result_all.Rdata")
 load("os_test_result_all.Rdata")
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("GSE253260")
 for (q in 1:length(vector)) {
   data_file = paste0(vector[q], ".Rdata")
@@ -2679,9 +2679,9 @@ for (q in 1:length(vector)) {
 GSE253260_G=GSE253260_G[GSE253260_G$group=="cold",]
 GSE253260=GSE253260[,colnames(GSE253260)%in%GSE253260_G$Tag]
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=GSE253260,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -2746,12 +2746,12 @@ print(p)
 rm(list = ls())
 gc()
 library(GSVA)
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("GSE253260")
 for (l in 1:length(vector)) {
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],".Rdata"))
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],"_info.Rdata"))
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],"_G.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],".Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],"_info.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],"_G.Rdata"))
 }
 group=GSE253260_G
 group=group[group$group=="cold",]
@@ -2792,9 +2792,9 @@ gene_p$signature=gene
 colnames(gene_p)=c("value","ID")
 exp_cal=exp[,group$Tag]
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=exp_cal,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -2907,10 +2907,10 @@ save(Nicolle_EBioMedicine_2024_pfs_p,file="Nicolle_EBioMedicine_2024_pfs_p.Rdata
 ################################################################################Single dataset (Zhao_NatMed_2019)####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 load("pfs_test_result_all.Rdata")
 load("os_test_result_all.Rdata")
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("Zhao_NatMed_2019")
 for (q in 1:length(vector)) {
   data_file = paste0(vector[q], ".Rdata")
@@ -2923,9 +2923,9 @@ for (q in 1:length(vector)) {
 Zhao_NatMed_2019_G=Zhao_NatMed_2019_G[Zhao_NatMed_2019_G$group=="cold",]
 Zhao_NatMed_2019=Zhao_NatMed_2019[,colnames(Zhao_NatMed_2019)%in%Zhao_NatMed_2019_G$Tag]
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=Zhao_NatMed_2019,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -2990,12 +2990,12 @@ print(p)
 rm(list = ls())
 gc()
 library(GSVA)
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("Zhao_NatMed_2019")
 for (l in 1:length(vector)) {
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],".Rdata"))
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],"_info.Rdata"))
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],"_G.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],".Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],"_info.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],"_G.Rdata"))
 }
 group=Zhao_NatMed_2019_G
 group=group[group$group=="cold",]
@@ -3036,9 +3036,9 @@ gene_p$signature=gene
 colnames(gene_p)=c("value","ID")
 exp_cal=exp[,group$Tag]
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=exp_cal,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -3151,10 +3151,10 @@ save(Zhao_NatMed_2019_os_p,file="Zhao_NatMed_2019_os_p.Rdata")
 ################################################################################Single dataset (Braun_NatMed_2020)####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 load("pfs_test_result_all.Rdata")
 load("os_test_result_all.Rdata")
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("Braun_NatMed_2020")
 for (q in 1:length(vector)) {
   data_file = paste0(vector[q], ".Rdata")
@@ -3167,9 +3167,9 @@ for (q in 1:length(vector)) {
 Braun_NatMed_2020_G=Braun_NatMed_2020_G[Braun_NatMed_2020_G$group=="cold",]
 Braun_NatMed_2020=Braun_NatMed_2020[,colnames(Braun_NatMed_2020)%in%Braun_NatMed_2020_G$Tag]
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=Braun_NatMed_2020,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -3234,12 +3234,12 @@ print(p)
 rm(list = ls())
 gc()
 library(GSVA)
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("Braun_NatMed_2020")
 for (l in 1:length(vector)) {
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],".Rdata"))
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],"_info.Rdata"))
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],"_G.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],".Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],"_info.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],"_G.Rdata"))
 }
 group=Braun_NatMed_2020_G
 group=group[group$group=="cold",]
@@ -3270,9 +3270,9 @@ gene_p$signature=gene
 colnames(gene_p)=c("value","ID")
 exp_cal=exp[,group$Tag]
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=exp_cal,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -3385,10 +3385,10 @@ save(Braun_NatMed_2020_os_p,file="Braun_NatMed_2020_os_p.Rdata")
 ################################################################################Single dataset (Hugo_Cell_2016)####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 load("pfs_test_result_all.Rdata")
 load("os_test_result_all.Rdata")
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("GSE78220")
 for (q in 1:length(vector)) {
   data_file = paste0(vector[q], ".Rdata")
@@ -3401,9 +3401,9 @@ for (q in 1:length(vector)) {
 GSE78220_G=GSE78220_G[GSE78220_G$group=="cold",]
 GSE78220=GSE78220[,colnames(GSE78220)%in%GSE78220_G$Tag]
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=GSE78220,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -3468,12 +3468,12 @@ print(p)
 rm(list = ls())
 gc()
 library(GSVA)
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("GSE78220")
 for (l in 1:length(vector)) {
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],".Rdata"))
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],"_info.Rdata"))
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],"_G.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],".Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],"_info.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],"_G.Rdata"))
 }
 group=GSE78220_G
 group=group[group$group=="cold",]
@@ -3504,9 +3504,9 @@ gene_p$signature=gene
 colnames(gene_p)=c("value","ID")
 exp_cal=exp[,group$Tag]
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=exp_cal,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -3619,10 +3619,10 @@ save(Hugo_Cell_2016_os_p,file="Hugo_Cell_2016_os_p.Rdata")
 ################################################################################Single dataset (PORTER_2025)####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 load("pfs_test_result_all.Rdata")
 load("os_test_result_all.Rdata")
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("PORTER_2025")
 for (q in 1:length(vector)) {
   data_file = paste0(vector[q], ".Rdata")
@@ -3635,9 +3635,9 @@ for (q in 1:length(vector)) {
 PORTER_2025_G=PORTER_2025_G[PORTER_2025_G$group=="cold",]
 PORTER_2025=PORTER_2025[,colnames(PORTER_2025)%in%PORTER_2025_G$Tag]
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=PORTER_2025,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -3702,12 +3702,12 @@ print(p)
 rm(list = ls())
 gc()
 library(GSVA)
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("PORTER_2025")
 for (l in 1:length(vector)) {
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],".Rdata"))
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],"_info.Rdata"))
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],"_G.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],".Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],"_info.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],"_G.Rdata"))
 }
 group=PORTER_2025_G
 group=group[group$group=="cold",]
@@ -3738,9 +3738,9 @@ gene_p$signature=gene
 colnames(gene_p)=c("value","ID")
 exp_cal=exp[,group$Tag]
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=exp_cal,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -3853,10 +3853,10 @@ save(Galsky_ClinCancerRes_2025_os_p,file="Galsky_ClinCancerRes_2025_os_p.Rdata")
 ################################################################################Single dataset (Dai_Nature_2025_pfs)####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 load("pfs_test_result_all.Rdata")
 load("os_test_result_all.Rdata")
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("Dai_2025")
 for (q in 1:length(vector)) {
   data_file = paste0(vector[q], ".Rdata")
@@ -3869,9 +3869,9 @@ for (q in 1:length(vector)) {
 Dai_2025_G=Dai_2025_G[Dai_2025_G$group=="cold",]
 Dai_2025=Dai_2025[,colnames(Dai_2025)%in%Dai_2025_G$Tag]
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=Dai_2025,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -3936,12 +3936,12 @@ print(p)
 rm(list = ls())
 gc()
 library(GSVA)
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("Dai_2025")
 for (l in 1:length(vector)) {
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],".Rdata"))
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],"_info.Rdata"))
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],"_G.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],".Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],"_info.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],"_G.Rdata"))
 }
 group=Dai_2025_G
 group=group[group$group=="cold",]
@@ -3972,9 +3972,9 @@ gene_p$signature=gene
 colnames(gene_p)=c("value","ID")
 exp_cal=exp[,group$Tag]
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=exp_cal,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -4087,10 +4087,10 @@ save(Dai_Nature_2025_pfs_p,file="Dai_Nature_2025_pfs_p.Rdata")
 ################################################################################Single dataset (Prins_GBM_2019_RNAseq)####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 load("pfs_test_result_all.Rdata")
 load("os_test_result_all.Rdata")
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("Prins_GBM_2019_RNAseq")
 for (q in 1:length(vector)) {
   data_file = paste0(vector[q], ".Rdata")
@@ -4103,9 +4103,9 @@ for (q in 1:length(vector)) {
 Prins_GBM_2019_RNAseq_G=Prins_GBM_2019_RNAseq_G[Prins_GBM_2019_RNAseq_G$group=="cold",]
 Prins_GBM_2019_RNAseq=Prins_GBM_2019_RNAseq[,colnames(Prins_GBM_2019_RNAseq)%in%Prins_GBM_2019_RNAseq_G$Tag]
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=Prins_GBM_2019_RNAseq,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -4170,12 +4170,12 @@ print(p)
 rm(list = ls())
 gc()
 library(GSVA)
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("Prins_GBM_2019_RNAseq")
 for (l in 1:length(vector)) {
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],".Rdata"))
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],"_info.Rdata"))
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],"_G.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],".Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],"_info.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],"_G.Rdata"))
 }
 group=Prins_GBM_2019_RNAseq_G
 group=group[group$group=="cold",]
@@ -4206,9 +4206,9 @@ gene_p$signature=gene
 colnames(gene_p)=c("value","ID")
 exp_cal=exp[,group$Tag]
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=exp_cal,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -4321,11 +4321,11 @@ save(Cloughesy_NatMed_2019_pfs_p,file="Cloughesy_NatMed_2019_pfs_p.Rdata")
 ################################################################################Heatmap visualisation of everything####
 rm(list = ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 vector <- c("Dai_Nature_2025_os", "Hugo_Cell_2016_os", "Braun_NatMed_2020_os", "Nicolle_EBioMedicine_2024_os", "Zhao_NatMed_2019_os","Cloughesy_NatMed_2019_pfs",
             "Dai_Nature_2025_pfs","Nicolle_EBioMedicine_2024_pfs","IMvigor_os","Galsky_ClinCancerRes_2025_os")
 for (l in 1:length(vector)) {
-  load(paste0("C:/Users/赵定康/Desktop/input/", vector[l], "_p.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/", vector[l], "_p.Rdata"))
   exp=get(paste0(vector[l], "_p"))
   colnames(exp)=c(vector[l],"ID")
   assign(paste0(vector[l], "_p"),exp)
@@ -4445,13 +4445,13 @@ print(combined_plot)
 ################################################################################IMvigor_TME####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/IMvigor210CoreBiologies.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/IMvigor210CoreBiologies.Rdata")
 rm(annoData)
 rm(exprSet)
-load("C:/Users/赵定康/Desktop/input/IMvigor.Rdata")
+load("C:/Users/user/Desktop/input/IMvigor.Rdata")
 library(TMEclassifier)
-source("C:/Users/赵定康/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
+source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 IMvigor=log2(IMvigor+1)
 res_ensemble = tme_classifier(eset = IMvigor,method ="ensemble", scale =T)[,c(1,5)]
 colnames(res_ensemble)=c("ID","Ensemble")
@@ -4521,7 +4521,7 @@ ggplot(acc_df, aes(x = Method, y = Accuracy, fill = Accuracy)) +
 library(ggplot2)
 
 # Desktop path (Windows)
-out_dir <- "C:/Users/赵定康/Desktop"
+out_dir <- "C:/Users/user/Desktop"
 
 # 7 methods
 pred_cols <- c("Ensemble", "SVM", "RF", "NNET", "KNN", "DT", "XGBoost")
@@ -4568,9 +4568,9 @@ for (m in pred_cols) {
 ################################################################################Immunotherapy response####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/IMvigor210CoreBiologies.Rdata")
-load("C:/Users/赵定康/Desktop/input/IMvigor_WNT_score.Rdata")
-load("C:/Users/赵定康/Desktop/input/res_knn.Rdata")
+load("C:/Users/user/Desktop/input/IMvigor210CoreBiologies.Rdata")
+load("C:/Users/user/Desktop/input/IMvigor_WNT_score.Rdata")
+load("C:/Users/user/Desktop/input/res_knn.Rdata")
 wnt_IMvigor=merge(IMvigor_WNT_score$final_activity_score,res_knn,by.x="row.names",by.y="ID")
 phenoData=phenoData[,"binaryResponse",drop=F]
 wnt_IMvigor=merge(wnt_IMvigor,phenoData,by.x="Row.names",by.y="row.names")
@@ -4607,9 +4607,9 @@ p
 rm(list=ls())
 gc()
 
-load("C:/Users/赵定康/Desktop/input/IMvigor_WNT_score.Rdata")
-load("C:/Users/赵定康/Desktop/input/IMvigor210CoreBiologies.Rdata")
-load("C:/Users/赵定康/Desktop/input/res_knn.Rdata")
+load("C:/Users/user/Desktop/input/IMvigor_WNT_score.Rdata")
+load("C:/Users/user/Desktop/input/IMvigor210CoreBiologies.Rdata")
+load("C:/Users/user/Desktop/input/res_knn.Rdata")
 table(res_knn$KNN)
 # Merge the WNT score, phenoData and KNN labels
 wnt_IMvigor <- merge(IMvigor_WNT_score$final_activity_score,
@@ -4748,9 +4748,9 @@ print(p)
 rm(list=ls())
 gc()
 
-load("C:/Users/赵定康/Desktop/input/IMvigor_WNT_score.Rdata")
-load("C:/Users/赵定康/Desktop/input/IMvigor210CoreBiologies.Rdata")
-load("C:/Users/赵定康/Desktop/input/res_rf.Rdata")
+load("C:/Users/user/Desktop/input/IMvigor_WNT_score.Rdata")
+load("C:/Users/user/Desktop/input/IMvigor210CoreBiologies.Rdata")
+load("C:/Users/user/Desktop/input/res_rf.Rdata")
 table(res_rf$RF)
 # Merge the WNT score, phenoData and KNN labels
 wnt_IMvigor <- merge(IMvigor_WNT_score$final_activity_score,
@@ -4888,10 +4888,10 @@ print(p)
 ################################################################################Group proportions under the KNN algorithm####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 
 library(TMEclassifier)
-source("C:/Users/赵定康/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
+source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 
 vector <- unique(c("GSE253260","Dai_2025","Prins_GBM_2019_RNAseq","Dai_2025",
                    "GSE253260","PORTER_2025","Zhao_NatMed_2019","Braun_NatMed_2020",
@@ -4993,10 +4993,10 @@ print(p)
 ################################################################################Group proportions under the KNN algorithm####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 
 library(TMEclassifier)
-source("C:/Users/赵定康/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
+source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 
 vector <- unique(c("GSE253260","Dai_2025","Prins_GBM_2019_RNAseq","Dai_2025",
                    "GSE253260","PORTER_2025","Zhao_NatMed_2019","Braun_NatMed_2020",
@@ -5175,7 +5175,7 @@ assignInNamespace(
 )
 # ==================== End of IOBR patch ====================
 
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 
 # ===== Load the data =
 load("IMvigor210CoreBiologies.Rdata")
@@ -5245,7 +5245,7 @@ cat("prepared_data.Rdata saved.\n")
 rm(list=ls())
 gc()
 
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 load("prepared_data.Rdata")
 
 library(IOBR)
@@ -5601,11 +5601,11 @@ ggsave("ROC_Mean_6folds.pdf", p_mean, width = 6, height = 6)
 ################################################################################Dai_Nature_2015####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 load("pfs_test_result_all.Rdata")
 load("os_test_result_all.Rdata")
 
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("Dai_Nature_2015")
 for (q in 1:length(vector)) {
   data_file = paste0(vector[q], ".Rdata")
@@ -5616,7 +5616,7 @@ for (q in 1:length(vector)) {
 
 # ==================== Change 1: use TMEclassifier with your ifelse conversion ====================
 library(TMEclassifier)
-source("C:/Users/赵定康/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
+source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 res_knn = tme_classifier(eset = Dai_Nature_2015, method = "knn", scale = TRUE)
 
 # Assume column 5 holds the classification result; convert to Hot / Cold with your ifelse rule
@@ -5630,9 +5630,9 @@ Dai_Nature_2015 = Dai_Nature_2015[, colnames(Dai_Nature_2015) %in% Dai_Nature_20
 # =========================================================================================
 
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=Dai_Nature_2015,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -5702,15 +5702,15 @@ gc()
 
 library(GSVA)
 library(TMEclassifier)
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("Dai_Nature_2015")
 for (l in 1:length(vector)) {
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],".Rdata"))
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],"_info.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],".Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],"_info.Rdata"))
 }
 
 # ==================== Change 2: apply the same ifelse conversion to the second block ====================
-source("C:/Users/赵定康/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
+source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 res_knn = tme_classifier(eset = Dai_Nature_2015, method = "knn", scale = TRUE)
 res_knn$group = ifelse(res_knn[, 5] == "IA", "Hot", "Cold")
 
@@ -5747,9 +5747,9 @@ colnames(gene_p)=c("value","ID")
 
 exp_cal=exp[,group$Tag]
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=exp_cal,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -5865,11 +5865,11 @@ save(Dai_Nature_2015_os_p,file="Dai_Nature_2015_os_p.Rdata")
 ################################################################################Single dataset (GSE106128)####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 load("pfs_test_result_all.Rdata")
 load("os_test_result_all.Rdata")
 
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("GSE106128")
 for (q in 1:length(vector)) {
   data_file = paste0(vector[q], ".Rdata")
@@ -5880,7 +5880,7 @@ for (q in 1:length(vector)) {
 
 # ==================== Change 1: use TMEclassifier and apply the ifelse conversion ====================
 library(TMEclassifier)
-source("C:/Users/赵定康/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
+source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 res_knn = tme_classifier(eset = GSE106128, method = "knn", scale = TRUE)
 
 # Convert to Hot / Cold with your ifelse rule
@@ -5894,9 +5894,9 @@ GSE106128 = GSE106128[, colnames(GSE106128) %in% GSE106128_G$Tag]
 # =========================================================================================
 
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=GSE106128,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -5966,15 +5966,15 @@ gc()
 
 library(GSVA)
 library(TMEclassifier)
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("GSE106128")
 for (l in 1:length(vector)) {
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],".Rdata"))
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],"_info.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],".Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],"_info.Rdata"))
 }
 
 # ==================== Change 2: apply the same ifelse conversion to the second block ====================
-source("C:/Users/赵定康/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
+source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 res_knn = tme_classifier(eset = GSE106128, method = "knn", scale = TRUE)
 res_knn$group = ifelse(res_knn[, 5] == "IA", "Hot", "Cold")
 
@@ -6011,9 +6011,9 @@ colnames(gene_p)=c("value","ID")
 
 exp_cal=exp[,group$Tag]
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=exp_cal,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -6129,11 +6129,11 @@ save(GSE106128_os_p,file="GSE106128_os_p.Rdata")
 ################################################################----------------Single dataset (Braun_NatMed_2020)####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 load("pfs_test_result_all.Rdata")
 load("os_test_result_all.Rdata")
 
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("Braun_NatMed_2020")
 for (q in 1:length(vector)) {
   data_file = paste0(vector[q], ".Rdata")
@@ -6144,7 +6144,7 @@ for (q in 1:length(vector)) {
 
 # ==================== Change 1: use TMEclassifier and apply the ifelse conversion ====================
 library(TMEclassifier)
-source("C:/Users/赵定康/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
+source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 res_knn = tme_classifier(eset = Braun_NatMed_2020, method = "knn", scale = TRUE)
 
 # Convert to Hot / Cold with your ifelse rule
@@ -6158,9 +6158,9 @@ Braun_NatMed_2020 = Braun_NatMed_2020[, colnames(Braun_NatMed_2020) %in% Braun_N
 # =========================================================================================
 
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=Braun_NatMed_2020,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -6230,15 +6230,15 @@ gc()
 
 library(GSVA)
 library(TMEclassifier)
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("Braun_NatMed_2020")
 for (l in 1:length(vector)) {
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],".Rdata"))
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],"_info.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],".Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],"_info.Rdata"))
 }
 
 # ==================== Change 2: apply the same ifelse conversion to the second block ====================
-source("C:/Users/赵定康/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
+source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 res_knn = tme_classifier(eset = Braun_NatMed_2020, method = "knn", scale = TRUE)
 res_knn$group = ifelse(res_knn[, 5] == "IA", "Hot", "Cold")
 
@@ -6275,9 +6275,9 @@ colnames(gene_p)=c("value","ID")
 
 exp_cal=exp[,group$Tag]
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=exp_cal,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -6393,11 +6393,11 @@ save(Braun_NatMed_2020_os_p,file="Braun_NatMed_2020_os_p.Rdata")
 ################################################################################Single dataset (GSE253260)####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 load("pfs_test_result_all.Rdata")
 load("os_test_result_all.Rdata")
 
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("GSE253260")
 for (q in 1:length(vector)) {
   data_file = paste0(vector[q], ".Rdata")
@@ -6408,7 +6408,7 @@ for (q in 1:length(vector)) {
 
 # ==================== Change 1: use TMEclassifier and apply the ifelse conversion ====================
 library(TMEclassifier)
-source("C:/Users/赵定康/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
+source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 res_knn = tme_classifier(eset = GSE253260, method = "knn", scale = TRUE)
 
 # Convert to Hot / Cold with your ifelse rule
@@ -6422,9 +6422,9 @@ GSE253260 = GSE253260[, colnames(GSE253260) %in% GSE253260_G$Tag]
 # =========================================================================================
 
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=GSE253260,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -6494,15 +6494,15 @@ gc()
 
 library(GSVA)
 library(TMEclassifier)
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("GSE253260")
 for (l in 1:length(vector)) {
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],".Rdata"))
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],"_info.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],".Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],"_info.Rdata"))
 }
 
 # ==================== Change 2: apply the same ifelse conversion to the second block ====================
-source("C:/Users/赵定康/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
+source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 res_knn = tme_classifier(eset = GSE253260, method = "knn", scale = TRUE)
 res_knn$group = ifelse(res_knn[, 5] == "IA", "Hot", "Cold")
 
@@ -6549,9 +6549,9 @@ colnames(gene_p)=c("value","ID")
 
 exp_cal=exp[,group$Tag]
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=exp_cal,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -6667,11 +6667,11 @@ save(GSE253260_os_p,file="GSE253260_os_p.Rdata")
 ################################################################################Single dataset (GSE253260)####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 load("pfs_test_result_all.Rdata")
 load("os_test_result_all.Rdata")
 
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("GSE253260")
 for (q in 1:length(vector)) {
   data_file = paste0(vector[q], ".Rdata")
@@ -6682,7 +6682,7 @@ for (q in 1:length(vector)) {
 
 # ==================== Change 1: use TMEclassifier and apply the ifelse conversion ====================
 library(TMEclassifier)
-source("C:/Users/赵定康/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
+source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 res_knn = tme_classifier(eset = GSE253260, method = "knn", scale = TRUE)
 
 # Convert to Hot / Cold with your ifelse rule
@@ -6696,9 +6696,9 @@ GSE253260 = GSE253260[, colnames(GSE253260) %in% GSE253260_G$Tag]
 # =========================================================================================
 
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=GSE253260,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -6768,15 +6768,15 @@ gc()
 
 library(GSVA)
 library(TMEclassifier)
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("GSE253260")
 for (l in 1:length(vector)) {
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],".Rdata"))
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],"_info.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],".Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],"_info.Rdata"))
 }
 
 # ==================== Change 2: apply the same ifelse conversion to the second block ====================
-source("C:/Users/赵定康/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
+source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 res_knn = tme_classifier(eset = GSE253260, method = "knn", scale = TRUE)
 res_knn$group = ifelse(res_knn[, 5] == "IA", "Hot", "Cold")
 
@@ -6823,9 +6823,9 @@ colnames(gene_p)=c("value","ID")
 
 exp_cal=exp[,group$Tag]
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=exp_cal,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -6941,11 +6941,11 @@ save(GSE253260_os_p,file="GSE253260_os_p.Rdata")
 ################################################################################Single dataset (Zhao_NatMed_2019)####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 load("pfs_test_result_all.Rdata")
 load("os_test_result_all.Rdata")
 
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("Zhao_NatMed_2019")
 for (q in 1:length(vector)) {
   data_file = paste0(vector[q], ".Rdata")
@@ -6956,7 +6956,7 @@ for (q in 1:length(vector)) {
 
 # ==================== Change 1: use TMEclassifier and apply the ifelse conversion ====================
 library(TMEclassifier)
-source("C:/Users/赵定康/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
+source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 res_knn = tme_classifier(eset = Zhao_NatMed_2019, method = "knn", scale = TRUE)
 
 # Convert to Hot / Cold with your ifelse rule
@@ -6970,9 +6970,9 @@ Zhao_NatMed_2019 = Zhao_NatMed_2019[, colnames(Zhao_NatMed_2019) %in% Zhao_NatMe
 # =========================================================================================
 
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=Zhao_NatMed_2019,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -7042,15 +7042,15 @@ gc()
 
 library(GSVA)
 library(TMEclassifier)
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("Zhao_NatMed_2019")
 for (l in 1:length(vector)) {
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],".Rdata"))
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],"_info.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],".Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],"_info.Rdata"))
 }
 
 # ==================== Change 2: apply the same ifelse conversion to the second block ====================
-source("C:/Users/赵定康/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
+source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 res_knn = tme_classifier(eset = Zhao_NatMed_2019, method = "knn", scale = TRUE)
 res_knn$group = ifelse(res_knn[, 5] == "IA", "Hot", "Cold")
 
@@ -7097,9 +7097,9 @@ colnames(gene_p)=c("value","ID")
 
 exp_cal=exp[,group$Tag]
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=exp_cal,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -7215,11 +7215,11 @@ save(Zhao_NatMed_2019_os_p,file="Zhao_NatMed_2019_os_p.Rdata")
 ################################################################----------------Single dataset (Tsimberidou_JExpMed_2024)####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 load("pfs_test_result_all.Rdata")
 load("os_test_result_all.Rdata")
 
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("Tsimberidou_JExpMed_2024")
 for (q in 1:length(vector)) {
   data_file = paste0(vector[q], ".Rdata")
@@ -7230,7 +7230,7 @@ for (q in 1:length(vector)) {
 
 # ==================== Change 1: use TMEclassifier and apply the ifelse conversion ====================
 library(TMEclassifier)
-source("C:/Users/赵定康/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
+source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 res_knn = tme_classifier(eset = Tsimberidou_JExpMed_2024, method = "knn", scale = TRUE)
 
 # Convert to Hot / Cold with your ifelse rule
@@ -7244,9 +7244,9 @@ Tsimberidou_JExpMed_2024 = Tsimberidou_JExpMed_2024[, colnames(Tsimberidou_JExpM
 # =========================================================================================
 
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=Tsimberidou_JExpMed_2024,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -7316,15 +7316,15 @@ gc()
 
 library(GSVA)
 library(TMEclassifier)
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("Tsimberidou_JExpMed_2024")
 for (l in 1:length(vector)) {
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],".Rdata"))
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],"_info.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],".Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],"_info.Rdata"))
 }
 
 # ==================== Change 2: apply the same ifelse conversion to the second block ====================
-source("C:/Users/赵定康/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
+source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 res_knn = tme_classifier(eset = Tsimberidou_JExpMed_2024, method = "knn", scale = TRUE)
 res_knn$group = ifelse(res_knn[, 5] == "IA", "Hot", "Cold")
 
@@ -7371,9 +7371,9 @@ colnames(gene_p)=c("value","ID")
 
 exp_cal=exp[,group$Tag]
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=exp_cal,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -7490,11 +7490,11 @@ save(Tsimberidou_JExpMed_2024_os_p,file="Tsimberidou_JExpMed_2024_os_p.Rdata")
 ################################################################----------------Single dataset (IMvigor)####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 load("pfs_test_result_all.Rdata")
 load("os_test_result_all.Rdata")
 
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("IMvigor")
 for (q in 1:length(vector)) {
   data_file = paste0(vector[q], ".Rdata")
@@ -7505,7 +7505,7 @@ for (q in 1:length(vector)) {
 
 # ==================== Change 1: use TMEclassifier and apply the ifelse conversion ====================
 library(TMEclassifier)
-source("C:/Users/赵定康/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
+source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 res_knn = tme_classifier(eset = IMvigor, method = "knn", scale = TRUE)
 
 # Convert to Hot / Cold with your ifelse rule
@@ -7519,9 +7519,9 @@ IMvigor = IMvigor[, colnames(IMvigor) %in% IMvigor_G$Tag]
 # =========================================================================================
 
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=IMvigor,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -7590,15 +7590,15 @@ gc()
 
 library(GSVA)
 library(TMEclassifier)
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("IMvigor")
 for (l in 1:length(vector)) {
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],".Rdata"))
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],"_info.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],".Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],"_info.Rdata"))
 }
 
 # ==================== Change 2: apply the same ifelse conversion to the second block ====================
-source("C:/Users/赵定康/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
+source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 res_knn = tme_classifier(eset = IMvigor, method = "knn", scale = TRUE)
 res_knn$group = ifelse(res_knn[, 5] == "IA", "Hot", "Cold")
 
@@ -7645,9 +7645,9 @@ colnames(gene_p)=c("value","ID")
 
 exp_cal=exp[,group$Tag]
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=exp_cal,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -7763,11 +7763,11 @@ save(IMvigor_os_p,file="IMvigor_os_p.Rdata")
 ################################################################----------------Single dataset (Dai_Nature_2015 - PFS)####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 load("pfs_test_result_all.Rdata")
 load("os_test_result_all.Rdata")
 
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("Dai_Nature_2015")
 for (q in 1:length(vector)) {
   data_file = paste0(vector[q], ".Rdata")
@@ -7778,7 +7778,7 @@ for (q in 1:length(vector)) {
 
 # ==================== Change 1: use TMEclassifier and apply the ifelse conversion ====================
 library(TMEclassifier)
-source("C:/Users/赵定康/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
+source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 res_knn = tme_classifier(eset = Dai_Nature_2015, method = "knn", scale = TRUE)
 
 # Convert to Hot / Cold with your ifelse rule
@@ -7792,9 +7792,9 @@ Dai_Nature_2015 = Dai_Nature_2015[, colnames(Dai_Nature_2015) %in% Dai_Nature_20
 # =========================================================================================
 
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=Dai_Nature_2015,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -7864,15 +7864,15 @@ gc()
 
 library(GSVA)
 library(TMEclassifier)
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("Dai_Nature_2015")
 for (l in 1:length(vector)) {
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],".Rdata"))
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],"_info.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],".Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],"_info.Rdata"))
 }
 
 # ==================== Change 2: apply the same ifelse conversion to the second block ====================
-source("C:/Users/赵定康/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
+source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 res_knn = tme_classifier(eset = Dai_Nature_2015, method = "knn", scale = TRUE)
 res_knn$group = ifelse(res_knn[, 5] == "IA", "Hot", "Cold")
 
@@ -7909,9 +7909,9 @@ colnames(gene_p)=c("value","ID")
 
 exp_cal=exp[,group$Tag]
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=exp_cal,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -8027,11 +8027,11 @@ save(Dai_Nature_2015_pfs_p,file="Dai_Nature_2015_pfs_p.Rdata")
 ################################################################----------------Single dataset (GSE253260 - PFS)####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 load("pfs_test_result_all.Rdata")
 load("os_test_result_all.Rdata")
 
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("GSE253260")
 for (q in 1:length(vector)) {
   data_file = paste0(vector[q], ".Rdata")
@@ -8042,7 +8042,7 @@ for (q in 1:length(vector)) {
 
 # ==================== Change 1: use TMEclassifier and apply the ifelse conversion ====================
 library(TMEclassifier)
-source("C:/Users/赵定康/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
+source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 res_knn = tme_classifier(eset = GSE253260, method = "knn", scale = TRUE)
 
 # Convert to Hot / Cold with your ifelse rule
@@ -8056,9 +8056,9 @@ GSE253260 = GSE253260[, colnames(GSE253260) %in% GSE253260_G$Tag]
 # =========================================================================================
 
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=GSE253260,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -8128,15 +8128,15 @@ gc()
 
 library(GSVA)
 library(TMEclassifier)
-setwd("C:/Users/赵定康/Desktop/input/Wnt免疫治疗")
+setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("GSE253260")
 for (l in 1:length(vector)) {
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],".Rdata"))
-  load(paste0("C:/Users/赵定康/Desktop/input/Wnt免疫治疗/",vector[l],"_info.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],".Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/Wnt_immunotherapy/",vector[l],"_info.Rdata"))
 }
 
 # ==================== Change 2: apply the same ifelse conversion to the second block ====================
-source("C:/Users/赵定康/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
+source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 res_knn = tme_classifier(eset = GSE253260, method = "knn", scale = TRUE)
 res_knn$group = ifelse(res_knn[, 5] == "IA", "Hot", "Cold")
 
@@ -8183,9 +8183,9 @@ colnames(gene_p)=c("value","ID")
 
 exp_cal=exp[,group$Tag]
 library(GSEABase)
-geneSets=getGmt("C:/Users/赵定康/Desktop/input/wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+geneSets=getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=exp_cal,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,

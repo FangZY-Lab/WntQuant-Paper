@@ -16,9 +16,9 @@ gc()
 library(stringr)
 library(ggplot2)
 library(ggpubr)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_Score.Rdata")
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/pancancer_WNT_Score.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_group.Rdata")
 WNT_Score_group=merge(pancancer_WNT_Score$final_activity_score,pancancer_group,by="row.names",all=T)
 p = ggplot(WNT_Score_group, aes(Project, pos_score, fill = Group, color = Group)) +
   geom_boxplot(outlier.shape = 21, outlier.fill = 'black', outlier.size = 0.25, color = "black") +
@@ -47,10 +47,10 @@ library(stringr)
 library(ggplot2)
 library(ggpubr)
 library(limma)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_score.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/pancancer_WNT_score.Rdata")
 pancancer_WNT_score=pancancer_WNT_Score$final_activity_score
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_group.Rdata")
 WNT_Score_group=merge(pancancer_WNT_score,pancancer_group,by="row.names",all=T)
 WNT_Score_group_normal=WNT_Score_group[WNT_Score_group$Group=="Normal",]
 WNT_Score_group_normal=WNT_Score_group_normal[,c(1,2,5)]
@@ -115,18 +115,18 @@ p
 ################################################################################Changes in Wnt-related genes####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 wntgene=read.delim("WNT_GENES.txt",header=TRUE,sep='\t',check.names=F)
 
-load("C:/Users/赵定康/Desktop/input/pancancer_exp.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_exp.Rdata")
 wntgene_exp=pancancer_exp[intersect(wntgene$WNT_GENES,rownames(pancancer_exp)),]
 wntgene_exp=as.data.frame(t(wntgene_exp))
 
 
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_Score.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_WNT_Score.Rdata")
 pancancer_WNT_Score=pancancer_WNT_Score[["final_activity_score"]]
 pancancer_wnt=pancancer_WNT_Score
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_group.Rdata")
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
 
 fs=unique(pancancer_group$Project)
@@ -176,10 +176,10 @@ rm(list=ls())
 gc()
 library(limma)
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_Score.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/pancancer_WNT_Score.Rdata")
 pancancer_wnt=pancancer_WNT_Score$final_activity_score
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_group.Rdata")
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
 pancancer_wnt=pancancer_wnt[rownames(pancancer_group),]
 rm(pancancer_WNT_Score)
@@ -224,7 +224,7 @@ Get_limma=function(gene=gene,group=group,alternative_limma=alternative){
   }
   return(result)
 }
-load("C:/Users/赵定康/Desktop/input/pancancer_exp.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_exp.Rdata")
 for (i in 1:length(vector)){
   pancancer_group_fs=pancancer_group[pancancer_group$Project==vector[i],]
   exp=pancancer_exp[,rownames(pancancer_group_fs)]
@@ -303,11 +303,11 @@ rm(list=ls())
 gc()
 library(limma)
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/pancancer_exp.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/pancancer_exp.Rdata")
 gene_group=pancancer_exp[c("AXIN2","ZNRF3","RNF43","LGR5","TCF7"),]
 gene_group=as.data.frame(t(gene_group))
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_group.Rdata")
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
 vector=unique(pancancer_group$Project)
 limma.one.sided = function(fit, lower = FALSE){
@@ -350,7 +350,7 @@ Get_limma=function(gene=gene,group=group,alternative_limma=alternative){
   }
   return(result)
 }
-load("C:/Users/赵定康/Desktop/input/pancancer_exp.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_exp.Rdata")
 for (i in 1:length(vector)){
   pancancer_group_fs=pancancer_group[pancancer_group$Project==vector[i],]
   exp=pancancer_exp[,rownames(pancancer_group_fs)]
@@ -431,14 +431,14 @@ rm(list=ls())
 gc()
 # load("C:/Users/.../input/tme_all_hallmarker.Rdata")
 # load("C:/Users/.../input/TARGET_all_hallmarker.Rdata")
-load("C:/Users/赵定康/Desktop/input/hallmarker_activity.Rdata")
+load("C:/Users/user/Desktop/input/hallmarker_activity.Rdata")
 tme_all_hallmarker=hallmarker_activity
 tme_all=as.data.frame(tme_all_hallmarker)
 rownames(tme_all)=tme_all[,1]
 tme_all=tme_all[,-1]
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_Score.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_WNT_Score.Rdata")
 pancancer_wnt=pancancer_WNT_Score$final_activity_score
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_group.Rdata")
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
 fs=unique(pancancer_group$Project)
 cancer_cor=data.frame()
@@ -486,8 +486,8 @@ ggplot(cancer_cor, aes(cancer, tme)) +
 ################################################################################Relationship between positive and negative cases across TCGA pan-cancer####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_Score.Rdata")
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_WNT_Score.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_group.Rdata")
 group=pancancer_group[pancancer_group$Group=="Tumor",]
 WNT_Score_ssGSEA=pancancer_WNT_Score$final_activity_score[rownames(group),]
 WNT_Score_ssGSEA=WNT_Score_ssGSEA[,-1]
@@ -543,16 +543,16 @@ p
 rm(list=ls())
 gc()
 library(IOBR)
-load("C:/Users/赵定康/Desktop/input/tme_all_literatures.Rdata")
+load("C:/Users/user/Desktop/input/tme_all_literatures.Rdata")
 tme_all=as.data.frame(tme_all_literatures)
 rownames(tme_all)=tme_all[,1]
 tme_all=tme_all[,-1]
 sig=signature_collection_citation[c(19:54,127:141,282:314),]
 tme_all=tme_all[,intersect(sig$Signatures,colnames(tme_all))]
 sig=sig[sig$Signatures%in%colnames(tme_all),]
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_Score.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_WNT_Score.Rdata")
 pancancer_wnt=pancancer_WNT_Score$final_activity_score
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_group.Rdata")
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
 fs=unique(pancancer_group$Project)
 cancer_cor=data.frame()
@@ -599,7 +599,7 @@ ggplot(cancer_cor, aes(cancer, tme)) +
 ################################################################################WNT-immunomodulator/chemokine correlation analysis####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 Chemokinegene=read.delim("Chemokine.txt",header=TRUE,sep='\t',check.names=F)#Chemokine
 colnames(Chemokinegene)="gene"
 Immunomodulatorgene=read.delim("Immunomodulator.txt",header=TRUE,sep='\t',check.names=F)#Immunomodulator
@@ -607,12 +607,12 @@ colnames(Immunomodulatorgene)="gene"
 Chemokine_Immunomodulator=rbind(Immunomodulatorgene,Chemokinegene)
 Chemokine_Immunomodulator=as.data.frame(unique(Chemokine_Immunomodulator$gene))
 Chemokine_Immunomodulator=Chemokine_Immunomodulator[order(Chemokine_Immunomodulator$`unique(Chemokine_Immunomodulator$gene)`),,drop=F]
-load("C:/Users/赵定康/Desktop/input/pancancer_exp.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_exp.Rdata")
 wntgene_exp=pancancer_exp[intersect(Chemokine_Immunomodulator$`unique(Chemokine_Immunomodulator$gene)`,rownames(pancancer_exp)),]
 wntgene_exp=as.data.frame(t(wntgene_exp))
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_Score.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_WNT_Score.Rdata")
 pancancer_wnt=pancancer_WNT_Score$final_activity_score
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_group.Rdata")
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
 fs=unique(pancancer_group$Project)
 cancer_cor=data.frame()
@@ -659,13 +659,13 @@ ggplot(cancer_cor, aes(cancer, tme)) +
 ################################################################################Stemness correlation analysis####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/tme_all_stemness.Rdata")
+load("C:/Users/user/Desktop/input/tme_all_stemness.Rdata")
 tme_all=as.data.frame(tme_all_stemness)
 rownames(tme_all)=tme_all[,1]
 tme_all=tme_all[,-1]
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_Score.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_WNT_Score.Rdata")
 pancancer_wnt=pancancer_WNT_Score$final_activity_score
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_group.Rdata")
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
 fs=unique(pancancer_group$Project)
 cancer_cor=data.frame()
@@ -712,15 +712,15 @@ ggplot(cancer_cor, aes(cancer, tme)) +
 ################################################################################Relationship between CD274 and Wnt####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 rt1=read.delim("EXP0011_PCG_log2_afterQC.txt")[-1,]
 rt2=read.delim("EXP0012_PCG_log2_afterQC.txt")[-1,]
 rt3=read.delim("EXP0051_PCG_log2_afterQC.txt")[-1,]
 ################################################################################BCR/TCR####
 rm(list = ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/hippo")
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+setwd("C:/Users/user/Desktop/hippo")
+load("C:/Users/user/Desktop/input/pancancer_cluster.Rdata")
 pancancer_cluster$Tag = substr(pancancer_cluster$Tag, 1, 12)
 library(readxl)
 geneset = readxl::read_excel("TCR.xlsx")

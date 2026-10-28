@@ -13,7 +13,7 @@
 ################################################################################sanky plot####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 sanky=read.delim("sankey.txt")
 head(sanky)
 if (!require("ggsankey")) install.packages("ggsankey")
@@ -64,7 +64,7 @@ p_alluvial = ggplot(sanky_alluvial,
         plot.margin = margin(5, 8, 5, 8)) +  # Restore reasonable margins
   labs(x = NULL, y = NULL)
 print(p_alluvial)
-setwd("C:/Users/赵定康/Desktop")
+setwd("C:/Users/user/Desktop")
 ggsave("sankey_plot.pdf",
        plot = p_alluvial,
        width = 22,
@@ -75,7 +75,7 @@ ggsave("sankey_plot.pdf",
 rm(list=ls())
 gc()
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 vector=c("GSE232944_a","GSE232944_b","GSE199835_a","GSE199835_b","GSE199835_c",
          "GSE120106","GSE234403","GSE39904_a","GSE39904_b","GSE128281",
          "GSE62060","GSE33143","GSE18560_a","GSE18560_b","GSE44097_a","GSE44097_b",
@@ -102,11 +102,11 @@ for(i in 1:length(vector)){
 all_group=all_group
 all_scores=data.frame()
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
 for(cycle in 1:length(vector)){
   exp=get(vector[cycle])
   colnames(exp)=paste0(colnames(exp),"_",vector[cycle])
-  scores=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+  scores=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                       expression_profile=exp,
                                       foundation="relative_ssGSEA",
                                       activation_geneset=NA,
@@ -124,7 +124,7 @@ all_usual=data.frame()
 for(cycle in 1:length(vector)){
   exp=get(vector[cycle])
   colnames(exp)=paste0(colnames(exp),"_",vector[cycle])
-  setwd("C:/Users/赵定康/Desktop/input")
+  setwd("C:/Users/user/Desktop/input")
   GeneSets=getGmt("wnt_usual_using.gmt")
   geneset=gsva(expr=as.matrix(exp), GeneSets, kcdf="Gaussian",method = "ssgsea",min.sz=1,max.sz=10000)
   geneset=as.data.frame(t(geneset))
@@ -189,7 +189,7 @@ p = ggplot(p_data_all, aes(dataset, geneset)) +
     title.position = "right",
     label.position = "left"
   ))
-setwd("C:/Users/赵定康/Desktop/")
+setwd("C:/Users/user/Desktop/")
 ggsave("training_benchmark.pdf",
        plot = p,
        width = 12,
@@ -199,7 +199,7 @@ ggsave("training_benchmark.pdf",
 rm(list=ls())
 gc()
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 vector=c("GSE102208","GSE114059_a","GSE114059_b",
          "GSE114059_c","GSE156082","GSE158578_a",
          "GSE158578_b","GSE188465","GSE188466",
@@ -241,11 +241,11 @@ for(i in 1:length(vector)){
 all_group=all_group
 all_scores=data.frame()
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
 for(cycle in 1:length(vector)){
   exp=get(vector[cycle])
   colnames(exp)=paste0(colnames(exp),"_",vector[cycle])
-  scores=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+  scores=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                       expression_profile=exp,
                                       foundation="relative_ssGSEA",
                                       activation_geneset=NA,
@@ -263,7 +263,7 @@ all_usual=data.frame()
 for(cycle in 1:length(vector)){
   exp=get(vector[cycle])
   colnames(exp)=paste0(colnames(exp),"_",vector[cycle])
-  setwd("C:/Users/赵定康/Desktop/input")
+  setwd("C:/Users/user/Desktop/input")
   GeneSets=getGmt("wnt_usual_using.gmt")
   geneset=gsva(expr=as.matrix(exp), GeneSets, kcdf="Gaussian",method = "ssgsea",min.sz=1,max.sz=10000)
   geneset=as.data.frame(t(geneset))
@@ -328,7 +328,7 @@ p = ggplot(p_data_all, aes(dataset, geneset)) +
     title.position = "right",
     label.position = "left"
   ))
-setwd("C:/Users/赵定康/Desktop/")
+setwd("C:/Users/user/Desktop/")
 ggsave("testing_benchmark.pdf",
        plot = p,
        width = 25,
@@ -340,7 +340,7 @@ gc()
 library(GSEABase)
 library(limma)
 library(dplyr)
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 vector=c("GSE232944_a","GSE232944_b","GSE199835_a","GSE199835_b","GSE199835_c",
          "GSE120106","GSE234403","GSE39904_a","GSE39904_b","GSE128281",
          "GSE62060","GSE33143","GSE18560_a","GSE18560_b","GSE44097_a","GSE44097_b",
@@ -443,7 +443,7 @@ ha = rowAnnotation(Group = factor(c(rep("WPAGSs", 36), rep("WPIGSs", 27))),
                    col = list(Group = c(WPAGSs = "#f15b6c", WPIGSs = "#009ad6")),
                    show_annotation_name = FALSE)
 fgsea_all_transposed = t(as.matrix(fgsea_all))
-setwd("C:/Users/赵定康/Desktop/input_wnt/pictures")
+setwd("C:/Users/user/Desktop/input_wnt/pictures")
 cairo_pdf("GSEA_heatmap_training.pdf", width = 5.5, height = 5, family = "Arial")
 draw(Heatmap(fgsea_all_transposed,
              name = "NES",
@@ -470,7 +470,7 @@ gc()
 library(GSEABase)
 library(limma)
 library(dplyr)
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 vector=c("GSE102208","GSE114059_a","GSE114059_b",
          "GSE114059_c","GSE156082","GSE158578_a",
          "GSE158578_b","GSE188465","GSE188466",
@@ -588,7 +588,7 @@ ha = rowAnnotation(Group = factor(c(rep("WPAGSs", 36), rep("WPIGSs", 27))),
                    col = list(Group = c(WPAGSs = "#f15b6c", WPIGSs = "#009ad6")),
                    show_annotation_name = FALSE)
 fgsea_all_transposed = t(as.matrix(fgsea_all))
-setwd("C:/Users/赵定康/Desktop/")
+setwd("C:/Users/user/Desktop/")
 cairo_pdf("GSEA_heatmap_testing.pdf", width = 11.5, height = 6, family = "Arial")
 draw(Heatmap(fgsea_all_transposed,
              name = "NES",
@@ -614,7 +614,7 @@ rm(list=ls())
 gc()
 library(GSVA)
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input/exp_data")
+setwd("C:/Users/user/Desktop/input/exp_data")
 vector1=c("GSE44076","GSE44861","GSE21510",
           "GSE68468","GSE37178","GSE18105",
           "GSE21815","GSE17537","GSE29621",
@@ -630,13 +630,13 @@ for (q in 1:length(vector)) {
   load(paste0(vector[q],"_CMS.Rdata"))
   load(paste0(vector[q],"_CMS_G.Rdata"))
 }
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
 p_data_ee_all=data.frame()
 for(i in 1:length(vector)){
   exp=get(paste0(vector[i],"_CMS"))
-  scores=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+  scores=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                       expression_profile=exp,
                                       foundation="relative_ssGSEA",
                                       activation_geneset=NA,
@@ -892,7 +892,7 @@ p = ggplot(p_data_all, aes(dataset, geneset)) +
     title.position = "right",
     label.position = "left"
   ))
-setwd("C:/Users/赵定康/Desktop/")
+setwd("C:/Users/user/Desktop/")
 ggsave("CRC_benchmark2.pdf",
        plot = p,
        width = 20,
@@ -903,7 +903,7 @@ rm(list=ls())
 gc()
 library(GSVA)
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input/exp_data")
+setwd("C:/Users/user/Desktop/input/exp_data")
 vector1=c("GSE44076","GSE44861","GSE21510",
           "GSE68468","GSE37178","GSE18105",
           "GSE21815","GSE17537","GSE29621",
@@ -919,14 +919,14 @@ for (q in 1:length(vector)) {
   load(paste0(vector[q],"_CMS.Rdata"))
   load(paste0(vector[q],"_CMS_G.Rdata"))
 }
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
 icms2_icms3=getGmt("iCMS2_iCMS3.gmt")
 p_data_ee_all=data.frame()
 for(i in 1:length(vector)){
   exp=get(paste0(vector[i],"_CMS"))
-  scores=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+  scores=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                       expression_profile=exp,
                                       foundation="relative_ssGSEA",
                                       activation_geneset=NA,
@@ -1134,7 +1134,7 @@ p = ggplot(p_data_all, aes(dataset, geneset)) +
     title.position = "right",
     label.position = "left"
   ))
-setwd("C:/Users/赵定康/Desktop/")
+setwd("C:/Users/user/Desktop/")
 ggsave("CRC_benchmark1_cor.pdf",
        plot = p,
        width = 21,
@@ -1144,12 +1144,12 @@ ggsave("CRC_benchmark1_cor.pdf",
 rm(list=ls())
 gc()
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/crc_data_all.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/crc_data_all.Rdata")
 exp=as.data.frame(crc_data_all)
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
-WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
+WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                        expression_profile=exp,
                                        foundation="relative_ssGSEA",
                                        activation_geneset=NA,
@@ -1239,7 +1239,7 @@ p = ggplot(WNT, aes(x = cluster, y = activity_score, fill = cluster)) +
   ggtitle("syn2623706")
 print(p)
 save(cluster,file="cluster.Rdata")
-setwd("C:/Users/赵定康/Desktop/input_wnt/pictures")
+setwd("C:/Users/user/Desktop/input_wnt/pictures")
 ggsave("syn2623706_plot.pdf",
        plot = p,
        width = 4,
@@ -1249,9 +1249,9 @@ ggsave("syn2623706_plot.pdf",
 rm(list=ls())
 gc()
 library(reshape2)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/crc_data_all.Rdata")
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/crc_data_all.Rdata")
+load("C:/Users/user/Desktop/input/cluster.Rdata")
 group=cluster
 colnames(group)=c("Tag","group")
 co_sample=intersect(colnames(crc_data_all),group$Tag)
@@ -1289,7 +1289,7 @@ p = ggplot(biomarker_group, aes(gene, value, fill = group, color = group)) +
   stat_compare_means(aes(group = group, label = ..p.signif..), size = 5, color = "black") + # Set size for comparison labels
   ggtitle("syn2623706")
 p
-setwd("C:/Users/赵定康/Desktop/input_wnt/pictures")
+setwd("C:/Users/user/Desktop/input_wnt/pictures")
 ggsave("syn2623706_markers.pdf",
        plot = p,
        width = 4,
@@ -1300,9 +1300,9 @@ rm(list=ls())
 gc()
 library(dplyr)
 library(ggplot2)
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
-load("C:/Users/赵定康/Desktop/input/info_cms.Rdata")
-load("C:/Users/赵定康/Desktop/input/info_icms.Rdata")
+load("C:/Users/user/Desktop/input/cluster.Rdata")
+load("C:/Users/user/Desktop/input/info_cms.Rdata")
+load("C:/Users/user/Desktop/input/info_icms.Rdata")
 cluster_group=merge(cluster,info_cms,by="Tag")
 cluster_group$level=cluster_group$cluster
 cluster1=cluster_group[cluster_group$level=="WSS1",]
@@ -1351,7 +1351,7 @@ p=ggplot(HML, aes(x = 3,
     legend.position = "top"
   ) +
   labs(fill = "", y = "", x = "")
-setwd("C:/Users/赵定康/Desktop/input_wnt/pictures")
+setwd("C:/Users/user/Desktop/input_wnt/pictures")
 ggsave("CMS1_2_3_4_circle.pdf",
        plot = p,
        width = 8,
@@ -1362,8 +1362,8 @@ rm(list=ls())
 gc()
 library(dplyr)
 library(ggplot2)
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
-setwd("C:/Users/赵定康/Desktop/input")
+load("C:/Users/user/Desktop/input/cluster.Rdata")
+setwd("C:/Users/user/Desktop/input")
 clinical_molecular_public_all=read.table(file = "clinical_molecular_public_all.txt",header = T,sep = "\t",check.names = F)
 clinical_molecular_public_all=clinical_molecular_public_all[,c("sample","osMo","osStat")]
 
@@ -1446,8 +1446,8 @@ rm(list=ls())
 gc()
 library(dplyr)
 library(ggplot2)
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
-setwd("C:/Users/赵定康/Desktop/input")
+load("C:/Users/user/Desktop/input/cluster.Rdata")
+setwd("C:/Users/user/Desktop/input")
 clinical_molecular_public_all=read.table(file = "clinical_molecular_public_all.txt",header = T,sep = "\t",check.names = F)
 clinical_molecular_public_all=clinical_molecular_public_all[,c("sample","rfsMo","rfsStat")]
 
@@ -1556,9 +1556,9 @@ rm(list=ls())
 gc()
 library(dplyr)
 library(ggplot2)
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
-load("C:/Users/赵定康/Desktop/input/OS_data.Rdata")
-load("C:/Users/赵定康/Desktop/input/RFS_data.Rdata")
+load("C:/Users/user/Desktop/input/cluster.Rdata")
+load("C:/Users/user/Desktop/input/OS_data.Rdata")
+load("C:/Users/user/Desktop/input/RFS_data.Rdata")
 survial=merge(OS_data,RFS_data,by="sample")
 survial=na.omit(survial)
 survial=survial[survial$rfsStat==1,]
@@ -1661,16 +1661,16 @@ write.gmt=function (gs.list, file) {
   gs.lines=paste(gs.names, gs.desc, gs.lines, sep = "\t")
   writeLines(gs.lines, con = file)
 }
-write.gmt(geneSets_gmt,file="C:/Users/赵定康/Desktop/input/all_NM_genesets.gmt")
+write.gmt(geneSets_gmt,file="C:/Users/user/Desktop/input/all_NM_genesets.gmt")
 ################################################################################Molecular feature analysis####
 rm(list=ls())
 gc()
 library(GSVA)
 library(GSEABase)
 library(reshape)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
-load("C:/Users/赵定康/Desktop/input/crc_data_all.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/cluster.Rdata")
+load("C:/Users/user/Desktop/input/crc_data_all.Rdata")
 GeneSets=getGmt("all_NM_genesets.gmt")
 geneset=gsva(expr=as.matrix(crc_data_all), GeneSets, kcdf="Gaussian",method = "ssgsea",min.sz=1,max.sz=10000)
 geneset=as.data.frame(t(geneset))
@@ -1816,10 +1816,10 @@ decorate_annotation("-log[10](italic(p))", {
 ################################################################################TCGA pan-cancer classification matrix####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_Score.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/pancancer_WNT_Score.Rdata")
 genesets=as.matrix(pancancer_WNT_Score$single_score_matrix)
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_group.Rdata")
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
 genesets=genesets[rownames(pancancer_group),]
 library(mlbench)
@@ -1917,7 +1917,7 @@ p=ggplot(WNT, aes(x = cluster, y = activity_score, fill = cluster)) +
 print(p)
 pancancer_cluster=cluster
 save(pancancer_cluster,file="pancancer_cluster.Rdata")
-setwd("C:/Users/赵定康/Desktop/input_wnt/pictures")
+setwd("C:/Users/user/Desktop/input_wnt/pictures")
 ggsave("pancancer_plot.pdf",
        plot = p,
        width = 6,
@@ -1926,11 +1926,11 @@ ggsave("pancancer_plot.pdf",
 ################################################################################Cumulative bar chart for TCGA####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 library(dplyr)
 library(ggplot2)
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_cluster.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_group.Rdata")
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
 WNT=merge(pancancer_cluster,pancancer_group,by.x="Tag",by.y="row.names")
 df_counts = as.data.frame(table(WNT$Project, WNT$cluster))
@@ -1948,7 +1948,7 @@ p=ggplot(df_percent, aes(x = project, y = percent, fill = cluster)) +
     legend.position = "right",
     plot.title = element_text(hjust = 0.5)
   )
-setwd("C:/Users/赵定康/Desktop/input_wnt/pictures")
+setwd("C:/Users/user/Desktop/input_wnt/pictures")
 ggsave("pancancer_percentage.pdf",
        plot = p,
        width = 10,
@@ -1957,10 +1957,10 @@ ggsave("pancancer_percentage.pdf",
 ################################################################################OS####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 library(dplyr)
 library(ggplot2)
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_cluster.Rdata")
 survival_data=read.delim("Survival_SupplementalTable_S1_20171025_xena_sp")
 survival_data=survival_data[,c("sample","OS","OS.time")]
 survival_data_cms=merge(survival_data,pancancer_cluster,by.x="sample",by.y="Tag")
@@ -2014,10 +2014,10 @@ print(p)
 ################################################################################DSS####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 library(dplyr)
 library(ggplot2)
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_cluster.Rdata")
 survival_data=read.delim("Survival_SupplementalTable_S1_20171025_xena_sp")
 survival_data=survival_data[,c("sample","DSS","DSS.time")]
 survival_data_cms=merge(survival_data,pancancer_cluster,by.x="sample",by.y="Tag")
@@ -2071,10 +2071,10 @@ print(p)
 ################################################################################PFI####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 library(dplyr)
 library(ggplot2)
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_cluster.Rdata")
 survival_data=read.delim("Survival_SupplementalTable_S1_20171025_xena_sp")
 survival_data=survival_data[,c("sample","PFI","PFI.time")]
 survival_data_cms=merge(survival_data,pancancer_cluster,by.x="sample",by.y="Tag")
@@ -2131,10 +2131,10 @@ gc()
 library(GSVA)
 library(GSEABase)
 library(reshape)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
-load("C:/Users/赵定康/Desktop/input/pancancer_exp.Rdata")
-load("C:/Users/赵定康/Desktop/input/hallmarker_activity.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/pancancer_cluster.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_exp.Rdata")
+load("C:/Users/user/Desktop/input/hallmarker_activity.Rdata")
 hallmarker_activity=as.data.frame(hallmarker_activity)
 rownames(hallmarker_activity)=hallmarker_activity[,1]
 hallmarker_activity=hallmarker_activity[,-1]
@@ -2338,11 +2338,11 @@ rm(list=ls())
 gc()
 library(reshape2)
 library(IOBR)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/pancancer_cluster.Rdata")
 group=pancancer_cluster
 colnames(group)=c("Tag","group")
-load("C:/Users/赵定康/Desktop/input/tme_all_estimate.Rdata")
+load("C:/Users/user/Desktop/input/tme_all_estimate.Rdata")
 tme_all=as.data.frame(tme_all_estimate)
 library(ggplot2)
 cor_test <- cor.test(tme_all$StromalScore_estimate,
@@ -2398,7 +2398,7 @@ p=ggplot(WNT, aes(x = cluster, y = StromalScore_estimate, fill = cluster)) +
   scale_fill_manual(values = c("#d71345","#f47920","#145b7d","#6950a1")) +
   ggtitle("TCGA-Pancancer")
 print(p)
-setwd("C:/Users/赵定康/Desktop/input_wnt/pictures")
+setwd("C:/Users/user/Desktop/input_wnt/pictures")
 ggsave("TCGA_SS.pdf",
        plot = p,
        width = 5.5,
@@ -2409,11 +2409,11 @@ rm(list=ls())
 gc()
 library(reshape2)
 library(IOBR)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/pancancer_cluster.Rdata")
 group=pancancer_cluster
 colnames(group)=c("Tag","group")
-load("C:/Users/赵定康/Desktop/input/tme_all_estimate.Rdata")
+load("C:/Users/user/Desktop/input/tme_all_estimate.Rdata")
 tme_all=as.data.frame(tme_all_estimate)
 library(ggplot2)
 cor_test <- cor.test(tme_all$StromalScore_estimate,
@@ -2469,7 +2469,7 @@ p=ggplot(WNT, aes(x = cluster, y = ImmuneScore_estimate, fill = cluster)) +
   scale_fill_manual(values = c("#d71345","#f47920","#145b7d","#6950a1")) +
   ggtitle("TCGA-Pancancer")
 print(p)
-setwd("C:/Users/赵定康/Desktop/input_wnt/pictures")
+setwd("C:/Users/user/Desktop/input_wnt/pictures")
 ggsave("TCGA_IS.pdf",
        plot = p,
        width = 5.5,
@@ -2480,11 +2480,11 @@ rm(list=ls())
 gc()
 library(reshape2)
 library(IOBR)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/pancancer_cluster.Rdata")
 group=pancancer_cluster
 colnames(group)=c("Tag","group")
-load("C:/Users/赵定康/Desktop/input/tme_all_estimate.Rdata")
+load("C:/Users/user/Desktop/input/tme_all_estimate.Rdata")
 tme_all=as.data.frame(tme_all_estimate)
 library(ggplot2)
 cor_test <- cor.test(tme_all$StromalScore_estimate,
@@ -2540,7 +2540,7 @@ p=ggplot(WNT, aes(x = cluster, y = ESTIMATEScore_estimate, fill = cluster)) +
   scale_fill_manual(values = c("#d71345","#f47920","#145b7d","#6950a1")) +
   ggtitle("TCGA-Pancancer")
 print(p)
-setwd("C:/Users/赵定康/Desktop/input_wnt/pictures")
+setwd("C:/Users/user/Desktop/input_wnt/pictures")
 ggsave("TCGA_ES.pdf",
        plot = p,
        width = 5.5,
@@ -2551,11 +2551,11 @@ rm(list=ls())
 gc()
 library(reshape2)
 library(IOBR)
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/pancancer_cluster.Rdata")
 group=pancancer_cluster
 colnames(group)=c("Tag","group")
-load("C:/Users/赵定康/Desktop/input/tme_all_estimate.Rdata")
+load("C:/Users/user/Desktop/input/tme_all_estimate.Rdata")
 tme_all=as.data.frame(tme_all_estimate)
 library(ggplot2)
 cor_test <- cor.test(tme_all$StromalScore_estimate,
@@ -2611,7 +2611,7 @@ p=ggplot(WNT, aes(x = cluster, y = TumorPurity_estimate, fill = cluster)) +
   scale_fill_manual(values = c("#d71345","#f47920","#145b7d","#6950a1")) +
   ggtitle("TCGA-Pancancer")
 print(p)
-setwd("C:/Users/赵定康/Desktop/input_wnt/pictures")
+setwd("C:/Users/user/Desktop/input_wnt/pictures")
 ggsave("TCGA_TP.pdf",
        plot = p,
        width = 5.5,
@@ -2621,7 +2621,7 @@ ggsave("TCGA_TP.pdf",
 rm(list = ls())
 gc()
 
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 
 # Read the data
 Immune_subtype <- read.table(
@@ -2631,7 +2631,7 @@ Immune_subtype <- read.table(
   fill = FALSE
 )
 
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_Score.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_WNT_Score.Rdata")
 
 # Data merging and processing
 immune_exp <- merge(
@@ -2716,7 +2716,7 @@ p <- ggboxplot(
   ) +
   ggtitle("")
 print(p)
-setwd("C:/Users/赵定康/Desktop/input_wnt/pictures")
+setwd("C:/Users/user/Desktop/input_wnt/pictures")
 ggsave("TCGA_C123456.pdf",
        plot = p,
        width = 4,
@@ -2725,8 +2725,8 @@ ggsave("TCGA_C123456.pdf",
 ################################################################################MSI####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_Score.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/pancancer_WNT_Score.Rdata")
 WNT_Score=pancancer_WNT_Score$final_activity_score
 WNT_Score=WNT_Score[as.numeric(substr(rownames(WNT_Score), 14, 15)) <= 10, ]
 WNT_Score=as.matrix(WNT_Score)
@@ -2788,7 +2788,7 @@ p=ggplot(cancer_all, aes(x = cor, y = reorder(cancer_clean, cor))) +
   ggtitle("MSI") +
   scale_x_continuous(expand = expansion(mult = c(0.15, 0.15)))
 p
-setwd("C:/Users/赵定康/Desktop/input_wnt/pictures")
+setwd("C:/Users/user/Desktop/input_wnt/pictures")
 ggsave("TCGA_MSI.pdf",
        plot = p,
        width = 3.2,
@@ -2801,7 +2801,7 @@ gc()
 library(TCGAmutations)
 tcga_available()
 rm(list=ls())
-setwd("C:/Users/赵定康/Desktop/input/TMB")
+setwd("C:/Users/user/Desktop/input/TMB")
 fs <- c("ACC","BLCA","BRCA","CESC","CHOL","COAD","DLBC","ESCA","GBM","HNSC",
         "KICH","KIRC","KIRP","LAML","LGG","LIHC","LUAD","LUSC","MESO","OV",
         "PAAD","PCPG","PRAD","READ","SARC","SKCM","STAD","TGCT","THCA","THYM",
@@ -2810,17 +2810,17 @@ lapply(fs,function(x){
   library(TCGAmutations)
   print(x)
   maf <- TCGAmutations::tcga_load(study = x)
-  save(maf, file = paste0("C:/Users/赵定康/Desktop/input/TMB/TCGA_",x,"_MC3_maf.Rdata"))
+  save(maf, file = paste0("C:/Users/user/Desktop/input/TMB/TCGA_",x,"_MC3_maf.Rdata"))
 })
 rm(list=ls())
-setwd("C:/Users/赵定康/Desktop/input/TMB")
+setwd("C:/Users/user/Desktop/input/TMB")
 fs <- c("ACC","BLCA","BRCA","CESC","CHOL","COAD","DLBC","ESCA","GBM","HNSC",
         "KICH","KIRC","KIRP","LAML","LGG","LIHC","LUAD","LUSC","MESO","OV",
         "PAAD","PCPG","PRAD","READ","SARC","SKCM","STAD","TGCT","THCA","THYM",
         "UCEC","UCS","UVM")
 TCGAtmb <- lapply(fs,function(x){
   library(maftools)
-  load(paste0("C:/Users/赵定康/Desktop/input/TMB/TCGA_",x,"_MC3_maf.Rdata"))
+  load(paste0("C:/Users/user/Desktop/input/TMB/TCGA_",x,"_MC3_maf.Rdata"))
   TMB = data.frame(tmb(maf = maf))
   TMB$Tumor_Sample_Barcode <- as.character(TMB$Tumor_Sample_Barcode)
   TMB$Group = x
@@ -2834,7 +2834,7 @@ TMB=TCGAtmb[,c(1,3,5)]
 rownames(TMB)=TMB[,1]
 TMB=TMB[,-1]
 save(TMB,file="TMB.Rdata")
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_Score.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_WNT_Score.Rdata")
 WNT_Score=pancancer_WNT_Score$final_activity_score
 WNT_Score_TMB=merge(WNT_Score,TMB,by = "row.names")
 WNT_Score_TMB$Group=ifelse(WNT_Score_TMB$Group%in%c("COAD","READ"),"CRC",WNT_Score_TMB$Group)
@@ -2886,7 +2886,7 @@ p=ggplot(cancer_all, aes(x = cor, y = reorder(cancer_clean, cor))) +
     labels = c("-0.15", "0", "0.15")  # Corresponding labels
   )
 p
-setwd("C:/Users/赵定康/Desktop/input_wnt/pictures")
+setwd("C:/Users/user/Desktop/input_wnt/pictures")
 ggsave("TCGA_TMB.pdf",
        plot = p,
        width = 3.2,
@@ -2895,8 +2895,8 @@ ggsave("TCGA_TMB.pdf",
 ################################################################################FGA####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_Score.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/pancancer_WNT_Score.Rdata")
 WNT_Score=pancancer_WNT_Score$final_activity_score
 library(cBioPortalData)
 cbio=cBioPortal()
@@ -2964,7 +2964,7 @@ p=ggplot(cancer_all, aes(x = cor, y = reorder(cancer_clean, cor))) +
   ggtitle("FGA") +
   scale_x_continuous(expand = expansion(mult = c(0.15, 0.15)))
 p
-setwd("C:/Users/赵定康/Desktop/input_wnt/pictures")
+setwd("C:/Users/user/Desktop/input_wnt/pictures")
 ggsave("TCGA_FGA.pdf",
        plot = p,
        width = 3.2,
@@ -2973,8 +2973,8 @@ ggsave("TCGA_FGA.pdf",
 ################################################################################Mutation count####
 rm(list=ls())
 gc()
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_Score.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/pancancer_WNT_Score.Rdata")
 WNT_Score=pancancer_WNT_Score$final_activity_score
 library(cBioPortalData)
 cbio=cBioPortal()
@@ -3042,7 +3042,7 @@ p=ggplot(cancer_all, aes(x = cor, y = reorder(cancer_clean, cor))) +
   ggtitle("Mutation count") +
   scale_x_continuous(expand = expansion(mult = c(0.15, 0.15)))
 p
-setwd("C:/Users/赵定康/Desktop/input_wnt/pictures")
+setwd("C:/Users/user/Desktop/input_wnt/pictures")
 ggsave("TCGA_MC.pdf",
        plot = p,
        width = 3.2,
@@ -3051,16 +3051,16 @@ ggsave("TCGA_MC.pdf",
 ################################################################################WNT-immune cell marker correlation analysis####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/tme_all_cellMarker.Rdata")
+load("C:/Users/user/Desktop/input/tme_all_cellMarker.Rdata")
 tme_all=as.data.frame(tme_all_cellMarker)
-load("C:/Users/赵定康/Desktop/input/TARGET_all_cellMarker.Rdata")
+load("C:/Users/user/Desktop/input/TARGET_all_cellMarker.Rdata")
 tme_all=rbind(tme_all,as.data.frame(TARGET_all_cellMarker))
 rownames(tme_all)=tme_all[,1]
 tme_all=tme_all[,-1]
 tme_all_cellMarker=tme_all[,grep("_cellMarker", colnames(tme_all), value = TRUE)]
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_score.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_WNT_score.Rdata")
 pancancer_wnt=pancancer_WNT_Score$final_activity_score
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_group.Rdata")
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
 fs=unique(pancancer_group$Project)
 cancer_cor=data.frame()
@@ -3129,7 +3129,7 @@ p=ggplot(cancer_cor, aes(cancer, tme)) +
   ) +
   labs(fill = paste0(" * p < 0.05", "\n\n", "** p < 0.01", "\n\n", "*** p < 0.001", "\n\n", "Correlation"))
 p
-setwd("C:/Users/赵定康/Desktop/input_wnt/pictures")
+setwd("C:/Users/user/Desktop/input_wnt/pictures")
 ggsave("immune_cellmarker.pdf",
        plot = p,
        width = 10,
@@ -3140,9 +3140,9 @@ rm(list=ls())
 gc()
 
 # Load data
-load("C:/Users/赵定康/Desktop/input/tme_all_TCSS.Rdata")
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_score.Rdata")
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("C:/Users/user/Desktop/input/tme_all_TCSS.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_WNT_score.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_group.Rdata")
 
 # Data preprocessing
 T_status <- tme_all_TCSS
@@ -3228,7 +3228,7 @@ Dotplot2 <- ggplot(Plotdata, aes(x = name, y = Term, size = Pvalue)) +
                                barwidth = 15, barheight = 1.5))
 
 Dotplot2
-setwd("C:/Users/赵定康/Desktop/input_wnt/pictures")
+setwd("C:/Users/user/Desktop/input_wnt/pictures")
 ggsave("immune_T_status.pdf",
        plot = Dotplot2,
        width = 12,
@@ -3237,13 +3237,13 @@ ggsave("immune_T_status.pdf",
 ################################################################################WNT-immune ESTIMATE correlation analysis####
 rm(list=ls())
 gc()
-load("C:/Users/赵定康/Desktop/input/tme_all_estimate.Rdata")
+load("C:/Users/user/Desktop/input/tme_all_estimate.Rdata")
 tme_all=as.data.frame(tme_all_estimate)
 rownames(tme_all)=tme_all[,1]
 tme_all=tme_all[,-1]
-load("C:/Users/赵定康/Desktop/input/pancancer_WNT_score.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_WNT_score.Rdata")
 pancancer_wnt=pancancer_WNT_Score$final_activity_score
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_group.Rdata")
 pancancer_group=pancancer_group[pancancer_group$Group=="Tumor",]
 fs=unique(pancancer_group$Project)
 cancer_cor=data.frame()
@@ -3296,7 +3296,7 @@ p=ggplot(cancer_all, aes(x = cor, y = reorder(cancer, cor), fill = relation)) +
   ) +
   ggtitle("Stromal score")
 p
-setwd("C:/Users/赵定康/Desktop/input_wnt/pictures")
+setwd("C:/Users/user/Desktop/input_wnt/pictures")
 ggsave("cor_SS.pdf",
        plot = p,
        width = 5,
@@ -3332,7 +3332,7 @@ p=ggplot(cancer_all, aes(x = cor, y = reorder(cancer, cor), fill = relation)) +
   ) +
   ggtitle("Immune score")
 p
-setwd("C:/Users/赵定康/Desktop/input_wnt/pictures")
+setwd("C:/Users/user/Desktop/input_wnt/pictures")
 ggsave("cor_IS.pdf",
        plot = p,
        width = 5,
@@ -3371,7 +3371,7 @@ p=ggplot(cancer_all, aes(x = cor, y = reorder(cancer, cor), fill = relation)) +
   ) +
   ggtitle("Tumor purity")
 p
-setwd("C:/Users/赵定康/Desktop/input_wnt/pictures")
+setwd("C:/Users/user/Desktop/input_wnt/pictures")
 ggsave("cor_TP.pdf",
        plot = p,
        width = 5,
@@ -3410,7 +3410,7 @@ p=ggplot(cancer_all, aes(x = cor, y = reorder(cancer, cor), fill = relation)) +
   ) +
   ggtitle("ESTIMATE score")
 p
-setwd("C:/Users/赵定康/Desktop/input_wnt/pictures")
+setwd("C:/Users/user/Desktop/input_wnt/pictures")
 ggsave("cor_ES.pdf",
        plot = p,
        width = 5,
@@ -3420,7 +3420,7 @@ ggsave("cor_ES.pdf",
 rm(list=ls())
 gc()
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 vector=c("GSE232944_a","GSE232944_b","GSE199835_a","GSE199835_b","GSE199835_c",
          "GSE120106","GSE234403","GSE39904_a","GSE39904_b","GSE128281",
          "GSE62060","GSE33143","GSE18560_a","GSE18560_b","GSE44097_a","GSE44097_b",
@@ -3450,12 +3450,12 @@ for(i in 1:length(vector)){
 all_group=all_group
 all_scores=data.frame()
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
 
 for(cycle in 1:length(vector)){
   exp=get(vector[cycle])
   colnames(exp)=paste0(colnames(exp),"_",vector[cycle])
-  scores=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+  scores=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                       expression_profile=exp,
                                       foundation="relative_ssGSEA",
                                       activation_geneset=NA,
@@ -3474,7 +3474,7 @@ all_usual=data.frame()
 for(cycle in 1:length(vector)){
   exp=get(vector[cycle])
   colnames(exp)=paste0(colnames(exp),"_",vector[cycle])
-  setwd("C:/Users/赵定康/Desktop/input")
+  setwd("C:/Users/user/Desktop/input")
   GeneSets=getGmt("wnt_usual_using.gmt")
   geneset=gsva(expr=as.matrix(exp), GeneSets, kcdf="Gaussian",method = "ssgsea",min.sz=1,max.sz=10000)
   geneset=as.data.frame(t(geneset))
@@ -3583,7 +3583,7 @@ p2 = ggplot(accuracy_df, aes(x = accuracy, y = geneset)) +
 p = p1 + p2 + plot_layout(widths = c(4, 1))
 
 # Save the figure
-setwd("C:/Users/赵定康/Desktop/")
+setwd("C:/Users/user/Desktop/")
 ggsave("training_benchmark.pdf",
        plot = p,
        width = 12,
@@ -3593,7 +3593,7 @@ ggsave("training_benchmark.pdf",
 rm(list=ls())
 gc()
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 vector=c("GSE102208","GSE114059_a","GSE114059_b",
          "GSE114059_c","GSE156082","GSE158578_a",
          "GSE158578_b","GSE188465","GSE188466",
@@ -3638,12 +3638,12 @@ for(i in 1:length(vector)){
 all_group=all_group
 all_scores=data.frame()
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
 
 for(cycle in 1:length(vector)){
   exp=get(vector[cycle])
   colnames(exp)=paste0(colnames(exp),"_",vector[cycle])
-  scores=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+  scores=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                       expression_profile=exp,
                                       foundation="relative_ssGSEA",
                                       activation_geneset=NA,
@@ -3662,7 +3662,7 @@ all_usual=data.frame()
 for(cycle in 1:length(vector)){
   exp=get(vector[cycle])
   colnames(exp)=paste0(colnames(exp),"_",vector[cycle])
-  setwd("C:/Users/赵定康/Desktop/input")
+  setwd("C:/Users/user/Desktop/input")
   GeneSets=getGmt("wnt_usual_using.gmt")
   geneset=gsva(expr=as.matrix(exp), GeneSets, kcdf="Gaussian",method = "ssgsea",min.sz=1,max.sz=10000)
   geneset=as.data.frame(t(geneset))
@@ -3771,7 +3771,7 @@ p2 = ggplot(accuracy_df, aes(x = accuracy, y = geneset)) +
 p = p1 + p2 + plot_layout(widths = c(5, 1))
 
 # Save the figure
-setwd("C:/Users/赵定康/Desktop/")
+setwd("C:/Users/user/Desktop/")
 ggsave("testing_benchmark.pdf",
        plot = p,
        width = 25,
@@ -3782,7 +3782,7 @@ rm(list=ls())
 gc()
 library(GSVA)
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input/exp_data")
+setwd("C:/Users/user/Desktop/input/exp_data")
 
 vector1=c("GSE44076","GSE44861","GSE21510",
           "GSE68468","GSE37178","GSE18105",
@@ -3801,14 +3801,14 @@ for (q in 1:length(vector)) {
   load(paste0(vector[q],"_CMS_G.Rdata"))
 }
 
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
 p_data_ee_all=data.frame()
 
 for(i in 1:length(vector)){
   exp=get(paste0(vector[i],"_CMS"))
-  scores=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+  scores=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                       expression_profile=exp,
                                       foundation="relative_ssGSEA",
                                       activation_geneset=NA,
@@ -4015,7 +4015,7 @@ p2 = ggplot(correct_summary, aes(x = correct_count, y = geneset, fill = contrast
 # 5. Assemble and save
 p = p1 + p2 + plot_layout(widths = c(4, 1.2))
 
-setwd("C:/Users/赵定康/Desktop/")
+setwd("C:/Users/user/Desktop/")
 ggsave("CRC_benchmark1.pdf",
        plot = p,
        width = 24,
@@ -4026,7 +4026,7 @@ rm(list=ls())
 gc()
 library(GSVA)
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input/exp_data")
+setwd("C:/Users/user/Desktop/input/exp_data")
 vector1=c("GSE44076","GSE44861","GSE21510",
           "GSE68468","GSE37178","GSE18105",
           "GSE21815","GSE17537","GSE29621",
@@ -4042,15 +4042,15 @@ for (q in 1:length(vector)) {
   load(paste0(vector[q],"_CMS.Rdata"))
   load(paste0(vector[q],"_CMS_G.Rdata"))
 }
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
 icms2_icms3=getGmt("iCMS2_iCMS3.gmt")
 p_data_ee_all=data.frame()
 
 for(i in 1:length(vector)){
   exp=get(paste0(vector[i],"_CMS"))
-  scores=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+  scores=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                       expression_profile=exp,
                                       foundation="relative_ssGSEA",
                                       activation_geneset=NA,
@@ -4237,7 +4237,7 @@ p2 = ggplot(correct_summary, aes(x = correct_count, y = geneset, fill = contrast
 # 5. Assemble and save
 p = p1 + p2 + plot_layout(widths = c(4, 1.2))
 
-setwd("C:/Users/赵定康/Desktop/")
+setwd("C:/Users/user/Desktop/")
 ggsave("CRC_benchmark1_cor.pdf",
        plot = p,
        width = 24,
@@ -4248,7 +4248,7 @@ rm(list=ls())
 gc()
 library(GSVA)
 library(GSEABase)
-setwd("C:/Users/赵定康/Desktop/input/exp_data")
+setwd("C:/Users/user/Desktop/input/exp_data")
 vector1=c("GSE44076","GSE44861","GSE21510",
           "GSE68468","GSE37178","GSE18105",
           "GSE21815","GSE17537","GSE29621",
@@ -4264,15 +4264,15 @@ for (q in 1:length(vector)) {
   load(paste0(vector[q],"_CMS.Rdata"))
   load(paste0(vector[q],"_CMS_G.Rdata"))
 }
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
 icms2_icms3=getGmt("iCMS2_iCMS3.gmt")
 p_data_ee_all=data.frame()
 
 for(i in 1:length(vector)){
   exp=get(paste0(vector[i],"_CMS"))
-  scores=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+  scores=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                       expression_profile=exp,
                                       foundation="relative_ssGSEA",
                                       activation_geneset=NA,
@@ -4459,7 +4459,7 @@ p2 = ggplot(correct_summary, aes(x = correct_count, y = geneset, fill = contrast
 # 5. Assemble and save
 p = p1 + p2 + plot_layout(widths = c(4, 1.2))
 
-setwd("C:/Users/赵定康/Desktop/")
+setwd("C:/Users/user/Desktop/")
 ggsave("CRC_benchmark2_cor.pdf",
        plot = p,
        width = 24,
@@ -4470,7 +4470,7 @@ rm(list=ls())
 gc()
 library(GSEABase)
 library(writexl) # Used to export the Excel sheet
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 
 vector=c("GSE232944_a","GSE232944_b","GSE199835_a","GSE199835_b","GSE199835_c",
          "GSE120106","GSE234403","GSE39904_a","GSE39904_b","GSE128281",
@@ -4501,12 +4501,12 @@ for(i in 1:length(vector)){
 all_group=all_group
 all_scores=data.frame()
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
 
 for(cycle in 1:length(vector)){
   exp=get(vector[cycle])
   colnames(exp)=paste0(colnames(exp),"_",vector[cycle])
-  scores=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+  scores=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                       expression_profile=exp,
                                       foundation="relative_ssGSEA",
                                       activation_geneset=NA,
@@ -4525,7 +4525,7 @@ all_usual=data.frame()
 for(cycle in 1:length(vector)){
   exp=get(vector[cycle])
   colnames(exp)=paste0(colnames(exp),"_",vector[cycle])
-  setwd("C:/Users/赵定康/Desktop/input")
+  setwd("C:/Users/user/Desktop/input")
   GeneSets=getGmt("wnt_usual_using.gmt")
   geneset=gsva(expr=as.matrix(exp), GeneSets, kcdf="Gaussian",method = "ssgsea",min.sz=1,max.sz=10000)
   geneset=as.data.frame(t(geneset))
@@ -4586,7 +4586,7 @@ p_data_all$geneset=sub("pos_score", "WntQuant_activation", p_data_all$geneset)
 p_data_all$geneset=sub("neg_score", "WntQuant_inhibition", p_data_all$geneset)
 
 # Export as an Excel sheet
-setwd("C:/Users/赵定康/Desktop/")
+setwd("C:/Users/user/Desktop/")
 write_xlsx(p_data_all, path = "benchmark_detailed_statistics.xlsx")
 cat("Excel workbook exported to the desktop: benchmark_detailed_statistics.xlsx\n")
 ################################################################################Summary statistics (validation datasets)####
@@ -4594,7 +4594,7 @@ rm(list=ls())
 gc()
 library(GSEABase)
 library(writexl) # Used to export the Excel sheet
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 
 vector=c("GSE102208","GSE114059_a","GSE114059_b",
          "GSE114059_c","GSE156082","GSE158578_a",
@@ -4640,12 +4640,12 @@ for(i in 1:length(vector)){
 all_group=all_group
 all_scores=data.frame()
 geneSets=getGmt("wpags_wpigs.gmt")
-source("C:/Users/赵定康/Desktop/要整合成包的函数/Calculate_bioactivity_scores.R")
+source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
 
 for(cycle in 1:length(vector)){
   exp=get(vector[cycle])
   colnames(exp)=paste0(colnames(exp),"_",vector[cycle])
-  scores=Calculate_bioactivity_scores(file_paths="C:/Users/赵定康/Desktop/input",
+  scores=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
                                       expression_profile=exp,
                                       foundation="relative_ssGSEA",
                                       activation_geneset=NA,
@@ -4664,7 +4664,7 @@ all_usual=data.frame()
 for(cycle in 1:length(vector)){
   exp=get(vector[cycle])
   colnames(exp)=paste0(colnames(exp),"_",vector[cycle])
-  setwd("C:/Users/赵定康/Desktop/input")
+  setwd("C:/Users/user/Desktop/input")
   GeneSets=getGmt("wnt_usual_using.gmt")
   geneset=gsva(expr=as.matrix(exp), GeneSets, kcdf="Gaussian",method = "ssgsea",min.sz=1,max.sz=10000)
   geneset=as.data.frame(t(geneset))
@@ -4725,7 +4725,7 @@ p_data_all$geneset=sub("pos_score", "WntQuant_activation", p_data_all$geneset)
 p_data_all$geneset=sub("neg_score", "WntQuant_inhibition", p_data_all$geneset)
 
 # Export as an Excel sheet
-setwd("C:/Users/赵定康/Desktop/")
+setwd("C:/Users/user/Desktop/")
 write_xlsx(p_data_all, path = "testing_benchmark_detailed_statistics.xlsx")
 cat("Excel workbook exported to the desktop: testing_benchmark_detailed_statistics.xlsx\n")
 ################################################################################Multivariable Cox regression for OS####
@@ -4739,8 +4739,8 @@ library(broom)
 library(tidyr)
 library(forestploter)
 
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/cluster.Rdata")
 
 clinical_molecular_public_all <- read.table(
   file = "clinical_molecular_public_all.txt",
@@ -4952,7 +4952,7 @@ colnames(df_forest_input)[1:6] <- c(
   "p-value"
 )
 
-pdf("C:/Users/赵定康/Desktop/Multivariable_Cox_Forestplot.pdf", width = 11, height = 7.5)
+pdf("C:/Users/user/Desktop/Multivariable_Cox_Forestplot.pdf", width = 11, height = 7.5)
 
 p_final <- forest(
   df_forest_input[, 1:6],
@@ -4970,7 +4970,7 @@ p_final <- forest(
 print(p_final)
 dev.off()
 
-cat("\nMissing-value row filtering disabled; updated forest plot saved to the desktop: C:/Users/赵定康/Desktop/Multivariable_Cox_Forestplot.pdf\n")
+cat("\nMissing-value row filtering disabled; updated forest plot saved to the desktop: C:/Users/user/Desktop/Multivariable_Cox_Forestplot.pdf\n")
 
 ################################################################################Multivariable Cox regression for RFS####
 rm(list = ls())
@@ -4983,8 +4983,8 @@ library(broom)
 library(tidyr)
 library(forestploter)
 
-setwd("C:/Users/赵定康/Desktop/input")
-load("C:/Users/赵定康/Desktop/input/cluster.Rdata")
+setwd("C:/Users/user/Desktop/input")
+load("C:/Users/user/Desktop/input/cluster.Rdata")
 
 clinical_molecular_public_all <- read.table(
   file = "clinical_molecular_public_all.txt",
@@ -5197,7 +5197,7 @@ colnames(df_forest_input)[1:6] <- c(
   "p-value"
 )
 
-pdf("C:/Users/赵定康/Desktop/Multivariable_Cox_Forestplot_RFS.pdf", width = 11, height = 7.5)
+pdf("C:/Users/user/Desktop/Multivariable_Cox_Forestplot_RFS.pdf", width = 11, height = 7.5)
 
 p_final <- forest(
   df_forest_input[, 1:6],
@@ -5215,7 +5215,7 @@ p_final <- forest(
 print(p_final)
 dev.off()
 
-cat("\nRFS forest plot (WSS4/Other, x-axis 0-15) saved to the desktop: C:/Users/赵定康/Desktop/Multivariable_Cox_Forestplot_RFS.pdf\n")
+cat("\nRFS forest plot (WSS4/Other, x-axis 0-15) saved to the desktop: C:/Users/user/Desktop/Multivariable_Cox_Forestplot_RFS.pdf\n")
 ################################################################################Organising the TCGA files####
 rm(list = ls())
 gc()
@@ -5223,9 +5223,9 @@ gc()
 library(dplyr)
 library(reshape2)
 
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 
-load("C:/Users/赵定康/Desktop/input/pancancer_cluster.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_cluster.Rdata")
 
 # Core check: no NA or empty cluster labels in pancancer_cluster
 pancancer_cluster = pancancer_cluster[!is.na(pancancer_cluster$cluster) & pancancer_cluster$cluster != "", ]
@@ -5400,9 +5400,9 @@ library(survival)
 library(dplyr)
 library(broom)
 library(forestploter)
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 load("data_OS.Rdata")
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_group.Rdata")
 data_OS = merge(data_OS, pancancer_group, by.x = "Tag", by.y = "row.names")
 
 # Keep tumour samples only: the numeric suffix of Tag must be <= 10
@@ -5601,7 +5601,7 @@ df_forest_input = bind_rows(plot_rows)
 colnames(df_forest_input)[1:6] = c("Variable", "Subgroup", "N",
                                     "Hazard ratio (95% CI)", "", "p-value")
 # ---------- Render and export
-pdf("C:/Users/赵定康/Desktop/Multivariate_Cox_OS_0_10_Forestplot.pdf", width = 20, height = 24)
+pdf("C:/Users/user/Desktop/Multivariate_Cox_OS_0_10_Forestplot.pdf", width = 20, height = 24)
 
 p_final = forest(
   df_forest_input[, 1:6],
@@ -5631,9 +5631,9 @@ library(dplyr)
 library(broom)
 library(forestploter)
 
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 load("data_DSS.Rdata")
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_group.Rdata")
 
 data_DSS = merge(data_DSS, pancancer_group, by.x = "Tag", by.y = "row.names")
 
@@ -5847,7 +5847,7 @@ colnames(df_forest_input)[1:6] = c("Variable", "Subgroup", "N",
                                     "Hazard ratio (95% CI)", "", "p-value")
 
 # ---------- Render and export the DSS forest plot
-pdf("C:/Users/赵定康/Desktop/Multivariate_Cox_DSS_0_10_Forestplot.pdf", width = 20, height = 24)
+pdf("C:/Users/user/Desktop/Multivariate_Cox_DSS_0_10_Forestplot.pdf", width = 20, height = 24)
 
 p_final = forest(
   df_forest_input[, 1:6],
@@ -5877,9 +5877,9 @@ library(dplyr)
 library(broom)
 library(forestploter)
 
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 load("data_DFI.Rdata")
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_group.Rdata")
 
 data_DFI = merge(data_DFI, pancancer_group, by.x = "Tag", by.y = "row.names")
 
@@ -6093,7 +6093,7 @@ colnames(df_forest_input)[1:6] = c("Variable", "Subgroup", "N",
                                     "Hazard ratio (95% CI)", "", "p-value")
 
 # ---------- Render and export the DFI forest plot
-pdf("C:/Users/赵定康/Desktop/Multivariate_Cox_DFI_0_10_Forestplot.pdf", width = 20, height = 24)
+pdf("C:/Users/user/Desktop/Multivariate_Cox_DFI_0_10_Forestplot.pdf", width = 20, height = 24)
 
 p_final = forest(
   df_forest_input[, 1:6],
@@ -6123,9 +6123,9 @@ library(dplyr)
 library(broom)
 library(forestploter)
 
-setwd("C:/Users/赵定康/Desktop/input")
+setwd("C:/Users/user/Desktop/input")
 load("data_PFI.Rdata")
-load("C:/Users/赵定康/Desktop/input/pancancer_group.Rdata")
+load("C:/Users/user/Desktop/input/pancancer_group.Rdata")
 
 data_PFI = merge(data_PFI, pancancer_group, by.x = "Tag", by.y = "row.names")
 
@@ -6339,7 +6339,7 @@ colnames(df_forest_input)[1:6] = c("Variable", "Subgroup", "N",
                                     "Hazard ratio (95% CI)", "", "p-value")
 
 # ---------- Render and export the PFI forest plot (panWSS2 as reference)
-pdf("C:/Users/赵定康/Desktop/Multivariate_Cox_PFI_panWSS2_ref_0_10_Forestplot.pdf", width = 20, height = 24)
+pdf("C:/Users/user/Desktop/Multivariate_Cox_PFI_panWSS2_ref_0_10_Forestplot.pdf", width = 20, height = 24)
 
 p_final = forest(
   df_forest_input[, 1:6],
