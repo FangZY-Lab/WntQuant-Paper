@@ -30,7 +30,7 @@ for (q in 1:length(vector)) {
     load(paste0(vector[q],".Rdata"))
     load(paste0(vector[q],"_info.Rdata"))
   } else {
-    cat(paste0("警告: ", vector[q], " 的数据文件不存在\n"))
+    cat(paste0("Warning: ", vector[q], " data file not found\n"))
   }
 }
 
@@ -58,7 +58,7 @@ for (q in 1:length(vector)) {
 
       if(os_time_valid && os_status_valid) {
         valid_vector <- c(valid_vector, dataset_name)
-        cat(paste0("✓ ", dataset_name, ": 有效 (包含os.time和os.status且不全为NA)\n"))
+        cat(paste0("✓ ", dataset_name, ": valid (os.time and os.status present and not all NA)\n"))
 
         # Require more than 10 samples and the presence of CD274
         sample_size <- nrow(info_obj)
@@ -68,39 +68,39 @@ for (q in 1:length(vector)) {
 
         if(sample_size > 10 && has_cd274) {
           valid_vector_CD274 <- c(valid_vector_CD274, dataset_name)
-          cat(paste0("  ✓ 符合CD274条件: 样本数=", sample_size, ", 包含CD274=", has_cd274, "\n"))
+          cat(paste0("  OK meets the CD274 criterion: n = ", sample_size, ", CD274 present = ", has_cd274, "\n"))
         } else {
-          cat(paste0("  ✗ 不符合CD274条件: 样本数=", sample_size, ", 包含CD274=", has_cd274, "\n"))
+          cat(paste0("  FAILS the CD274 criterion: n = ", sample_size, ", CD274 present = ", has_cd274, "\n"))
         }
       } else {
-        cat(paste0("✗ ", dataset_name, ": 包含列但全为NA\n"))
+        cat(paste0("✗ ", dataset_name, ": columns present but all NA\n"))
       }
     } else {
       missing_cols <- c()
       if(!has_os_time) missing_cols <- c(missing_cols, "os.time")
       if(!has_os_status) missing_cols <- c(missing_cols, "os.status")
-      cat(paste0("✗ ", dataset_name, ": 缺少列 - ", paste(missing_cols, collapse = ", "), "\n"))
+      cat(paste0("✗ ", dataset_name, ": missing columns - ", paste(missing_cols, collapse = ", "), "\n"))
     }
   } else {
-    if(!exists(info_obj_name)) cat(paste0("✗ ", dataset_name, ": 无临床信息对象\n"))
-    if(!exists(data_obj_name)) cat(paste0("✗ ", dataset_name, ": 无表达数据对象\n"))
+    if(!exists(info_obj_name)) cat(paste0("✗ ", dataset_name, ": no clinical object\n"))
+    if(!exists(data_obj_name)) cat(paste0("✗ ", dataset_name, ": no expression object\n"))
   }
 }
 
-cat("\n所有有效数据集 (", length(valid_vector), "个):", paste(valid_vector, collapse = ", "), "\n")
-cat("\n包含CD274且样本数>10的数据集 (", length(valid_vector_CD274), "个):", paste(valid_vector_CD274, collapse = ", "), "\n")
+cat("\nAll valid datasets (", length(valid_vector), "):", paste(valid_vector, collapse = ", "), "\n")
+cat("\nDatasets with CD274 and n > 10 (", length(valid_vector_CD274), "):", paste(valid_vector_CD274, collapse = ", "), "\n")
 
 # Save results
 save(valid_vector, valid_vector_CD274, file = "filtered_datasets.RData")
 
 # Print detailed statistics
 if(length(valid_vector_CD274) > 0) {
-  cat("\n详细统计信息:\n")
+  cat("\nDetailed statistics:\n")
   for(dataset in valid_vector_CD274) {
     info_obj <- get(paste0(dataset, "_info"))
     data_obj <- get(dataset)
     sample_size <- nrow(info_obj)
-    cat(paste0("- ", dataset, ": 样本数=", sample_size, ", CD274表达值范围=",
+    cat(paste0("- ", dataset, ": n = ", sample_size, ", CD274 expression range = ",
                paste(round(range(data_obj["CD274", ], na.rm = TRUE), 3), collapse = " ~ "), "\n"))
   }
 }
@@ -342,13 +342,13 @@ library(tibble)
 library(ggpp)
 
 # Debug: inspect the structure of the ps object
-print("ps对象的结构：")
+print("Structure of the ps object:")
 print(str(ps))
-print("p值矩阵：")
+print("p-value matrix:")
 print(ps$p.value)
-print("行名：")
+print("Row names:")
 print(rownames(ps$p.value))
-print("列名：")
+print("Column names:")
 print(colnames(ps$p.value))
 
 # Corrected p-value extraction
@@ -485,28 +485,28 @@ for (q in 1:length(vector)) {
         responder_values <- info_data$responder
         if(!all(is.na(responder_values)) && length(responder_values) > 0) {
           vector_responder <- c(vector_responder, vector[q])
-          cat(paste0("✓ 数据集 ", vector[q], " 包含有效的responder列\n"))
+          cat(paste0("OK dataset ", vector[q], " has a valid responder column\n"))
         } else {
-          cat(paste0("⚠ 警告: ", vector[q], " 的responder列全为NA或为空\n"))
+          cat(paste0("WARNING: ", vector[q], " has a responder column that is entirely NA or empty\n"))
         }
       } else {
-        cat(paste0("⚠ 警告: ", vector[q], " 没有responder列\n"))
+        cat(paste0("WARNING: ", vector[q], " has no responder column\n"))
       }
     } else {
-      cat(paste0("⚠ 警告: ", vector[q], " 的info数据加载失败\n"))
+      cat(paste0("WARNING: ", vector[q], " failed to load its info table\n"))
     }
   } else {
-    cat(paste0("⚠ 警告: ", vector[q], " 的数据文件不存在\n"))
+    cat(paste0("WARNING: ", vector[q], " data file not found\n"))
   }
 }
 
-cat("\n包含有效responder列的数据集:\n")
+cat("\nDatasets with a valid responder column:\n")
 print(vector_responder)
-cat("有效数据集数量:", length(vector_responder), "\n")
+cat("Number of valid datasets:", length(vector_responder), "\n")
 
 # Stop if no valid dataset is available
 if(length(vector_responder) == 0) {
-  stop("没有找到包含有效responder列的数据集")
+  stop("No dataset has a valid responder column")
 }
 
 # Load the required functions and gene sets
@@ -518,7 +518,7 @@ all_WNT_scores <- list()
 
 for(i in 1:length(vector_responder)) {
   dataset_name <- vector_responder[i]
-  cat("正在处理数据集:", dataset_name, "\n")
+  cat("Processing dataset:", dataset_name, "\n")
 
   tryCatch({
     # Get the expression data and clinical information
@@ -557,10 +557,10 @@ for(i in 1:length(vector_responder)) {
 
     # Save results
     all_WNT_scores[[dataset_name]] <- WNT_score_pro
-    cat("✓ 成功处理数据集:", dataset_name, "\n")
+    cat("OK processed dataset:", dataset_name, "\n")
 
   }, error = function(e) {
-    cat("✗ 处理数据集", dataset_name, "时出错:", e$message, "\n")
+    cat("FAILED on dataset", dataset_name, ": error:", e$message, "\n")
   })
 }
 
@@ -669,7 +669,7 @@ for (q in 1:length(vector)) {
   exp=get(vector[q])
   if("CD274" %in% rownames(exp)) {
     filtered_vector = c(filtered_vector, vector[q])
-    print(paste0(vector[q], ": ", length(colnames(exp)), "个样本"))
+    print(paste0(vector[q], ": ", length(colnames(exp)), " samples"))
     load(paste0(vector[q],"_info.Rdata"))
   }
 }
@@ -786,12 +786,12 @@ for (q in 1:length(vector)) {
       # Check that neither column is entirely NA
       if(!all(is.na(info_data$os.time)) && !all(is.na(info_data$os.status))) {
         filtered_vector <- c(filtered_vector, vector[q])
-        print(paste0(vector[q], ": ", length(colnames(exp)), "个样本"))
+        print(paste0(vector[q], ": ", length(colnames(exp)), " samples"))
       } else {
-        print(paste0(vector[q], ": 包含CD274但os.time或os.status全为NA"))
+        print(paste0(vector[q], ": CD274 present but os.time or os.status all NA"))
       }
     } else {
-      print(paste0(vector[q], ": 包含CD274但缺少os.time或os.status列"))
+      print(paste0(vector[q], ": CD274 present but os.time or os.status missing"))
     }
   }
 }
@@ -914,12 +914,12 @@ for (q in 1:length(vector)) {
       # Check that neither column is entirely NA
       if(!all(is.na(info_data$pfs.time)) && !all(is.na(info_data$pfs.status))) {
         filtered_vector <- c(filtered_vector, vector[q])
-        print(paste0(vector[q], ": ", length(colnames(exp)), "个样本"))
+        print(paste0(vector[q], ": ", length(colnames(exp)), " samples"))
       } else {
-        print(paste0(vector[q], ": 包含CD274但pfs.time或pfs.status全为NA"))
+        print(paste0(vector[q], ": CD274 present but pfs.time or pfs.status all NA"))
       }
     } else {
-      print(paste0(vector[q], ": 包含CD274但缺少pfs.time或pfs.status列"))
+      print(paste0(vector[q], ": CD274 present but pfs.time or pfs.status missing"))
     }
   }
 }
@@ -1039,7 +1039,7 @@ for (q in 1:length(vector)) {
 
   if(column_exists && data_valid) {
     filtered_vector <- c(filtered_vector, vector[q])
-    print(paste0(vector[q], ": 通过检查，", length(colnames(exp)), "个样本"))
+    print(paste0(vector[q], ": passed the check, ", length(colnames(exp)), " samples"))
   }
 }
 estimate_wilcox_p.data_all=data.frame()
@@ -1152,7 +1152,7 @@ for (q in 1:length(vector)) {
 
   if(columns_exist && data_valid) {
     filtered_vector <- c(filtered_vector, vector[q])
-    print(paste0(vector[q], ": 通过检查，", length(colnames(exp)), "个样本"))
+    print(paste0(vector[q], ": passed the check, ", length(colnames(exp)), " samples"))
   }
 }
 vector = filtered_vector
@@ -1270,7 +1270,7 @@ for (q in 1:length(vector)) {
 
   if(columns_exist && data_valid) {
     filtered_vector <- c(filtered_vector, vector[q])
-    print(paste0(vector[q], ": 通过检查，", length(colnames(exp)), "个样本"))
+    print(paste0(vector[q], ": passed the check, ", length(colnames(exp)), " samples"))
   }
 }
 vector = filtered_vector
@@ -1777,28 +1777,28 @@ for (q in 1:length(vector)) {
         responder_values <- info_data$responder
         if(!all(is.na(responder_values)) && length(responder_values) > 0) {
           vector_responder <- c(vector_responder, vector[q])
-          cat(paste0("✓ 数据集 ", vector[q], " 包含有效的responder列\n"))
+          cat(paste0("OK dataset ", vector[q], " has a valid responder column\n"))
         } else {
-          cat(paste0("⚠ 警告: ", vector[q], " 的responder列全为NA或为空\n"))
+          cat(paste0("WARNING: ", vector[q], " has a responder column that is entirely NA or empty\n"))
         }
       } else {
-        cat(paste0("⚠ 警告: ", vector[q], " 没有responder列\n"))
+        cat(paste0("WARNING: ", vector[q], " has no responder column\n"))
       }
     } else {
-      cat(paste0("⚠ 警告: ", vector[q], " 的info数据加载失败\n"))
+      cat(paste0("WARNING: ", vector[q], " failed to load its info table\n"))
     }
   } else {
-    cat(paste0("⚠ 警告: ", vector[q], " 的数据文件不存在\n"))
+    cat(paste0("WARNING: ", vector[q], " data file not found\n"))
   }
 }
 
-cat("\n包含有效responder列的数据集:\n")
+cat("\nDatasets with a valid responder column:\n")
 print(vector_responder)
-cat("有效数据集数量:", length(vector_responder), "\n")
+cat("Number of valid datasets:", length(vector_responder), "\n")
 
 # Stop if no valid dataset is available
 if(length(vector_responder) == 0) {
-  stop("没有找到包含有效responder列的数据集")
+  stop("No dataset has a valid responder column")
 }
 
 # Load the required functions and gene sets
@@ -1895,31 +1895,31 @@ for (q in 1:length(vector)) {
         if(!all(is.na(os_time_values)) && length(os_time_values) > 0 &&
            !all(is.na(os_status_values)) && length(os_status_values) > 0) {
           vector_survival <- c(vector_survival, vector[q])
-          cat(paste0("✓ 数据集 ", vector[q], " 包含有效的os.time和os.status列\n"))
+          cat(paste0("OK dataset ", vector[q], " has valid os.time and os.status columns\n"))
         } else {
-          cat(paste0("⚠ 警告: ", vector[q], " 的os.time或os.status列全为NA或为空\n"))
+          cat(paste0("WARNING: ", vector[q], " has os.time or os.status entirely NA or empty\n"))
         }
       } else {
         missing_cols <- c()
         if(!has_os_time) missing_cols <- c(missing_cols, "os.time")
         if(!has_os_status) missing_cols <- c(missing_cols, "os.status")
-        cat(paste0("⚠ 警告: ", vector[q], " 缺少列: ", paste(missing_cols, collapse = ", "), "\n"))
+        cat(paste0("WARNING: ", vector[q], " missing columns: ", paste(missing_cols, collapse = ", "), "\n"))
       }
     } else {
-      cat(paste0("⚠ 警告: ", vector[q], " 的info数据加载失败\n"))
+      cat(paste0("WARNING: ", vector[q], " failed to load its info table\n"))
     }
   } else {
-    cat(paste0("⚠ 警告: ", vector[q], " 的数据文件不存在\n"))
+    cat(paste0("WARNING: ", vector[q], " data file not found\n"))
   }
 }
 
-cat("\n包含有效os.time和os.status列的数据集:\n")
+cat("\nDatasets with valid os.time and os.status columns:\n")
 print(vector_survival)
-cat("有效数据集数量:", length(vector_survival), "\n")
+cat("Number of valid datasets:", length(vector_survival), "\n")
 library(IOBR)
 # Stop if no valid dataset is available
 if(length(vector_survival) == 0) {
-  stop("没有找到包含有效os.time和os.status列的数据集")
+  stop("No dataset has valid os.time and os.status columns")
 }
 
 # Load the required functions and gene sets
@@ -2021,31 +2021,31 @@ for (q in 1:length(vector)) {
         if(!all(is.na(pfs_time_values)) && length(pfs_time_values) > 0 &&
            !all(is.na(pfs_status_values)) && length(pfs_status_values) > 0) {
           vector_survival <- c(vector_survival, vector[q])
-          cat(paste0("✓ 数据集 ", vector[q], " 包含有效的pfs.time和pfs.status列\n"))
+          cat(paste0("OK dataset ", vector[q], " has valid pfs.time and pfs.status columns\n"))
         } else {
-          cat(paste0("⚠ 警告: ", vector[q], " 的pfs.time或pfs.status列全为NA或为空\n"))
+          cat(paste0("WARNING: ", vector[q], " has pfs.time or pfs.status entirely NA or empty\n"))
         }
       } else {
         missing_cols <- c()
         if(!has_pfs_time) missing_cols <- c(missing_cols, "pfs.time")
         if(!has_pfs_status) missing_cols <- c(missing_cols, "pfs.status")
-        cat(paste0("⚠ 警告: ", vector[q], " 缺少列: ", paste(missing_cols, collapse = ", "), "\n"))
+        cat(paste0("WARNING: ", vector[q], " missing columns: ", paste(missing_cols, collapse = ", "), "\n"))
       }
     } else {
-      cat(paste0("⚠ 警告: ", vector[q], " 的info数据加载失败\n"))
+      cat(paste0("WARNING: ", vector[q], " failed to load its info table\n"))
     }
   } else {
-    cat(paste0("⚠ 警告: ", vector[q], " 的数据文件不存在\n"))
+    cat(paste0("WARNING: ", vector[q], " data file not found\n"))
   }
 }
 
-cat("\n包含有效pfs.time和pfs.status列的数据集:\n")
+cat("\nDatasets with valid pfs.time and pfs.status columns:\n")
 print(vector_survival)
-cat("有效数据集数量:", length(vector_survival), "\n")
+cat("Number of valid datasets:", length(vector_survival), "\n")
 library(IOBR)
 # Stop if no valid dataset is available
 if(length(vector_survival) == 0) {
-  stop("没有找到包含有效os.time和os.status列的数据集")
+  stop("No dataset has valid os.time and os.status columns")
 }
 
 # Load the required functions and gene sets

@@ -117,6 +117,6 @@ of each script.
 
 ## Author
 
-Dingkang Zhao (赵定康)
+Dingkang Zhao
 
 Email: <dingkang.25@intl.zju.edu.cn>

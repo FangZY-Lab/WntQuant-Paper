@@ -384,7 +384,7 @@ robustness_results <- list()
 
 for (repeat_idx in 1:n_repeats) {
   set.seed(Sys.time() + sample(1:10000, 1))
-  print(paste("开始第", repeat_idx, "次重复"))
+  print(paste("Starting round ", repeat_idx, ""))
 
   # Randomly drop 30% of the studies
   n_to_delete <- round(length(vector_marker) * delete_ratio)
@@ -393,8 +393,8 @@ for (repeat_idx in 1:n_repeats) {
   # Build the vector of datasets to keep (drop every dataset belonging to the excluded study)
   vector_remaining <- vector_all[!grepl(paste0(random_studies, collapse = "|"), vector_all)]
 
-  print(paste("删除了以下研究:", paste(random_studies, collapse = ", ")))
-  print(paste("剩余数据集数量:", length(vector_remaining)))
+  print(paste("Removed studies:", paste(random_studies, collapse = ", ")))
+  print(paste("Datasets remaining:", length(vector_remaining)))
 
   # Read the group information
   group_HL <- read.delim("WNT_HL.txt", header = TRUE, sep = '\t', check.names = F)
@@ -634,12 +634,12 @@ for (repeat_idx in 1:n_repeats) {
   robustness_results[[repeat_idx]] <- CMS_result
   names(robustness_results)[repeat_idx] <- paste0("repeat_", repeat_idx)
 
-  print(paste("完成第", repeat_idx, "次重复"))
+  print(paste("Finished round ", repeat_idx, ""))
 }
 
 # Save all results
 save(robustness_results, file = "robustness_30percent_30repeats.Rdata")
-print("鲁棒性测试完成！")
+print("Robustness test complete")
 ################################################################################Robustness test (randomly delete 30% of genes per dataset)####
 rm(list=ls())
 gc()
@@ -673,7 +673,7 @@ robustness_results <- list()
 
 for (repeat_idx in 1:n_repeats) {
   set.seed(Sys.time() + sample(1:10000, 1))
-  print(paste("开始第", repeat_idx, "次重复"))
+  print(paste("Starting round ", repeat_idx, ""))
 
   # Randomly delete 30% of the genes in each dataset
   modified_data <- list()
@@ -689,7 +689,7 @@ for (repeat_idx in 1:n_repeats) {
     # Build the modified data with the selected genes removed
     modified_data[[dataset_name]] <- original_data[!rownames(original_data) %in% genes_to_delete, ]
 
-    print(paste("数据集", dataset_name, "删除了", n_genes_to_delete, "个基因"))
+    print(paste("dataset", dataset_name, "removed", n_genes_to_delete, " genes"))
   }
 
   # Store the modified data in the global environment for later use
@@ -936,7 +936,7 @@ for (repeat_idx in 1:n_repeats) {
   robustness_results[[repeat_idx]] <- CMS_result
   names(robustness_results)[repeat_idx] <- paste0("repeat_", repeat_idx)
 
-  print(paste("完成第", repeat_idx, "次重复"))
+  print(paste("Finished round ", repeat_idx, ""))
 
   # Clean the environment for the next replicate
   rm(list = setdiff(ls(), c("all_data", "all_data_G", "vector_all", "n_repeats",
@@ -946,7 +946,7 @@ for (repeat_idx in 1:n_repeats) {
 
 # Save all results
 save(robustness_results, file = "robustness_30percent_genes_30repeats.Rdata")
-print("基因层面鲁棒性测试完成！")
+print("Gene-level robustness test complete")
 ################################################################################Robustness test (add Gaussian noise to each dataset)####
 rm(list=ls())
 gc()
@@ -980,7 +980,7 @@ robustness_results <- list()
 
 for (repeat_idx in 1:n_repeats) {
   set.seed(Sys.time() + sample(1:10000, 1))
-  print(paste("开始第", repeat_idx, "次重复"))
+  print(paste("Starting round ", repeat_idx, ""))
 
   # Add Gaussian noise to each dataset
   noisy_data <- list()
@@ -1007,7 +1007,7 @@ for (repeat_idx in 1:n_repeats) {
     # Convert to a data frame
     noisy_data[[dataset_name]] <- as.data.frame(noisy_data[[dataset_name]])
 
-    print(paste("数据集", dataset_name, "添加了标准差为", round(noise_sd, 4), "的高斯噪声"))
+    print(paste("dataset", dataset_name, "Added Gaussian noise with SD ", round(noise_sd, 4), ""))
   }
 
   # Store the noisy data in the global environment for later use
@@ -1255,7 +1255,7 @@ for (repeat_idx in 1:n_repeats) {
   robustness_results[[repeat_idx]] <- CMS_result
   names(robustness_results)[repeat_idx] <- paste0("repeat_", repeat_idx)
 
-  print(paste("完成第", repeat_idx, "次重复"))
+  print(paste("Finished round ", repeat_idx, ""))
 
   # Clean the environment for the next replicate
   rm(list = setdiff(ls(), c("all_data", "all_data_G", "vector_all", "n_repeats",
@@ -1265,7 +1265,7 @@ for (repeat_idx in 1:n_repeats) {
 
 # Save all results
 save(robustness_results, file = "robustness_gaussian_noise_30repeats.Rdata")
-print("高斯噪声鲁棒性测试完成！")
+print("Gaussian-noise robustness test complete")
 
 ################################################################################Robustness visualisation 1####
 rm(list=ls())
@@ -1608,7 +1608,7 @@ geneset_count_summary <- data.frame(
 
 for (sim in similarity_values) {
   print(paste("========================================"))
-  print(paste("开始计算 similarity =", sim))
+  print(paste("Computing similarity =", sim))
 
   # Read the group information
   group_HL <- read.delim("WNT_HL.txt", header = TRUE, sep = '\t', check.names = F)
@@ -1788,7 +1788,7 @@ for (sim in similarity_values) {
   n_inh <- ncol(inhibition_geneset)
   n_total <- n_act + n_inh
 
-  print(paste("【基因集统计】激活基因集数:", n_act, "| 抑制基因集数:", n_inh, "| 总基因集数:", n_total))
+  print(paste("[Gene sets] activated:", n_act, "| inhibited:", n_inh, "| total:", n_total))
 
   # Record in the summary table
   geneset_count_summary <- rbind(geneset_count_summary, data.frame(
@@ -1867,15 +1867,15 @@ for (sim in similarity_values) {
     total_genesets = n_total
   )
 
-  print(paste("完成 similarity =", sim))
+  print(paste("Done similarity =", sim))
 }
 
 # Save all results and the summary table of gene-set counts
 save(similarity_results, geneset_count_summary, file = "similarity_sensitivity_results.Rdata")
 
 print("========================================")
-print("Similarity 参数敏感性分析及基因集统计完成！")
-print("基因集个数统计汇总：")
+print("Similarity sensitivity analysis and gene-set tally complete")
+print("Gene-set count summary:")
 print(geneset_count_summary)
 
 
@@ -2062,7 +2062,7 @@ geneset_count_summary_methods <- data.frame(
 for (method_idx in 1:length(de_redundant_methods)) {
   current_method <- de_redundant_methods[method_idx]
   print(paste("################################################"))
-  print(paste("开始处理去冗余方法 [", method_idx, "/ 7]:", current_method, "| 固定 similarity =", fixed_similarity))
+  print(paste("Running redundancy method [", method_idx, "/ 7]:", current_method, "| fixed similarity =", fixed_similarity))
   print(paste("################################################"))
 
   # Read the group information
@@ -2243,7 +2243,7 @@ for (method_idx in 1:length(de_redundant_methods)) {
   n_inh <- ncol(inhibition_geneset)
   n_total <- n_act + n_inh
 
-  print(paste("【基因集统计】激活:", n_act, "| 抑制:", n_inh, "| 总计:", n_total))
+  print(paste("[Gene sets] activated:", n_act, "| inhibited:", n_inh, "| total:", n_total))
 
   # Record in the summary table
   geneset_count_summary_methods <- rbind(geneset_count_summary_methods, data.frame(
@@ -2321,15 +2321,15 @@ for (method_idx in 1:length(de_redundant_methods)) {
     total_genesets = n_total
   )
 
-  print(paste("完成方法:", current_method))
+  print(paste("Done method:", current_method))
 }
 
 # Save the final output of every method together with the gene-set summary
 save(de_redundant_results, geneset_count_summary_methods, file = "de_redundant_fixed_sim0.5_results.Rdata")
 
 print("========================================")
-print("固定 similarity=0.5 下所有 7 种方法的计算全部完成！")
-print("基因集统计汇总：")
+print("All 7 methods finished at similarity = 0.5")
+print("Gene-set summary:")
 print(geneset_count_summary_methods)
 library(ggplot2)
 library(dplyr)

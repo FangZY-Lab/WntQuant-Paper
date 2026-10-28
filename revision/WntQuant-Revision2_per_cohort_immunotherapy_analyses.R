@@ -36,19 +36,19 @@ rm(list=ls())
 gc()
 process_expression_matrix <- function(expr_matrix) {
   if (any(expr_matrix < 0, na.rm = TRUE)) {
-    cat("检测到小于0的值，进行最小值校正...\n")
+    cat("Values below 0 detected; applying a minimum-offset correction...\n")
     min_val <- min(expr_matrix, na.rm = TRUE)
     expr_matrix <- expr_matrix - min_val
-    cat("已减去最小值", min_val, "\n")
+    cat("Minimum value subtracted", min_val, "\n")
   } else {
-    cat("未检测到小于0的值\n")
+    cat("No values below 0 detected\n")
   }
   if (any(expr_matrix > 30, na.rm = TRUE)) {
-    cat("检测到大于30的值，进行log2(x+1)转换...\n")
+    cat("Values above 30 detected; applying log2(x+1)...\n")
     expr_matrix <- log2(expr_matrix + 1)
-    cat("已完成log2转换\n")
+    cat("log2 transformation done\n")
   } else {
-    cat("数值在0-30范围内，保持原值\n")
+    cat("Values within 0-30; left unchanged\n")
   }
   return(expr_matrix)
 }
@@ -65,7 +65,7 @@ convert_counts_to_cpm = function(expr_matrix) {
     mat=as.data.frame(mat)
     return(mat)
   } else {
-    cat("未识别为counts矩阵，保持原样\n")
+    cat("Not recognised as a counts matrix; left unchanged\n")
     return(mat)
   }
 }
@@ -81,38 +81,38 @@ for(i in 1:length(datasets)){
   match_counts["geo_accession"] = sum(ici_precog_info_single$geo_accession %in% rownames(ici_precog_exp))
   best_match_col = names(which.max(match_counts))
   ici_precog_exp_single = ici_precog_exp[rownames(ici_precog_exp) %in% ici_precog_info_single[[best_match_col]], ]
-  cat("各列的匹配数量:\n")
+  cat("Matches per column:\n")
   print(match_counts)
-  cat("选择的最佳列:", best_match_col, "\n")
-  cat("筛选后的行数:", nrow(ici_precog_exp_single), "\n")
+  cat("Best column selected:", best_match_col, "\n")
+  cat("Rows after filtering:", nrow(ici_precog_exp_single), "\n")
   ici_precog_exp_single=as.data.frame(t(ici_precog_exp_single))
   has_nan <- any(sapply(ici_precog_exp_single, function(x) any(is.nan(x))))
 
   if (has_nan) {
-    cat("数据中存在NaN值，正在转换为NA...\n")
+    cat("NaN values found; converting to NA...\n")
 
     mat <- as.matrix(ici_precog_exp_single)
     mat[is.nan(mat)] <- NA
     ici_precog_exp_single <- as.data.frame(mat)
 
-    cat("NaN值转换完成！\n")
+    cat("NaN conversion done\n")
   } else {
-    cat("数据中不存在NaN值。\n")
+    cat("No NaN values found\n")
   }
   ici_precog_exp_single = ici_precog_exp_single[!apply(ici_precog_exp_single, 1, function(x) all(is.na(x))), ]
   if (any(is.na(ici_precog_exp_single))) {
-    cat("数据中存在缺失值，开始使用KNN算法进行填补...\n")
-    cat("缺失值总数:", sum(is.na(ici_precog_exp_single)), "\n")
+    cat("Missing values found; imputing with KNN...\n")
+    cat("Total missing values:", sum(is.na(ici_precog_exp_single)), "\n")
     library(DMwR2)
     ici_precog_exp_single = knnImputation(ici_precog_exp_single, k = 3)
-    cat("KNN缺失值填补完成！\n")
+    cat("KNN imputation done\n")
     if (any(is.na(ici_precog_exp_single))) {
-      cat("警告：填补后仍然存在缺失值，数量:", sum(is.na(ici_precog_exp_single)), "\n")
+      cat("Warning: missing values remain after imputation:", sum(is.na(ici_precog_exp_single)), "\n")
     } else {
-      cat("所有缺失值已成功填补！\n")
+      cat("All missing values imputed\n")
     }
   } else {
-    cat("数据中不存在缺失值，无需进行填补操作。\n")
+    cat("No missing values; nothing to impute\n")
   }
   #@@@#
   ici_precog_exp_single = convert_counts_to_cpm(ici_precog_exp_single)
@@ -134,13 +134,13 @@ for(dataset in datasets) {
   if(exists(dataset)) {
     save_file <- paste0(dataset, ".Rdata")
     save(list = dataset, file = save_file)
-    cat("已保存:", save_file, "\n")
+    cat("Saved:", save_file, "\n")
   }
   info_name <- paste0(dataset, "_info")
   if(exists(info_name)) {
     save_info_file <- paste0(info_name, ".Rdata")
     save(list = info_name, file = save_info_file)
-    cat("已保存:", save_info_file, "\n")
+    cat("Saved:", save_info_file, "\n")
   }
 }
 ################################################################################PRJNA482620####
@@ -1578,31 +1578,31 @@ for (q in 1:length(vector)) {
         if(!all(is.na(os_time_values)) && length(os_time_values) > 0 &&
            !all(is.na(os_status_values)) && length(os_status_values) > 0) {
           vector_survival <- c(vector_survival, vector[q])
-          cat(paste0("✓ 数据集 ", vector[q], " 包含有效的os.time和os.status列\n"))
+          cat(paste0("OK dataset ", vector[q], " has valid os.time and os.status columns\n"))
         } else {
-          cat(paste0("⚠ 警告: ", vector[q], " 的os.time或os.status列全为NA或为空\n"))
+          cat(paste0("WARNING: ", vector[q], " has os.time or os.status entirely NA or empty\n"))
         }
       } else {
         missing_cols <- c()
         if(!has_os_time) missing_cols <- c(missing_cols, "os.time")
         if(!has_os_status) missing_cols <- c(missing_cols, "os.status")
-        cat(paste0("⚠ 警告: ", vector[q], " 缺少列: ", paste(missing_cols, collapse = ", "), "\n"))
+        cat(paste0("WARNING: ", vector[q], " missing columns: ", paste(missing_cols, collapse = ", "), "\n"))
       }
     } else {
-      cat(paste0("⚠ 警告: ", vector[q], " 的info数据加载失败\n"))
+      cat(paste0("WARNING: ", vector[q], " failed to load its info table\n"))
     }
   } else {
-    cat(paste0("⚠ 警告: ", vector[q], " 的数据文件不存在\n"))
+    cat(paste0("WARNING: ", vector[q], " data file not found\n"))
   }
 }
 
-cat("\n包含有效os.time和os.status列的数据集:\n")
+cat("\nDatasets with valid os.time and os.status columns:\n")
 print(vector_survival)
-cat("有效数据集数量:", length(vector_survival), "\n")
+cat("Number of valid datasets:", length(vector_survival), "\n")
 library(IOBR)
 # Stop if no valid dataset is available
 if(length(vector_survival) == 0) {
-  stop("没有找到包含有效os.time和os.status列的数据集")
+  stop("No dataset has valid os.time and os.status columns")
 }
 
 # Load the required functions and gene sets
@@ -1715,31 +1715,31 @@ for (q in 1:length(vector)) {
         if(!all(is.na(pfs_time_values)) && length(pfs_time_values) > 0 &&
            !all(is.na(pfs_status_values)) && length(pfs_status_values) > 0) {
           vector_survival <- c(vector_survival, vector[q])
-          cat(paste0("✓ 数据集 ", vector[q], " 包含有效的pfs.time和pfs.status列\n"))
+          cat(paste0("OK dataset ", vector[q], " has valid pfs.time and pfs.status columns\n"))
         } else {
-          cat(paste0("⚠ 警告: ", vector[q], " 的pfs.time或pfs.status列全为NA或为空\n"))
+          cat(paste0("WARNING: ", vector[q], " has pfs.time or pfs.status entirely NA or empty\n"))
         }
       } else {
         missing_cols <- c()
         if(!has_pfs_time) missing_cols <- c(missing_cols, "pfs.time")
         if(!has_pfs_status) missing_cols <- c(missing_cols, "pfs.status")
-        cat(paste0("⚠ 警告: ", vector[q], " 缺少列: ", paste(missing_cols, collapse = ", "), "\n"))
+        cat(paste0("WARNING: ", vector[q], " missing columns: ", paste(missing_cols, collapse = ", "), "\n"))
       }
     } else {
-      cat(paste0("⚠ 警告: ", vector[q], " 的info数据加载失败\n"))
+      cat(paste0("WARNING: ", vector[q], " failed to load its info table\n"))
     }
   } else {
-    cat(paste0("⚠ 警告: ", vector[q], " 的数据文件不存在\n"))
+    cat(paste0("WARNING: ", vector[q], " data file not found\n"))
   }
 }
 
-cat("\n包含有效pfs.time和pfs.status列的数据集:\n")
+cat("\nDatasets with valid pfs.time and pfs.status columns:\n")
 print(vector_survival)
-cat("有效数据集数量:", length(vector_survival), "\n")
+cat("Number of valid datasets:", length(vector_survival), "\n")
 library(IOBR)
 # Stop if no valid dataset is available
 if(length(vector_survival) == 0) {
-  stop("没有找到包含有效os.time和os.status列的数据集")
+  stop("No dataset has valid os.time and os.status columns")
 }
 
 # Load the required functions and gene sets

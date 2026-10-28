@@ -299,7 +299,7 @@ wnt_IMvigor_desert <- wnt_IMvigor[wnt_IMvigor$`Immune phenotype` %in% c("desert"
 
 wnt_IMvigor_desert_prognosis <- wnt_IMvigor_desert[, c("activity_score", "os", "censOS")]
 
-cat("Desert 组样本量：", nrow(wnt_IMvigor_desert_prognosis), "\n")
+cat("Desert group n = ", nrow(wnt_IMvigor_desert_prognosis), "\n")
 
 # ========== 3. Find the optimal cut point with surv_cutpoint
 res.cut <- surv_cutpoint(
@@ -310,7 +310,7 @@ res.cut <- surv_cutpoint(
 )
 
 summary(res.cut)
-cat("最佳截断点：", res.cut$activity_score$cutpoint, "\n")
+cat("Optimal cut point: ", res.cut$activity_score$cutpoint, "\n")
 
 res.cat <- surv_categorize(res.cut)
 table(res.cat$activity_score)
@@ -430,7 +430,7 @@ wnt_IMvigor_excluded <- wnt_IMvigor[wnt_IMvigor$`Immune phenotype` %in% c("exclu
 
 wnt_IMvigor_excluded_prognosis <- wnt_IMvigor_excluded[, c("activity_score", "os", "censOS")]
 
-cat("Excluded 组样本量：", nrow(wnt_IMvigor_excluded_prognosis), "\n")
+cat("Excluded group n = ", nrow(wnt_IMvigor_excluded_prognosis), "\n")
 
 # ========== 3. Find the optimal cut point with surv_cutpoint
 res.cut <- surv_cutpoint(
@@ -441,7 +441,7 @@ res.cut <- surv_cutpoint(
 )
 
 summary(res.cut)
-cat("最佳截断点：", res.cut$activity_score$cutpoint, "\n")
+cat("Optimal cut point: ", res.cut$activity_score$cutpoint, "\n")
 
 res.cat <- surv_categorize(res.cut)
 table(res.cat$activity_score)
@@ -561,7 +561,7 @@ wnt_IMvigor_inflamed <- wnt_IMvigor[wnt_IMvigor$`Immune phenotype` %in% c("infla
 
 wnt_IMvigor_inflamed_prognosis <- wnt_IMvigor_inflamed[, c("activity_score", "os", "censOS")]
 
-cat("Inflamed 组样本量：", nrow(wnt_IMvigor_inflamed_prognosis), "\n")
+cat("Inflamed group n = ", nrow(wnt_IMvigor_inflamed_prognosis), "\n")
 
 # ========== 3. Find the optimal cut point with surv_cutpoint
 res.cut <- surv_cutpoint(
@@ -572,7 +572,7 @@ res.cut <- surv_cutpoint(
 )
 
 summary(res.cut)
-cat("最佳截断点：", res.cut$activity_score$cutpoint, "\n")
+cat("Optimal cut point: ", res.cut$activity_score$cutpoint, "\n")
 
 res.cat <- surv_categorize(res.cut)
 table(res.cat$activity_score)
@@ -692,7 +692,7 @@ wnt_IMvigor_all <- wnt_IMvigor
 
 wnt_IMvigor_all_prognosis <- wnt_IMvigor_all[, c("activity_score", "os", "censOS")]
 
-cat("全部肿瘤样本量：", nrow(wnt_IMvigor_all_prognosis), "\n")
+cat("All tumour samples n = ", nrow(wnt_IMvigor_all_prognosis), "\n")
 
 # ========== 3. Find the optimal cut point with surv_cutpoint
 res.cut <- surv_cutpoint(
@@ -703,7 +703,7 @@ res.cut <- surv_cutpoint(
 )
 
 summary(res.cut)
-cat("最佳截断点：", res.cut$activity_score$cutpoint, "\n")
+cat("Optimal cut point: ", res.cut$activity_score$cutpoint, "\n")
 
 res.cat <- surv_categorize(res.cut)
 table(res.cat$activity_score)
@@ -865,7 +865,7 @@ wnt_IMvigor_cold_prognosis <- wnt_IMvigor_cold[, c("activity_score", "os.time", 
 # Express time in months
 wnt_IMvigor_cold_prognosis$os.time <- wnt_IMvigor_cold_prognosis$os.time / 30
 
-cat("Cold 组样本量：", nrow(wnt_IMvigor_cold_prognosis), "\n")
+cat("Cold group n = ", nrow(wnt_IMvigor_cold_prognosis), "\n")
 
 # ========== 6. Find the optimal cut point in the Cold group with surv_cutpoint
 library(survival)
@@ -879,7 +879,7 @@ res.cut <- surv_cutpoint(
 )
 
 summary(res.cut)
-cat("Cold 组最佳截断点：", res.cut$activity_score$cutpoint, "\n")
+cat("Cold group optimal cut point: ", res.cut$activity_score$cutpoint, "\n")
 
 res.cat <- surv_categorize(res.cut)
 table(res.cat$activity_score)
@@ -1043,7 +1043,7 @@ wnt_IMvigor_cold_prognosis <- wnt_IMvigor_cold[, c("activity_score", "pfs.time",
 # Express time in months
 wnt_IMvigor_cold_prognosis$pfs.time <- wnt_IMvigor_cold_prognosis$pfs.time / 30
 
-cat("Cold 组样本量：", nrow(wnt_IMvigor_cold_prognosis), "\n")
+cat("Cold group n = ", nrow(wnt_IMvigor_cold_prognosis), "\n")
 
 # ========== 6. Find the optimal cut point in the Cold group with surv_cutpoint
 library(survival)
@@ -1057,7 +1057,7 @@ res.cut <- surv_cutpoint(
 )
 
 summary(res.cut)
-cat("Cold 组最佳截断点：", res.cut$activity_score$cutpoint, "\n")
+cat("Cold group optimal cut point: ", res.cut$activity_score$cutpoint, "\n")
 
 res.cat <- surv_categorize(res.cut)
 table(res.cat$activity_score)
@@ -1221,7 +1221,7 @@ wnt_IMvigor_cold_prognosis <- wnt_IMvigor_cold[, c("activity_score", "os.time", 
 # Express time in months
 wnt_IMvigor_cold_prognosis$os.time <- wnt_IMvigor_cold_prognosis$os.time / 30
 
-cat("Cold 组样本量：", nrow(wnt_IMvigor_cold_prognosis), "\n")
+cat("Cold group n = ", nrow(wnt_IMvigor_cold_prognosis), "\n")
 
 # ========== 6. Find the optimal cut point in the Cold group with surv_cutpoint
 library(survival)
@@ -1235,7 +1235,7 @@ res.cut <- surv_cutpoint(
 )
 
 summary(res.cut)
-cat("Cold 组最佳截断点：", res.cut$activity_score$cutpoint, "\n")
+cat("Cold group optimal cut point: ", res.cut$activity_score$cutpoint, "\n")
 
 res.cat <- surv_categorize(res.cut)
 table(res.cat$activity_score)
@@ -1399,7 +1399,7 @@ wnt_IMvigor_cold_prognosis <- wnt_IMvigor_cold[, c("activity_score", "pfs.time",
 # Express time in months
 wnt_IMvigor_cold_prognosis$pfs.time <- wnt_IMvigor_cold_prognosis$pfs.time / 30
 
-cat("Cold 组样本量：", nrow(wnt_IMvigor_cold_prognosis), "\n")
+cat("Cold group n = ", nrow(wnt_IMvigor_cold_prognosis), "\n")
 
 # ========== 6. Find the optimal cut point in the Cold group with surv_cutpoint
 library(survival)
@@ -1413,7 +1413,7 @@ res.cut <- surv_cutpoint(
 )
 
 summary(res.cut)
-cat("Cold 组最佳截断点：", res.cut$activity_score$cutpoint, "\n")
+cat("Cold group optimal cut point: ", res.cut$activity_score$cutpoint, "\n")
 
 res.cat <- surv_categorize(res.cut)
 table(res.cat$activity_score)
@@ -1577,7 +1577,7 @@ wnt_IMvigor_cold_prognosis <- wnt_IMvigor_cold[, c("activity_score", "os.time", 
 # Express time in months
 wnt_IMvigor_cold_prognosis$os.time <- wnt_IMvigor_cold_prognosis$os.time / 30
 
-cat("Cold 组样本量：", nrow(wnt_IMvigor_cold_prognosis), "\n")
+cat("Cold group n = ", nrow(wnt_IMvigor_cold_prognosis), "\n")
 
 # ========== 6. Find the optimal cut point in the Cold group with surv_cutpoint
 library(survival)
@@ -1591,7 +1591,7 @@ res.cut <- surv_cutpoint(
 )
 
 summary(res.cut)
-cat("Cold 组最佳截断点：", res.cut$activity_score$cutpoint, "\n")
+cat("Cold group optimal cut point: ", res.cut$activity_score$cutpoint, "\n")
 
 res.cat <- surv_categorize(res.cut)
 table(res.cat$activity_score)
@@ -1755,7 +1755,7 @@ wnt_IMvigor_cold_prognosis <- wnt_IMvigor_cold[, c("activity_score", "os.time", 
 # Express time in months
 wnt_IMvigor_cold_prognosis$os.time <- wnt_IMvigor_cold_prognosis$os.time / 30
 
-cat("Cold 组样本量：", nrow(wnt_IMvigor_cold_prognosis), "\n")
+cat("Cold group n = ", nrow(wnt_IMvigor_cold_prognosis), "\n")
 
 # ========== 6. Find the optimal cut point in the Cold group with surv_cutpoint
 library(survival)
@@ -1769,7 +1769,7 @@ res.cut <- surv_cutpoint(
 )
 
 summary(res.cut)
-cat("Cold 组最佳截断点：", res.cut$activity_score$cutpoint, "\n")
+cat("Cold group optimal cut point: ", res.cut$activity_score$cutpoint, "\n")
 
 res.cat <- surv_categorize(res.cut)
 table(res.cat$activity_score)
@@ -1933,7 +1933,7 @@ wnt_IMvigor_cold_prognosis <- wnt_IMvigor_cold[, c("activity_score", "os.time", 
 # Express time in months
 wnt_IMvigor_cold_prognosis$os.time <- wnt_IMvigor_cold_prognosis$os.time / 30
 
-cat("Cold 组样本量：", nrow(wnt_IMvigor_cold_prognosis), "\n")
+cat("Cold group n = ", nrow(wnt_IMvigor_cold_prognosis), "\n")
 
 # ========== 6. Find the optimal cut point in the Cold group with surv_cutpoint
 library(survival)
@@ -1947,7 +1947,7 @@ res.cut <- surv_cutpoint(
 )
 
 summary(res.cut)
-cat("Cold 组最佳截断点：", res.cut$activity_score$cutpoint, "\n")
+cat("Cold group optimal cut point: ", res.cut$activity_score$cutpoint, "\n")
 
 res.cat <- surv_categorize(res.cut)
 table(res.cat$activity_score)
@@ -2111,7 +2111,7 @@ wnt_IMvigor_cold_prognosis <- wnt_IMvigor_cold[, c("activity_score", "os.time", 
 # Express time in months
 wnt_IMvigor_cold_prognosis$os.time <- wnt_IMvigor_cold_prognosis$os.time / 30
 
-cat("Cold 组样本量：", nrow(wnt_IMvigor_cold_prognosis), "\n")
+cat("Cold group n = ", nrow(wnt_IMvigor_cold_prognosis), "\n")
 
 # ========== 6. Find the optimal cut point in the Cold group with surv_cutpoint
 library(survival)
@@ -2125,7 +2125,7 @@ res.cut <- surv_cutpoint(
 )
 
 summary(res.cut)
-cat("Cold 组最佳截断点：", res.cut$activity_score$cutpoint, "\n")
+cat("Cold group optimal cut point: ", res.cut$activity_score$cutpoint, "\n")
 
 res.cat <- surv_categorize(res.cut)
 table(res.cat$activity_score)
@@ -2289,7 +2289,7 @@ wnt_IMvigor_cold_prognosis <- wnt_IMvigor_cold[, c("activity_score", "pfs.time",
 # Express time in months
 wnt_IMvigor_cold_prognosis$pfs.time <- wnt_IMvigor_cold_prognosis$pfs.time / 30
 
-cat("Cold 组样本量：", nrow(wnt_IMvigor_cold_prognosis), "\n")
+cat("Cold group n = ", nrow(wnt_IMvigor_cold_prognosis), "\n")
 
 # ========== 6. Find the optimal cut point in the Cold group with surv_cutpoint
 library(survival)
@@ -2303,7 +2303,7 @@ res.cut <- surv_cutpoint(
 )
 
 summary(res.cut)
-cat("Cold 组最佳截断点：", res.cut$activity_score$cutpoint, "\n")
+cat("Cold group optimal cut point: ", res.cut$activity_score$cutpoint, "\n")
 
 res.cat <- surv_categorize(res.cut)
 table(res.cat$activity_score)
@@ -2437,8 +2437,8 @@ wnt_IMvigor_cold <- wnt_IMvigor[wnt_IMvigor$KNN == "Cold", ]
 wnt_IMvigor_hot_prognosis  <- wnt_IMvigor_hot[,  c("activity_score", "os", "censOS")]
 wnt_IMvigor_cold_prognosis <- wnt_IMvigor_cold[, c("activity_score", "os", "censOS")]
 
-cat("Hot 组样本量：", nrow(wnt_IMvigor_hot_prognosis), "\n")
-cat("Cold 组样本量：", nrow(wnt_IMvigor_cold_prognosis), "\n")
+cat("Hot group n = ", nrow(wnt_IMvigor_hot_prognosis), "\n")
+cat("Cold group n = ", nrow(wnt_IMvigor_cold_prognosis), "\n")
 
 # ========== 3. Find the optimal cut point in the Cold group with surv_cutpoint
 res.cut <- surv_cutpoint(
@@ -2449,7 +2449,7 @@ res.cut <- surv_cutpoint(
 )
 
 summary(res.cut)
-cat("Cold 组最佳截断点：", res.cut$activity_score$cutpoint, "\n")
+cat("Cold group optimal cut point: ", res.cut$activity_score$cutpoint, "\n")
 
 res.cat <- surv_categorize(res.cut)
 table(res.cat$activity_score)
@@ -2589,7 +2589,7 @@ for (q in seq_along(vector)) {
 
   # Load only the expression matrix, not _G.Rdata
   if (!file.exists(data_file)) {
-    cat("跳过（文件不存在）：", dataset_name, "\n")
+    cat("Skipped (file not found): ", dataset_name, "\n")
     next
   }
 
@@ -2597,8 +2597,8 @@ for (q in seq_along(vector)) {
   load(data_file)
 
   if (!exists(dataset_name)) {
-    cat("跳过（未找到表达矩阵对象）：", dataset_name, "\n")
-    cat("  当前环境对象：", paste(ls(), collapse = ", "), "\n")
+    cat("Skipped (expression object not found): ", dataset_name, "\n")
+    cat("  Objects in the environment: ", paste(ls(), collapse = ", "), "\n")
     next
   }
   eset_tmp <- get(dataset_name)
@@ -2607,7 +2607,7 @@ for (q in seq_along(vector)) {
   res_knn <- tryCatch(
     tme_classifier(eset = eset_tmp, method = "knn", scale = TRUE),
     error = function(e) {
-      cat("KNN 失败：", dataset_name, "-", conditionMessage(e), "\n")
+      cat("KNN failed: ", dataset_name, "-", conditionMessage(e), "\n")
       NULL
     }
   )
@@ -2623,7 +2623,7 @@ for (q in seq_along(vector)) {
 
   all_data <- rbind(all_data, count_data)
 
-  cat("完成：", dataset_name,
+  cat("Done: ", dataset_name,
       " Hot =", sum(res_knn$group == "Hot"),
       " Cold =", sum(res_knn$group == "Cold"), "\n")
 }
@@ -2755,7 +2755,7 @@ for (i in seq_len(nrow(dataset_config))) {
   data_file <- file.path(wnt_dir, paste0(v, ".Rdata"))
 
   if (!file.exists(data_file)) {
-    cat("跳过（文件缺失）：", data_file, "\n")
+    cat("Skipped (file missing): ", data_file, "\n")
     next
   }
 
@@ -2763,8 +2763,8 @@ for (i in seq_len(nrow(dataset_config))) {
   load(data_file)
 
   if (!exists(v)) {
-    cat("跳过（未找到对象）：", v, "\n")
-    cat("  当前环境对象：", paste(ls(), collapse = ", "), "\n")
+    cat("Skipped (object not found): ", v, "\n")
+    cat("  Objects in the environment: ", paste(ls(), collapse = ", "), "\n")
     next
   }
   exp_tmp <- get(v)
@@ -2773,7 +2773,7 @@ for (i in seq_len(nrow(dataset_config))) {
   res_knn <- tryCatch(
     tme_classifier(eset = exp_tmp, method = "knn", scale = TRUE),
     error = function(e) {
-      cat("KNN 失败：", conditionMessage(e), "\n")
+      cat("KNN failed: ", conditionMessage(e), "\n")
       NULL
     }
   )
@@ -2786,7 +2786,7 @@ for (i in seq_len(nrow(dataset_config))) {
   cold_tags <- intersect(cold_tags, colnames(exp_tmp))
 
   if (length(cold_tags) < 5) {
-    cat("Cold 组样本太少，跳过：", length(cold_tags), "\n")
+    cat("Too few Cold samples, skipped: ", length(cold_tags), "\n")
     next
   }
 
@@ -2847,14 +2847,14 @@ for (i in seq_len(nrow(dataset_config))) {
 
   result_list[[paste0(title, "_", ep)]] <- df
 
-  cat("完成，指标列数 =", ncol(df) - 1, "\n")
+  cat("Done, metric columns = ", ncol(df) - 1, "\n")
 }
 
 # ---------- Save
 save(result_list, file = file.path(input_dir, "result_list.Rdata"))
 
-cat("\n=== 完成 ===\n")
-cat("数据集个数：", length(result_list), "\n")
+cat("\n=== done ===\n")
+cat("Number of datasets: ", length(result_list), "\n")
 print(names(result_list))
 ################################################################################Analysis of result_list####
 rm(list = ls())
@@ -3078,7 +3078,7 @@ data$Enrollment_IC     <- factor(data$Enrollment_IC, levels = c("IC0", "IC1", "I
 # ========== 3. Multivariable Cox regression (ECOG excluded, Met_status included)
 
 data_cc <- data[complete.cases(data[, c("OS", "CensOS", "WntQuant")]), ]
-cat("完整生存数据样本量：", nrow(data_cc), "\n")
+cat("Samples with complete survival data: ", nrow(data_cc), "\n")
 
 # Drop ECOG, add Met_status back
 multi_vars <- c("WntQuant", "BinaryResponse", "Sex",
@@ -3087,7 +3087,7 @@ multi_vars <- c("WntQuant", "BinaryResponse", "Sex",
                 "TCGA_subtype", "Enrollment_IC")
 
 multi_data <- data_cc[complete.cases(data_cc[, multi_vars]), ]
-cat("多因素分析样本量：", nrow(multi_data), "\n")
+cat("Samples in the multivariable model: ", nrow(multi_data), "\n")
 
 form_multi <- as.formula(
   paste0("Surv(OS, CensOS) ~ ", paste(multi_vars, collapse = " + "))
@@ -3104,7 +3104,7 @@ multi_res <- data.frame(
 )
 print(multi_res)
 
-cat("\n===== WntQuant 结果 =====\n")
+cat("\n===== WntQuant results =====\n")
 print(multi_res[grep("WntQuant", multi_res$Variable), ])
 
 # ========== 5. Forest plot (ggforest)
@@ -3245,7 +3245,7 @@ data$Enrollment_IC     <- factor(data$Enrollment_IC, levels = c("IC0", "IC1", "I
 # ========== 3. Multivariable Cox regression (ECOG and Met_status excluded)
 
 data_cc <- data[complete.cases(data[, c("OS", "CensOS", "WntQuant")]), ]
-cat("完整生存数据样本量：", nrow(data_cc), "\n")
+cat("Samples with complete survival data: ", nrow(data_cc), "\n")
 
 # Drop ECOG and Met_status
 multi_vars <- c("WntQuant", "BinaryResponse", "Sex",
@@ -3254,7 +3254,7 @@ multi_vars <- c("WntQuant", "BinaryResponse", "Sex",
                 "TCGA_subtype", "Enrollment_IC")
 
 multi_data <- data_cc[complete.cases(data_cc[, multi_vars]), ]
-cat("多因素分析样本量：", nrow(multi_data), "\n")
+cat("Samples in the multivariable model: ", nrow(multi_data), "\n")
 
 form_multi <- as.formula(
   paste0("Surv(OS, CensOS) ~ ", paste(multi_vars, collapse = " + "))
@@ -3271,7 +3271,7 @@ multi_res <- data.frame(
 )
 print(multi_res)
 
-cat("\n===== WntQuant 结果 =====\n")
+cat("\n===== WntQuant results =====\n")
 print(multi_res[grep("WntQuant", multi_res$Variable), ])
 
 # ========== 5. Forest plot (ggforest)

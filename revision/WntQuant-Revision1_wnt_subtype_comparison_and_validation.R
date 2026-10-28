@@ -4588,7 +4588,7 @@ p_data_all$geneset=sub("neg_score", "WntQuant_inhibition", p_data_all$geneset)
 # Export as an Excel sheet
 setwd("C:/Users/赵定康/Desktop/")
 write_xlsx(p_data_all, path = "benchmark_detailed_statistics.xlsx")
-cat("Excel 表格已成功导出到桌面：benchmark_detailed_statistics.xlsx\n")
+cat("Excel workbook exported to the desktop: benchmark_detailed_statistics.xlsx\n")
 ################################################################################Summary statistics (validation datasets)####
 rm(list=ls())
 gc()
@@ -4727,7 +4727,7 @@ p_data_all$geneset=sub("neg_score", "WntQuant_inhibition", p_data_all$geneset)
 # Export as an Excel sheet
 setwd("C:/Users/赵定康/Desktop/")
 write_xlsx(p_data_all, path = "testing_benchmark_detailed_statistics.xlsx")
-cat("Excel 表格已成功导出到桌面：testing_benchmark_detailed_statistics.xlsx\n")
+cat("Excel workbook exported to the desktop: testing_benchmark_detailed_statistics.xlsx\n")
 ################################################################################Multivariable Cox regression for OS####
 rm(list = ls())
 gc()
@@ -4799,7 +4799,7 @@ data_analysis <- data_analysis %>%
 dat_os_filtered <- data_analysis %>%
   filter(!is.na(osMo), !is.na(osStat), osMo > 0)
 
-cat("\n分析样本量:", nrow(dat_os_filtered), "\n")
+cat("\nSamples analysed:", nrow(dat_os_filtered), "\n")
 
 dat_os_filtered <- dat_os_filtered %>%
   mutate(
@@ -4821,7 +4821,7 @@ formula_full <- Surv(osMo, osStat) ~ cluster + age + gender +
   tnm + msi + cimp + kras_mut + braf_mut + cms_label
 
 fit_full <- coxph(formula_full, data = dat_os_filtered)
-cat("\n===== 主模型结果摘要 =====\n")
+cat("\n===== Main model summary =====\n")
 print(summary(fit_full))
 
 res_tidy <- tidy(fit_full, exponentiate = TRUE, conf.int = TRUE)
@@ -4970,7 +4970,7 @@ p_final <- forest(
 print(p_final)
 dev.off()
 
-cat("\n已取消缺失值行筛选，最新森林图已成功生成并保存至桌面：C:/Users/赵定康/Desktop/Multivariable_Cox_Forestplot.pdf\n")
+cat("\nMissing-value row filtering disabled; updated forest plot saved to the desktop: C:/Users/赵定康/Desktop/Multivariable_Cox_Forestplot.pdf\n")
 
 ################################################################################Multivariable Cox regression for RFS####
 rm(list = ls())
@@ -5044,7 +5044,7 @@ data_analysis <- data_analysis %>%
 dat_rfs_filtered <- data_analysis %>%
   filter(!is.na(rfsMo), !is.na(rfsStat), rfsMo > 0)
 
-cat("\nRFS 分析样本量:", nrow(dat_rfs_filtered), "\n")
+cat("\nRFS samples analysed:", nrow(dat_rfs_filtered), "\n")
 
 dat_rfs_filtered <- dat_rfs_filtered %>%
   mutate(
@@ -5066,7 +5066,7 @@ formula_full <- Surv(rfsMo, rfsStat) ~ cluster + age + gender +
   tnm + msi + cimp + kras_mut + braf_mut + cms_label
 
 fit_full <- coxph(formula_full, data = dat_rfs_filtered)
-cat("\n===== 主模型结果摘要 (RFS) =====\n")
+cat("\n===== Main model summary (RFS) =====\n")
 print(summary(fit_full))
 
 res_tidy <- tidy(fit_full, exponentiate = TRUE, conf.int = TRUE)
@@ -5215,7 +5215,7 @@ p_final <- forest(
 print(p_final)
 dev.off()
 
-cat("\nRFS 森林图（WSS4/Other 及 0-15 坐标轴）已成功生成并保存至桌面：C:/Users/赵定康/Desktop/Multivariable_Cox_Forestplot_RFS.pdf\n")
+cat("\nRFS forest plot (WSS4/Other, x-axis 0-15) saved to the desktop: C:/Users/赵定康/Desktop/Multivariable_Cox_Forestplot_RFS.pdf\n")
 ################################################################################Organising the TCGA files####
 rm(list = ls())
 gc()
@@ -5375,11 +5375,11 @@ data_PFI = build_data(pfi_tbl)
 # 9. Inspect the data, including the NA check on the cluster variable
 check_data = function(d, name, evt, time) {
   cat("\n=====", name, "=====\n")
-  cat("维度:", dim(d), "\n")
-  cat("分群缺失:", sum(is.na(d$cluster)), "\n")
-  cat("事件缺失:", sum(is.na(d[[evt]])), "\n")
-  cat("时间缺失:", sum(is.na(d[[time]])), "\n")
-  cat("事件分布:\n"); print(table(d[[evt]], useNA = "ifany"))
+  cat("Dimensions:", dim(d), "\n")
+  cat("Missing cluster:", sum(is.na(d$cluster)), "\n")
+  cat("Missing event:", sum(is.na(d[[evt]])), "\n")
+  cat("Missing time:", sum(is.na(d[[time]])), "\n")
+  cat("Event distribution:\n"); print(table(d[[evt]], useNA = "ifany"))
 }
 
 check_data(data_OS,  "data_OS",  "OS",  "OS.time")
@@ -5620,7 +5620,7 @@ print(p_final)
 dev.off()
 
 print(p_final)
-cat("\nOS 多因素 Cox 森林图（cancer_types 12 组器官系统分类）已保存至桌面。\n")
+cat("\nMultivariable OS Cox forest plot (cancer_types, 12 organ-system groups) saved to the desktop.\n")
 
 ################################################################################Multivariable visualisation of DSS####
 rm(list = ls())
@@ -5866,7 +5866,7 @@ print(p_final)
 dev.off()
 
 print(p_final)
-cat("\nDSS 多因素 Cox 森林图（cancer_types 12 组器官系统分类）已保存至桌面。\n")
+cat("\nMultivariable DSS Cox forest plot (cancer_types, 12 organ-system groups) saved to the desktop.\n")
 
 ################################################################################Multivariable visualisation of DFI####
 rm(list = ls())
@@ -6112,7 +6112,7 @@ print(p_final)
 dev.off()
 
 print(p_final)
-cat("\nDFI 多因素 Cox 森林图（cancer_types 12 组器官系统分类）已保存至桌面。\n")
+cat("\nMultivariable DFI Cox forest plot (cancer_types, 12 organ-system groups) saved to the desktop.\n")
 
 ################################################################################Multivariable visualisation of PFI####
 rm(list = ls())
@@ -6358,4 +6358,4 @@ print(p_final)
 dev.off()
 
 print(p_final)
-cat("\nPFI 多因素 Cox 森林图（cancer_types 12 组，panWSS2 为参照，X 轴 0-10）已保存至桌面。\n")
+cat("\nMultivariable PFI Cox forest plot (cancer_types, 12 groups; panWSS2 as reference; x-axis 0-10) saved to the desktop.\n")

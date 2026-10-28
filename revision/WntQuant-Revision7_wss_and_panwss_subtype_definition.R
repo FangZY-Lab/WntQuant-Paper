@@ -38,7 +38,7 @@ raw_to_WSS <- c("1"="WSS1", "2"="WSS3", "3"="WSS2", "4"="WSS4")
 # WSS_centers rownames are WSS1..WSS4, so no mapping is needed downstream
 WSS_centers <- WSS_centers[names(raw_to_WSS), , drop = FALSE]
 rownames(WSS_centers) <- raw_to_WSS[rownames(WSS_centers)]
-cat("WSS_centers 行名：", paste(rownames(WSS_centers), collapse=", "), "\n")
+cat("WSS_centers row names: ", paste(rownames(WSS_centers), collapse=", "), "\n")
 
 # ---- 4. Training-set normalisation parameters
 train_mean <- colMeans(genesets)
@@ -59,16 +59,16 @@ assign_by_centroid <- function(x, centers) {
 # ---- 6. Training-set consistency rate (should be 100%)
 pred_train <- assign_by_centroid(genesets, WSS_centers)
 orig_label <- cluster$cluster[match(rownames(genesets), cluster$Tag)]
-cat("训练集自洽率：",
+cat("Training-set self-consistency: ",
     round(mean(pred_train == orig_label, na.rm = TRUE) * 100, 2), "%\n")
 print(table(pred = pred_train, orig = orig_label))
 
 # ---- 7. Save
 save(WSS_centers, WSS_features, train_mean, train_sd,
      file = "WSS_subtype_definition.Rdata")
-cat("已保存：WSS_subtype_definition.Rdata\n")
-cat("中心维度：", dim(WSS_centers), "\n")   # 4 x 63
-cat("中心行名：", paste(rownames(WSS_centers), collapse=", "), "\n")
+cat("Saved: WSS_subtype_definition.Rdata\n")
+cat("Centres dimensions: ", dim(WSS_centers), "\n")   # 4 x 63
+cat("Centre row names: ", paste(rownames(WSS_centers), collapse=", "), "\n")
 ################################################################################Validation in additional datasets####
 rm(list=ls()); gc()
 library(GSVA); library(GSEABase)
@@ -114,13 +114,13 @@ for (i in seq_along(vector)) {
 
   # ---- Read the expression matrix ----
   f <- file.path(dir_exp_data, paste0(q, "_CMS.Rdata"))
-  if (!file.exists(f)) { cat("  文件不存在：", f, "\n"); next }
+  if (!file.exists(f)) { cat("  File not found: ", f, "\n"); next }
   ok <- tryCatch({ load(f); TRUE },
-                 error = function(e) { cat("  载入失败：", conditionMessage(e), "\n"); FALSE })
+                 error = function(e) { cat("  Failed to load: ", conditionMessage(e), "\n"); FALSE })
   if (!ok) next
 
   rt <- get(paste0(q, "_CMS"))
-  if (!is.matrix(rt) && !is.data.frame(rt)) { cat("  对象类型异常，跳过\n"); next }
+  if (!is.matrix(rt) && !is.data.frame(rt)) { cat("  Unexpected object type, skipped\n"); next }
 
   # ---- 1. Wnt scoring (same function, same GMT)
   WNT_Score <- tryCatch(
@@ -136,7 +136,7 @@ for (i in seq_along(vector)) {
       geneset_direction  = c(rep("pos", sum(grepl("WPAGS", names(geneSets)))),
                              rep("neg", sum(grepl("WPIGS", names(geneSets)))))
     ),
-    error = function(e) { cat("  打分失败：", conditionMessage(e), "\n"); NULL }
+    error = function(e) { cat("  Scoring failed: ", conditionMessage(e), "\n"); NULL }
   )
   if (is.null(WNT_Score)) next
 
@@ -145,7 +145,7 @@ for (i in seq_along(vector)) {
   # ---- 2. Align features
   missing <- setdiff(WSS_features, colnames(sm))
   if (length(missing) > 0) {
-    cat("  缺失特征数:", length(missing), "（补0）\n")
+    cat("  Missing features:", length(missing), " (filled with 0)\n")
     for (m in missing) sm <- cbind(sm, setNames(0, m))
   }
   sm <- sm[, WSS_features, drop = FALSE]
@@ -176,14 +176,14 @@ score_df   <- do.call(rbind, score_all)
 save(subtype_df, score_df, wnt_mat_all,
      file = file.path(dir_input, "all_cohorts_subtype.Rdata"))
 
-cat("\n完成。subtype_df 行数：", nrow(subtype_df), "\n")
-cat("成功队列数：", length(subtype_all), " / ", length(vector), "\n")
+cat("\nDone. subtype_df rows: ", nrow(subtype_df), "\n")
+cat("Cohorts succeeded: ", length(subtype_all), " / ", length(vector), "\n")
 
 # ---- 5. Immediately verify baseline self-consistency
 load(file.path(dir_input, "cluster.Rdata"))
 base <- subtype_df[subtype_df$dataset == "syn2623706", ]
 base <- base[match(cluster$Tag, base$Tag), ]
-cat("baseline 自洽率：",
+cat("Baseline self-consistency: ",
     round(mean(base$subtype == cluster$cluster) * 100, 2), "%\n")
 print(table(pred = base$subtype, orig = cluster$cluster))
 ################################################################################Proportion visualisation####
@@ -304,7 +304,7 @@ for (ds in unique(bio_by_subtype_all$dataset)) {
 }
 res <- res[order(-res$spearman_rho), ]
 print(res)
-cat("\n中位 Spearman ρ =", round(median(res$spearman_rho), 3), "\n")
+cat("\nMedian Spearman rho =", round(median(res$spearman_rho), 3), "\n")
 save(res, file = file.path(dir_input, "pattern_spearman.Rdata"))
 library(ggplot2)
 ggplot(res, aes(reorder(dataset, -spearman_rho), spearman_rho, fill = spearman_rho)) +
@@ -364,7 +364,7 @@ for (q in names(wnt_mat_all)) {
 
   # Requires at least 2 subtypes with at least 2 samples each
   tb <- table(sub)
-  if (length(tb) < 2 || any(tb < 2)) { cat("  样本过少，跳过\n"); next }
+  if (length(tb) < 2 || any(tb < 2)) { cat("  Too few samples, skipped\n"); next }
 
   D <- as.matrix(dist(X))
   obs <- dist_ratio(D, sub)
@@ -441,7 +441,7 @@ sd <- GSE16125_os_survival
 sd$Tag <- rownames(sd)
 sub_ds <- data.frame(Tag = rownames(sm_z), subtype = pred, stringsAsFactors = FALSE)
 df <- merge(sd, sub_ds, by = "Tag")
-cat("合并后样本数：", nrow(df), "\n")
+cat("Samples after merging: ", nrow(df), "\n")
 
 df$grp <- factor(ifelse(df$subtype == "WSS4", "WSS4", "Other"),
                  levels = c("Other","WSS4"))
@@ -518,13 +518,13 @@ acts <- sapply(1:4, function(k) {
 })
 rank_df <- data.frame(raw = 1:4, value = acts)
 rank_df <- rank_df[order(-rank_df$value), ]
-cat("原始 cluster 按 activity 排序：\n"); print(rank_df)
+cat("Raw clusters ordered by activity:\n"); print(rank_df)
 
 # ---- 3. Reorder centres by activity from high to low; rename the rows panWSS1-4
 panWSS_centers <- km_result$centers
 panWSS_centers <- panWSS_centers[rank_df$raw, , drop = FALSE]
 rownames(panWSS_centers) <- paste0("panWSS", 1:4)
-cat("panWSS_centers 行名：",
+cat("panWSS_centers row names: ",
     paste(rownames(panWSS_centers), collapse=", "), "\n")
 
 # ---- 4. Training-set parameters
@@ -547,7 +547,7 @@ assign_by_centroid <- function(x, centers) {
 pred_panWSS <- assign_by_centroid(genesets, panWSS_centers)
 orig_panWSS <- paste0("panWSS", match(raw_cluster, rank_df$raw))
 
-cat("训练集自洽率：",
+cat("Training-set self-consistency: ",
     round(mean(pred_panWSS == orig_panWSS) * 100, 2), "%\n")
 print(table(pred = pred_panWSS, orig = orig_panWSS))
 
@@ -557,7 +557,7 @@ pancancer_labels <- data.frame(
   subtype = orig_panWSS,           # Already a panWSS1-4 string
   stringsAsFactors = FALSE
 )
-cat("TCGA 样本 panWSS 标签分布：\n")
+cat("panWSS label distribution in TCGA:\n")
 print(table(pancancer_labels$subtype))
 
 # ---- 7. Save (includes pancancer_labels; section B does not need rank_df)
@@ -565,11 +565,11 @@ save(panWSS_centers, panWSS_features,
      train_mean_pan, train_sd_pan,
      pancancer_labels,
      file = "panWSS_subtype_definition.Rdata")
-cat("已保存：panWSS_subtype_definition.Rdata\n")
-cat("centers 维度：", dim(panWSS_centers), "\n")
-cat("centers 行名：",
+cat("Saved: panWSS_subtype_definition.Rdata\n")
+cat("centers dimensions: ", dim(panWSS_centers), "\n")
+cat("centers row names: ",
     paste(rownames(panWSS_centers), collapse=", "), "\n")
-cat("pancancer_labels 行数：", nrow(pancancer_labels), "\n")
+cat("pancancer_labels rows: ", nrow(pancancer_labels), "\n")
 ################################################################################Organising the TARGET data####
 rm(list=ls()); gc()
 library(data.table); library(limma); library(sva)
@@ -586,11 +586,11 @@ proj_names <- c("AML","ALL_P1","ALL_P2","ALL_P3","CCSK","NBL","OS","RT","WT")
 dt_list <- lapply(files, function(f) fread(f, header = TRUE, sep = "\t"))
 
 rt <- Reduce(function(x, y) merge(x, y, by = "Ensembl_ID", all = FALSE), dt_list)
-cat("合并后维度：", dim(rt), "\n")
+cat("Dimensions after merging: ", dim(rt), "\n")
 
 ann <- fread("gencode.v36.annotation.gtf.gene.probemap",
              header = TRUE, sep = "\t")
-cat("ann 列名：", paste(colnames(ann), collapse=", "), "\n")
+cat("ann column names: ", paste(colnames(ann), collapse=", "), "\n")
 
 ann_dt <- data.table(
   Ensembl_ID = as.character(ann[[1]]),   # Column 1
@@ -603,20 +603,20 @@ rt    [, Ensembl_ID := sub("\\..*$", "", Ensembl_ID)]
 
 # ---- Merge
 rt_ann <- merge(ann_dt, rt, by = "Ensembl_ID")
-cat("合并注释后维度：", dim(rt_ann), "\n")
+cat("Dimensions after adding annotations: ", dim(rt_ann), "\n")
 
 mat <- as.matrix(rt_ann[, -c("Ensembl_ID","gene"), with = FALSE])
 rownames(mat) <- rt_ann$gene
 mat <- avereps(mat)
-cat("去重后维度：", dim(mat), "\n")
+cat("Dimensions after de-duplication: ", dim(mat), "\n")
 
 load("C:/Users/赵定康/Desktop/input/pancancer_exp.Rdata")
-cat("pancancer_exp 基因数：", nrow(pancancer_exp), "\n")
+cat("Genes in pancancer_exp: ", nrow(pancancer_exp), "\n")
 
 common_genes <- intersect(rownames(mat), rownames(pancancer_exp))
-cat("交集基因数：", length(common_genes), "\n")
+cat("Genes in the intersection: ", length(common_genes), "\n")
 mat <- mat[common_genes, ]
-cat("裁剪后维度：", dim(mat), "\n")
+cat("Dimensions after trimming: ", dim(mat), "\n")
 
 clin_files <- sub("\\.star_tpm\\.tsv$", ".clinical.tsv", files)
 clin_list <- lapply(clin_files, function(f) {
@@ -627,7 +627,7 @@ clin_list <- lapply(clin_files, function(f) {
 clin <- rbindlist(clin_list)
 setnames(clin, c("Tag","Group"))
 clin <- clin[Tag %in% colnames(mat)]
-cat("临床样本：", nrow(clin), "\n")
+cat("Clinical samples: ", nrow(clin), "\n")
 
 
 proj_map <- list()
@@ -639,13 +639,13 @@ clin[, Project := NA_character_]
 for (p in names(proj_map)) {
   clin[Tag %in% proj_map[[p]], Project := p]
 }
-cat("Project 分布：\n"); print(table(clin$Project, useNA = "ifany"))
+cat("Project distribution:\n"); print(table(clin$Project, useNA = "ifany"))
 
 
 clin_tumor <- clin[Group == "Tumor"]
 mat_tumor  <- mat[, clin_tumor$Tag]
-cat("肿瘤样本数：", ncol(mat_tumor), " 基因数：", nrow(mat_tumor), "\n")
-cat("Project 分布（肿瘤）：\n"); print(table(clin_tumor$Project))
+cat("Tumour samples: ", ncol(mat_tumor), " genes: ", nrow(mat_tumor), "\n")
+cat("Project distribution (tumours):\n"); print(table(clin_tumor$Project))
 
 mat_log <- log2(mat_tumor + 1)
 
@@ -655,7 +655,7 @@ TARGET_combat <- ComBat(
   par.prior   = TRUE,
   prior.plots = FALSE
 )
-cat("去批次后维度：", dim(TARGET_combat), "\n")
+cat("Dimensions after batch correction: ", dim(TARGET_combat), "\n")
 
 TARGET_tumor_combat <- as.data.frame(TARGET_combat)
 TARGET_G_tumor      <- as.data.frame(clin_tumor)
@@ -664,7 +664,7 @@ save(TARGET_tumor_combat, TARGET_G_tumor,
      file = "TARGET_tumor_combat.Rdata")
 save(TARGET_tumor_combat, file = "TARGET.Rdata")
 save(TARGET_G_tumor,      file = "TARGET_G.Rdata")
-cat("已保存\n")
+cat("Saved\n")
 ################################################################################TARGET batch-effect check: before vs after correction####
 rm(list=ls()); gc()
 library(data.table); library(ggplot2); library(patchwork)
@@ -700,7 +700,7 @@ mat <- limma::avereps(mat)
 load("pancancer_exp.Rdata")
 common_genes <- intersect(rownames(mat), rownames(pancancer_exp))
 mat <- mat[common_genes, ]
-cat("去批次前矩阵：", dim(mat), "\n")
+cat("Matrix before batch correction: ", dim(mat), "\n")
 
 # ---- Read the clinical data, keep tumour samples only, and tag the project
 clin_files <- sub("\\.star_tpm\\.tsv$", ".clinical.tsv", files)
@@ -720,7 +720,7 @@ for (i in seq_along(files)) {
 }
 
 mat_tumor <- mat[, clin$Tag]
-cat("肿瘤样本：", ncol(mat_tumor), "\n")
+cat("Tumour samples: ", ncol(mat_tumor), "\n")
 print(table(clin$Project))
 
 mat_log <- log2(mat_tumor + 1)
@@ -809,7 +809,7 @@ assign_by_centroid <- function(x, centers) {
 # ---- Load the TARGET expression matrix (batch-corrected, tumour samples)
 load(file.path(dir_input, "TARGET.Rdata"))   # Object name TARGET_tumor_combat
 rt <- TARGET_tumor_combat
-cat("TARGET 维度：", dim(rt), "\n")
+cat("TARGET dimensions: ", dim(rt), "\n")
 # ========== 1. Extract the patient ID
 get_patient_id <- function(x) {
   x2 <- sub("^TARGET-[0-9]+-", "", x)   # Strip the TARGET-XX- prefix
@@ -820,8 +820,8 @@ get_patient_id <- function(x) {
 sample_ids  <- colnames(rt)
 patient_ids <- get_patient_id(sample_ids)
 
-cat("原始样本数：", length(sample_ids), "\n")
-cat("唯一病人数：", length(unique(patient_ids)), "\n")
+cat("Raw samples: ", length(sample_ids), "\n")
+cat("Unique patients: ", length(unique(patient_ids)), "\n")
 
 # ========== 2. Average per patient
 patient_factor <- factor(patient_ids)
@@ -849,11 +849,11 @@ WNT_Score <- Calculate_bioactivity_scores(
                          rep("neg", sum(grepl("WPIGS", names(geneSets)))))
 )
 sm <- as.matrix(WNT_Score$single_score_matrix)
-cat("得分矩阵维度：", dim(sm), "\n")
+cat("Score matrix dimensions: ", dim(sm), "\n")
 
 # ---- 2. Align features
 missing <- setdiff(panWSS_features, colnames(sm))
-cat("缺失特征数：", length(missing), " / ", length(panWSS_features), "\n")
+cat("Missing features: ", length(missing), " / ", length(panWSS_features), "\n")
 if (length(missing) > 0) {
   print(missing)
   for (m in missing) sm <- cbind(sm, setNames(0, m))
@@ -875,12 +875,12 @@ TARGET_panWSS <- data.frame(Tag = rownames(sm_z), subtype = pred,
                             dataset = "TARGET", stringsAsFactors = FALSE)
 save(TARGET_panWSS,
      file = file.path(dir_input, "TARGET_panWSS_subtype.Rdata"))
-cat("已保存：TARGET_panWSS_subtype.Rdata\n")
-cat("样本数：", nrow(TARGET_panWSS), "\n")
+cat("Saved: TARGET_panWSS_subtype.Rdata\n")
+cat("Samples: ", nrow(TARGET_panWSS), "\n")
 
 # ---- 6. Also save sm_z; it is needed later for PCA and biological scoring
 save(sm_z, file = file.path(dir_input, "TARGET_sm_z.Rdata"))
-cat("已保存：TARGET_sm_z.Rdata（63维标准化得分）\n")
+cat("Saved: TARGET_sm_z.Rdata (63 standardised scores)\n")
 ################################################################################Visualising the panWSS subtype proportions in TARGET####
 rm(list=ls()); gc()
 load("C:/Users/赵定康/Desktop/input/TARGET_panWSS_subtype.Rdata")
@@ -944,15 +944,15 @@ dir_input <- "C:/Users/赵定康/Desktop/input"
 geneSets_H <- getGmt(file.path(dir_input, "geneset_hallmark.gmt"))
 rm_name <- grep("WNT.*catenin|catenin.*WNT|WNT_beta",
                 names(geneSets_H), ignore.case = TRUE, value = TRUE)
-cat("移除：", paste(rm_name, collapse=", "), "\n")
+cat("Removed: ", paste(rm_name, collapse=", "), "\n")
 geneSets_H <- geneSets_H[setdiff(names(geneSets_H), rm_name)]
-cat("剩余 Hallmark 数：", length(geneSets_H), "\n")
+cat("Hallmark sets remaining: ", length(geneSets_H), "\n")
 
 # ---- 2. Load the section A definitions (includes pancancer_labels, excludes rank_df)
 load(file.path(dir_input, "panWSS_subtype_definition.Rdata"))
-cat("panWSS_centers 行名：",
+cat("panWSS_centers row names: ",
     paste(rownames(panWSS_centers), collapse=", "), "\n")
-cat("pancancer_labels 亚型分布：\n"); print(table(pancancer_labels$subtype))
+cat("pancancer_labels subtype distribution:\n"); print(table(pancancer_labels$subtype))
 
 # ---- 3. Scoring function
 compute_profile <- function(expr, labels, geneSets_H) {
@@ -975,12 +975,12 @@ expr_tcga  <- pancancer_exp[, rownames(tcga_group)]
 
 labels_tcga <- pancancer_labels
 labels_tcga <- labels_tcga[labels_tcga$Tag %in% colnames(expr_tcga), ]
-cat("TCGA 匹配样本：", nrow(labels_tcga), "\n")
+cat("TCGA matched samples: ", nrow(labels_tcga), "\n")
 print(table(labels_tcga$subtype))
 
 profile_tcga <- compute_profile(expr_tcga, labels_tcga, geneSets_H)
 profile_tcga$dataset <- "TCGA (baseline)"
-cat("profile_tcga 亚型：", paste(profile_tcga$subtype, collapse=", "), "\n")
+cat("profile_tcga subtypes: ", paste(profile_tcga$subtype, collapse=", "), "\n")
 
 # ---- 5. TARGET
 load(file.path(dir_input, "TARGET.Rdata"))                # TARGET_tumor_combat
@@ -995,15 +995,15 @@ labels_target <- data.frame(Tag     = TARGET_panWSS$Tag,
                             subtype = TARGET_panWSS$subtype,
                             stringsAsFactors = FALSE)
 
-cat("TARGET Tag 交集数：",
+cat("TARGET Tag intersection: ",
     sum(labels_target$Tag %in% colnames(expr_target)), "\n")
 labels_target <- labels_target[labels_target$Tag %in% colnames(expr_target), ]
-cat("TARGET 匹配样本：", nrow(labels_target), "\n")
+cat("TARGET matched samples: ", nrow(labels_target), "\n")
 print(table(labels_target$subtype))
 
 profile_target <- compute_profile(expr_target, labels_target, geneSets_H)
 profile_target$dataset <- "TARGET"
-cat("profile_target 亚型：", paste(profile_target$subtype, collapse=", "), "\n")
+cat("profile_target subtypes: ", paste(profile_target$subtype, collapse=", "), "\n")
 
 # ---- 6. Spearman ρ
 make_mat <- function(prof) {
@@ -1016,20 +1016,20 @@ make_mat <- function(prof) {
 
 b <- make_mat(profile_tcga)
 x <- make_mat(profile_target)
-cat("TCGA  行名：", paste(rownames(b), collapse=", "), "\n")
-cat("TARGET 行名：", paste(rownames(x), collapse=", "), "\n")
+cat("TCGA row names: ", paste(rownames(b), collapse=", "), "\n")
+cat("TARGET row names: ", paste(rownames(x), collapse=", "), "\n")
 
 cs <- intersect(rownames(b), rownames(x))
 cc <- intersect(colnames(b), colnames(x))
-cat("共同亚型：", paste(cs, collapse=", "),
-    "  共同特征数：", length(cc), "\n")
+cat("Shared subtypes: ", paste(cs, collapse=", "),
+    "  Shared features: ", length(cc), "\n")
 
 if (length(cs) >= 2 && length(cc) >= 2) {
   rho <- cor(as.numeric(b[cs, cc]), as.numeric(x[cs, cc]),
              method = "spearman")
-  cat("TARGET vs TCGA 的 Spearman ρ =", round(rho, 3), "\n")
+  cat("TARGET vs TCGA Spearman rho =", round(rho, 3), "\n")
 } else {
-  stop("亚型或特征交集不足，检查 subtype 命名是否统一")
+  stop("Not enough shared subtypes or features; check that the subtype naming is consistent")
 }
 
 # ---- 7. Heatmap
@@ -1095,7 +1095,7 @@ survival_data_cms <- merge(TARGET_panWSS,
                            TARGET_cluster,
                            by.x = "Tag", by.y = "sample")
 
-cat("合并后行数:", nrow(survival_data_cms), "\n")
+cat("Rows after merging:", nrow(survival_data_cms), "\n")
 head(survival_data_cms)
 
 # ---- 2. Set the levels
@@ -1111,8 +1111,8 @@ survival_data_cms <- survival_data_cms[!is.na(survival_data_cms$OS) &
 # Extract the patient ID: strip the -03A / -04A / -09A / -09B / -40A suffixes
 survival_data_cms$patient <- sub("-[0-9]+[A-Z]?$", "", survival_data_cms$Tag)
 
-cat("去重前样本数:", nrow(survival_data_cms), "\n")
-cat("独立病人数:", length(unique(survival_data_cms$patient)), "\n")
+cat("Samples before de-duplication:", nrow(survival_data_cms), "\n")
+cat("Unique patients:", length(unique(survival_data_cms$patient)), "\n")
 
 # Prefer primary samples (-03A or -09A), one per patient
 survival_data_cms <- survival_data_cms[order(survival_data_cms$Tag), ]
@@ -1130,7 +1130,7 @@ non_dx <- non_dx[!duplicated(non_dx$patient), ]
 survival_data_cms <- rbind(dx, non_dx)
 survival_data_cms <- survival_data_cms[!is.na(survival_data_cms$level), ]
 
-cat("去重后样本数:", nrow(survival_data_cms), "\n")
+cat("Samples after de-duplication:", nrow(survival_data_cms), "\n")
 print(table(survival_data_cms$level))
 
 # ---- 4. log-rank
@@ -1227,11 +1227,11 @@ WNT_Score <- Calculate_bioactivity_scores(
                          rep("neg", sum(grepl("WPIGS", names(geneSets)))))
 )
 sm <- as.matrix(WNT_Score$single_score_matrix)
-cat("得分矩阵维度：", dim(sm), "\n")
+cat("Score matrix dimensions: ", dim(sm), "\n")
 
 # ---- 2. Align features
 missing <- setdiff(panWSS_features, colnames(sm))
-cat("缺失特征数：", length(missing), " / ", length(panWSS_features), "\n")
+cat("Missing features: ", length(missing), " / ", length(panWSS_features), "\n")
 if (length(missing) > 0) {
   print(missing)
   for (m in missing) sm <- cbind(sm, setNames(0, m))
@@ -1253,12 +1253,12 @@ ICGC_panWSS <- data.frame(Tag = rownames(sm_z), subtype = pred,
                             dataset = "ICGC", stringsAsFactors = FALSE)
 save(ICGC_panWSS,
      file = file.path(dir_input, "ICGC_panWSS_subtype.Rdata"))
-cat("已保存：ICGC_panWSS_subtype.Rdata\n")
-cat("样本数：", nrow(ICGC_panWSS), "\n")
+cat("Saved: ICGC_panWSS_subtype.Rdata\n")
+cat("Samples: ", nrow(ICGC_panWSS), "\n")
 
 # ---- 6. Also save sm_z; it is needed later for PCA and biological scoring
 save(sm_z, file = file.path(dir_input, "ICGC_sm_z.Rdata"))
-cat("已保存：ICGC_sm_z.Rdata（63维标准化得分）\n")
+cat("Saved: ICGC_sm_z.Rdata (63 standardised scores)\n")
 ################################################################################ICGC prognostic analysis####
 rm(list=ls()); gc()
 library(GSVA); library(GSEABase)
@@ -1371,13 +1371,13 @@ acts <- sapply(1:4, function(k) {
 })
 rank_df <- data.frame(raw = 1:4, value = acts)
 rank_df <- rank_df[order(-rank_df$value), ]
-cat("原始 cluster 按 activity 排序：\n"); print(rank_df)
+cat("Raw clusters ordered by activity:\n"); print(rank_df)
 
 # ---- 3. Reorder centres by activity from high to low; rename the rows panWSS1-4
 panWSS_centers <- km_result$centers
 panWSS_centers <- panWSS_centers[rank_df$raw, , drop = FALSE]
 rownames(panWSS_centers) <- paste0("panWSS", 1:4)
-cat("panWSS_centers 行名：",
+cat("panWSS_centers row names: ",
     paste(rownames(panWSS_centers), collapse=", "), "\n")
 
 # ---- 4. Training-set parameters (kept for standardisation and alignment)
@@ -1395,7 +1395,7 @@ var_explained <- pca_fit$sdev^2 / sum(pca_fit$sdev^2)
 n_pc <- which(cumsum(var_explained) >= 0.9)[1]
 n_pc <- max(n_pc, 10)                       # At least 10 dimensions
 n_pc <- min(n_pc, ncol(pca_fit$rotation))   # Do not exceed the available dimensions
-cat("保留 PC 数：", n_pc, "，累计方差：",
+cat("PCs retained: ", n_pc, ", cumulative variance: ",
     round(sum(var_explained[1:n_pc]) * 100, 2), "%\n")
 
 # Slim PCA object kept for transfer (small file, few dependencies)
@@ -1418,7 +1418,7 @@ within_dist <- sapply(seq_len(nrow(panWSS_centers)), function(k) {
   median(d)
 })
 temp_pan <- median(within_dist, na.rm = TRUE)
-cat("softmax 温度 temp_pan =", round(temp_pan, 4), "\n")
+cat("softmax temperature temp_pan =", round(temp_pan, 4), "\n")
 
 # ---- 7. Transfer function: PCA projection + RBF soft assignment + MAP subtype
 project_pca <- function(x, pca_fit_slim) {
@@ -1459,15 +1459,15 @@ assign_soft_pca <- function(x, pca_fit_slim, centers_pc,
 # ---- 8. Training-set consistency check
 self_check <- assign_soft_pca(genesets, pca_fit_slim, centers_pc,
                               temp_pan, panWSS_features)
-cat("训练集硬标签自洽率：",
+cat("Training-set hard-label self-consistency: ",
     round(mean(self_check$subtype == orig_panWSS) * 100, 2), "%\n")
-cat("边界样本比例：",
+cat("Boundary sample fraction: ",
     round(mean(self_check$ambiguous) * 100, 2), "%\n")
 print(table(pred = self_check$subtype, orig = orig_panWSS))
 
 # If the consistency rate is clearly below 100%, scan n_pc for a suitable dimension
 if (mean(self_check$subtype == orig_panWSS) < 0.99) {
-  cat("\n自洽率偏低，扫描 n_pc：\n")
+  cat("\nLow self-consistency; scanning n_pc:\n")
   for (np in c(10, 20, 30, 50)) {
     np <- min(np, ncol(pca_fit$rotation))
     cp <- predict(pca_fit, newdata = panWSS_centers)[, 1:np, drop = FALSE]
@@ -1482,20 +1482,20 @@ if (mean(self_check$subtype == orig_panWSS) < 0.99) {
                         rotation = pca_fit$rotation[, 1:np, drop = FALSE],
                         sdev = pca_fit$sdev[1:np])
     s <- assign_soft_pca(genesets, pca_slim_np, cp, tp, panWSS_features)
-    cat("n_pc =", np, " 自洽率 =",
+    cat("n_pc =", np, " self-consistency =",
         round(mean(s$subtype == orig_panWSS) * 100, 2),
-        "%  边界比例 =", round(mean(s$ambiguous) * 100, 2), "%\n")
+        "%  boundary fraction =", round(mean(s$ambiguous) * 100, 2), "%\n")
   }
 }
 
 # ---- 9. panWSS1-4 label per TCGA sample (with probabilities)
 pancancer_labels <- self_check   # Already 8 columns: Tag, subtype, max_prob,
 # ambiguous, panWSS1..4
-cat("TCGA 样本 panWSS 标签分布：\n")
+cat("panWSS label distribution in TCGA:\n")
 print(table(pancancer_labels$subtype))
-cat("边界样本比例：",
+cat("Boundary sample fraction: ",
     round(mean(pancancer_labels$ambiguous) * 100, 2), "%\n")
-cat("pancancer_labels 结构：\n")
+cat("pancancer_labels structure:\n")
 str(pancancer_labels)
 
 # ---- 10. Save
@@ -1507,12 +1507,12 @@ save(panWSS_centers, panWSS_features,
      n_pc       = n_pc,
      temp_pan   = temp_pan,
      file = "panWSS_subtype_definition.Rdata")
-cat("已保存：panWSS_subtype_definition.Rdata\n")
-cat("centers 维度：", dim(panWSS_centers), "\n")
-cat("centers 行名：",
+cat("Saved: panWSS_subtype_definition.Rdata\n")
+cat("centers dimensions: ", dim(panWSS_centers), "\n")
+cat("centers row names: ",
     paste(rownames(panWSS_centers), collapse=", "), "\n")
-cat("pancancer_labels 行数：", nrow(pancancer_labels), "\n")
-cat("保存对象：panWSS_centers, panWSS_features, train_mean_pan, train_sd_pan,\n")
+cat("pancancer_labels rows: ", nrow(pancancer_labels), "\n")
+cat("Saved objects: panWSS_centers, panWSS_features, train_mean_pan, train_sd_pan,\n")
 cat("          pancancer_labels, pca_fit(slim), centers_pc, n_pc, temp_pan\n")
 ################################################################################
 ## TARGET independent pan-cancer data -- transfer the training panWSS definition (PCA + RBF soft assignment)
@@ -1562,7 +1562,7 @@ assign_soft_pca <- function(x, pca_fit, centers_pc,
 # ---- Load the TARGET expression matrix (batch-corrected, tumour samples)
 load(file.path(dir_input, "TARGET.Rdata"))   # Object name TARGET_tumor_combat
 rt <- TARGET_tumor_combat
-cat("TARGET 维度：", dim(rt), "\n")
+cat("TARGET dimensions: ", dim(rt), "\n")
 
 # ========== 1. Extract the patient ID
 get_patient_id <- function(x) {
@@ -1574,8 +1574,8 @@ get_patient_id <- function(x) {
 sample_ids  <- colnames(rt)
 patient_ids <- get_patient_id(sample_ids)
 
-cat("原始样本数：", length(sample_ids), "\n")
-cat("唯一病人数：", length(unique(patient_ids)), "\n")
+cat("Raw samples: ", length(sample_ids), "\n")
+cat("Unique patients: ", length(unique(patient_ids)), "\n")
 
 # ========== 2. Average per patient
 patient_factor <- factor(patient_ids)
@@ -1604,11 +1604,11 @@ WNT_Score <- Calculate_bioactivity_scores(
                          rep("neg", sum(grepl("WPIGS", names(geneSets)))))
 )
 sm <- as.matrix(WNT_Score$single_score_matrix)
-cat("得分矩阵维度：", dim(sm), "\n")
+cat("Score matrix dimensions: ", dim(sm), "\n")
 
 # ---- 2. Align features
 missing <- setdiff(panWSS_features, colnames(sm))
-cat("缺失特征数：", length(missing), " / ", length(panWSS_features), "\n")
+cat("Missing features: ", length(missing), " / ", length(panWSS_features), "\n")
 if (length(missing) > 0) {
   print(missing)
   for (m in missing) sm <- cbind(sm, setNames(0, m))
@@ -1633,7 +1633,7 @@ pred_df <- assign_soft_pca(
   features  = panWSS_features
 )
 print(table(pred_df$subtype))
-cat("边界样本比例：",
+cat("Boundary sample fraction: ",
     round(mean(pred_df$ambiguous) * 100, 2), "%\n")
 
 # ---- 5. Save
@@ -1648,9 +1648,9 @@ TARGET_panWSS <- data.frame(
 )
 save(TARGET_panWSS,
      file = file.path(dir_input, "TARGET_panWSS_subtype.Rdata"))
-cat("已保存：TARGET_panWSS_subtype.Rdata\n")
-cat("样本数：", nrow(TARGET_panWSS), "\n")
+cat("Saved: TARGET_panWSS_subtype.Rdata\n")
+cat("Samples: ", nrow(TARGET_panWSS), "\n")
 
 # ---- 6. Also save sm_z; it is needed later for PCA and biological scoring
 save(sm_z, file = file.path(dir_input, "TARGET_sm_z.Rdata"))
-cat("已保存：TARGET_sm_z.Rdata（标准化得分矩阵）\n")
+cat("Saved: TARGET_sm_z.Rdata (standardised score matrix)\n")
