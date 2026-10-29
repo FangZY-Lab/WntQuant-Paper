@@ -5256,6 +5256,7 @@ race$race = ifelse(race$race == "WHITE", "White",
                     ifelse(race$race == "BLACK OR AFRICAN AMERICAN", "Black",
                            ifelse(race$race == "ASIAN", "Asian", "Other/Unknown")))
 
+
 # 4. Stage handling: prefer the pathologic stage (column 7), fill gaps from the clinical stage (column 8), map to Stage 0-4
 stage = survival_data[, c(1, 7, 8)]
 colnames(stage) = c("Tag", "stage_path", "stage_clin")
@@ -5410,6 +5411,7 @@ data_OS = data_OS %>%
   mutate(sample_code = as.numeric(sub(".*-", "", Tag))) %>%
   filter(sample_code <= 10) %>%
   select(-sample_code)
+
 # ---------- Cancer type: 12 organ-system groups
 data_OS = data_OS %>%
   mutate(
@@ -5438,7 +5440,7 @@ data_OS$cancer_types = factor(data_OS$cancer_types,
                                           "Head_and_neck", "Thoracic", "Central_nervous_system",
                                           "Soft_tissue", "Neural_crest_derived", "Melanocytic",
                                           "Hematologic_and_lymphatic", "Unknown"))
-table(data_OS$cancer_types, useNA = "ifany")
+
 # ---------- Stage: unmappable values and Stage 0 become Unknown
 data_OS$stage = trimws(as.character(data_OS$stage))
 data_OS$stage[data_OS$stage %in% c("", "NA", "[Discrepancy]", "[Unknown]",
@@ -5447,11 +5449,13 @@ data_OS$stage[data_OS$stage %in% c("", "NA", "[Discrepancy]", "[Unknown]",
 data_OS$stage[is.na(data_OS$stage)] = "Unknown"
 data_OS$stage = factor(data_OS$stage,
                         levels = c("Stage 1", "Stage 2", "Stage 3", "Stage 4", "Unknown"))
+
 # ---------- WSS subtype
 data_OS$level = as.character(data_OS$cluster)
 data_OS$level[is.na(data_OS$level) | data_OS$level == ""] = "Unknown"
 data_OS$level = factor(data_OS$level,
                         levels = c("panWSS4", "panWSS1", "panWSS2", "panWSS3", "Unknown"))
+
 # ---------- Demographics and clinical variables: missing becomes Unknown
 data_OS$age = as.character(data_OS$age)
 data_OS$age[is.na(data_OS$age) | data_OS$age == ""] = "Unknown"
@@ -5461,18 +5465,12 @@ data_OS$age = factor(data_OS$age,
 data_OS$gender = as.character(data_OS$gender)
 data_OS$gender[is.na(data_OS$gender) | data_OS$gender == ""] = "Unknown"
 data_OS$gender = factor(data_OS$gender, levels = c("Female", "Male", "Unknown"))
+
 if ("race" %in% colnames(data_OS)) {
   data_OS$race = as.character(data_OS$race)
   data_OS$race[data_OS$race %in% c("", "Other/Unknown")] = "Unknown"
   data_OS$race[is.na(data_OS$race)] = "Unknown"
   data_OS$race = factor(data_OS$race, levels = c("White", "Black", "Asian", "Unknown"))
-}
-if ("tumor_status" %in% colnames(data_OS)) {
-  data_OS$tumor_status = as.character(data_OS$tumor_status)
-  data_OS$tumor_status[data_OS$tumor_status %in% c("", "NA")] = "Unknown"
-  data_OS$tumor_status[is.na(data_OS$tumor_status)] = "Unknown"
-  data_OS$tumor_status = factor(data_OS$tumor_status,
-                                 levels = c("Tumor free", "With tumor", "Unknown"))
 }
 
 if ("outcome" %in% colnames(data_OS)) {
@@ -5482,8 +5480,9 @@ if ("outcome" %in% colnames(data_OS)) {
   data_OS$outcome = factor(data_OS$outcome,
                             levels = c("CR/PR", "SD/PD", "Unknown"))
 }
-# ---------- Mutation variables: missing becomes Unknown
-gene_list = c("APC", "AXIN1", "AXIN2", "RNF43", "DKK1", "DKK3", "TCF7L2", "GSK3B", "CTNNB1")
+
+# ---------- Mutation variables: APC only
+gene_list = c("APC")
 for (g in gene_list) {
   if (g %in% colnames(data_OS)) {
     data_OS[[g]] = as.character(data_OS[[g]])
@@ -5492,10 +5491,12 @@ for (g in gene_list) {
     data_OS[[g]] = factor(data_OS[[g]], levels = c("WT", "MT", "Unknown"))
   }
 }
-# ---------- Covariates and the Cox model
+
+# ---------- Covariates and the Cox model (tumor_status and the other genes removed)
 all_covariates = c("level", "cancer_types", "stage",
-                    "age", "gender", "race", "tumor_status", "outcome", gene_list)
+                    "age", "gender", "race", "outcome", gene_list)
 all_covariates = all_covariates[all_covariates %in% colnames(data_OS)]
+
 # Drop factor levels that have no samples
 for (v in all_covariates) {
   if (is.factor(data_OS[[v]])) data_OS[[v]] = droplevels(data_OS[[v]])
@@ -5506,8 +5507,6 @@ fit_cox = coxph(cox_formula, data = data_OS)
 
 res_tidy = tidy(fit_cox, exponentiate = TRUE, conf.int = TRUE)
 
-# Unestimable terms (collinear or no events) have an NA p-value
-# res_tidy %>% filter(is.na(p.value)) %>% print()
 # ---------- Display-name mapping
 var_labels = c(
   "level"        = "panWSS labels",
@@ -5516,12 +5515,12 @@ var_labels = c(
   "gender"       = "Gender",
   "age"          = "Age",
   "race"         = "Race",
-  "tumor_status" = "Tumor status",
   "outcome"      = "Outcome"
 )
 for (g in gene_list) {
   var_labels[g] = paste0(g, " mutation")
 }
+
 # Readable labels for the 12 cancer-type levels
 cancer_level_labels = c(
   "Gynecologic"                      = "Gynecologic",
@@ -5597,11 +5596,13 @@ for (v in factors_in_model) {
     }
   }
 }
+
 df_forest_input = bind_rows(plot_rows)
 colnames(df_forest_input)[1:6] = c("Variable", "Subgroup", "N",
                                     "Hazard ratio (95% CI)", "", "p-value")
-# ---------- Render and export
-pdf("C:/Users/user/Desktop/Multivariate_Cox_OS_0_10_Forestplot.pdf", width = 20, height = 24)
+
+# ---------- Render and export (HR axis max 7)
+pdf("C:/Users/user/Desktop/Multivariate_Cox_OS_APC_Forestplot.pdf", width = 20, height = 24)
 
 p_final = forest(
   df_forest_input[, 1:6],
@@ -5611,8 +5612,8 @@ p_final = forest(
   size = 0.5,
   ci_column = 5,
   ref_line = 1,
-  xlim = c(0, 18),
-  ticks_at = c(0, 2, 4, 6, 8, 10),
+  xlim = c(0, 7),
+  ticks_at = c(0, 1, 2, 3, 4, 5, 6, 7),
   xlab = "Hazard ratio (95% CI)"
 )
 
@@ -5620,7 +5621,7 @@ print(p_final)
 dev.off()
 
 print(p_final)
-cat("\nMultivariable OS Cox forest plot (cancer_types, 12 organ-system groups) saved to the desktop.\n")
+cat("\nMultivariable OS Cox forest plot (APC only, HR axis max 7) saved to the desktop.\n")
 
 ################################################################################Multivariable visualisation of DSS####
 rm(list = ls())
@@ -5706,14 +5707,6 @@ if ("race" %in% colnames(data_DSS)) {
   data_DSS$race = factor(data_DSS$race, levels = c("White", "Black", "Asian", "Unknown"))
 }
 
-if ("tumor_status" %in% colnames(data_DSS)) {
-  data_DSS$tumor_status = as.character(data_DSS$tumor_status)
-  data_DSS$tumor_status[data_DSS$tumor_status %in% c("", "NA")] = "Unknown"
-  data_DSS$tumor_status[is.na(data_DSS$tumor_status)] = "Unknown"
-  data_DSS$tumor_status = factor(data_DSS$tumor_status,
-                                  levels = c("Tumor free", "With tumor", "Unknown"))
-}
-
 if ("outcome" %in% colnames(data_DSS)) {
   data_DSS$outcome = as.character(data_DSS$outcome)
   data_DSS$outcome[data_DSS$outcome %in% c("", "NA")] = "Unknown"
@@ -5722,8 +5715,8 @@ if ("outcome" %in% colnames(data_DSS)) {
                              levels = c("CR/PR", "SD/PD", "Unknown"))
 }
 
-# ---------- Mutation variables: missing becomes Unknown
-gene_list = c("APC", "AXIN1", "AXIN2", "RNF43", "DKK1", "DKK3", "TCF7L2", "GSK3B", "CTNNB1")
+# ---------- Mutation variables: APC only
+gene_list = c("APC")
 for (g in gene_list) {
   if (g %in% colnames(data_DSS)) {
     data_DSS[[g]] = as.character(data_DSS[[g]])
@@ -5733,9 +5726,9 @@ for (g in gene_list) {
   }
 }
 
-# ---------- Covariates and the Cox model
+# ---------- Covariates and the Cox model (tumor_status and the other genes removed)
 all_covariates = c("level", "cancer_types", "stage",
-                    "age", "gender", "race", "tumor_status", "outcome", gene_list)
+                    "age", "gender", "race", "outcome", gene_list)
 all_covariates = all_covariates[all_covariates %in% colnames(data_DSS)]
 
 # Drop factor levels that have no samples
@@ -5748,9 +5741,6 @@ fit_cox = coxph(cox_formula, data = data_DSS)
 
 res_tidy = tidy(fit_cox, exponentiate = TRUE, conf.int = TRUE)
 
-# Unestimable terms (collinear or no events) have an NA p-value
-# res_tidy %>% filter(is.na(p.value)) %>% print()
-
 # ---------- Display-name mapping
 var_labels = c(
   "level"        = "panWSS labels",
@@ -5759,7 +5749,6 @@ var_labels = c(
   "gender"       = "Gender",
   "age"          = "Age",
   "race"         = "Race",
-  "tumor_status" = "Tumor status",
   "outcome"      = "Outcome"
 )
 for (g in gene_list) {
@@ -5846,8 +5835,8 @@ df_forest_input = bind_rows(plot_rows)
 colnames(df_forest_input)[1:6] = c("Variable", "Subgroup", "N",
                                     "Hazard ratio (95% CI)", "", "p-value")
 
-# ---------- Render and export the DSS forest plot
-pdf("C:/Users/user/Desktop/Multivariate_Cox_DSS_0_10_Forestplot.pdf", width = 20, height = 24)
+# ---------- Render and export the DSS forest plot (APC only, HR axis max 11)
+pdf("C:/Users/user/Desktop/Multivariate_Cox_DSS_APC_0_11_Forestplot.pdf", width = 20, height = 24)
 
 p_final = forest(
   df_forest_input[, 1:6],
@@ -5857,8 +5846,8 @@ p_final = forest(
   size = 0.5,
   ci_column = 5,
   ref_line = 1,
-  xlim = c(0, 18),
-  ticks_at = c(0, 2, 4, 6, 8, 10),
+  xlim = c(0, 11),
+  ticks_at = c(0, 2, 4, 6, 8, 10, 11),
   xlab = "Hazard ratio (95% CI)"
 )
 
@@ -5866,7 +5855,7 @@ print(p_final)
 dev.off()
 
 print(p_final)
-cat("\nMultivariable DSS Cox forest plot (cancer_types, 12 organ-system groups) saved to the desktop.\n")
+cat("\nMultivariable DSS Cox forest plot (APC only, HR axis max 11) saved to the desktop.\n")
 
 ################################################################################Multivariable visualisation of DFI####
 rm(list = ls())
@@ -5952,14 +5941,6 @@ if ("race" %in% colnames(data_DFI)) {
   data_DFI$race = factor(data_DFI$race, levels = c("White", "Black", "Asian", "Unknown"))
 }
 
-if ("tumor_status" %in% colnames(data_DFI)) {
-  data_DFI$tumor_status = as.character(data_DFI$tumor_status)
-  data_DFI$tumor_status[data_DFI$tumor_status %in% c("", "NA")] = "Unknown"
-  data_DFI$tumor_status[is.na(data_DFI$tumor_status)] = "Unknown"
-  data_DFI$tumor_status = factor(data_DFI$tumor_status,
-                                  levels = c("Tumor free", "With tumor", "Unknown"))
-}
-
 if ("outcome" %in% colnames(data_DFI)) {
   data_DFI$outcome = as.character(data_DFI$outcome)
   data_DFI$outcome[data_DFI$outcome %in% c("", "NA")] = "Unknown"
@@ -5968,8 +5949,8 @@ if ("outcome" %in% colnames(data_DFI)) {
                              levels = c("CR/PR", "SD/PD", "Unknown"))
 }
 
-# ---------- Mutation variables: missing becomes Unknown
-gene_list = c("APC", "AXIN1", "AXIN2", "RNF43", "DKK1", "DKK3", "TCF7L2", "GSK3B", "CTNNB1")
+# ---------- Mutation variables: APC only
+gene_list = c("APC")
 for (g in gene_list) {
   if (g %in% colnames(data_DFI)) {
     data_DFI[[g]] = as.character(data_DFI[[g]])
@@ -5979,9 +5960,9 @@ for (g in gene_list) {
   }
 }
 
-# ---------- Covariates and the Cox model
+# ---------- Covariates and the Cox model (tumor_status and the other genes removed)
 all_covariates = c("level", "cancer_types", "stage",
-                    "age", "gender", "race", "tumor_status", "outcome", gene_list)
+                    "age", "gender", "race", "outcome", gene_list)
 all_covariates = all_covariates[all_covariates %in% colnames(data_DFI)]
 
 # Drop factor levels that have no samples
@@ -5994,9 +5975,6 @@ fit_cox = coxph(cox_formula, data = data_DFI)
 
 res_tidy = tidy(fit_cox, exponentiate = TRUE, conf.int = TRUE)
 
-# Unestimable terms (collinear or no events) have an NA p-value
-# res_tidy %>% filter(is.na(p.value)) %>% print()
-
 # ---------- Display-name mapping
 var_labels = c(
   "level"        = "panWSS labels",
@@ -6005,7 +5983,6 @@ var_labels = c(
   "gender"       = "Gender",
   "age"          = "Age",
   "race"         = "Race",
-  "tumor_status" = "Tumor status",
   "outcome"      = "Outcome"
 )
 for (g in gene_list) {
@@ -6092,8 +6069,8 @@ df_forest_input = bind_rows(plot_rows)
 colnames(df_forest_input)[1:6] = c("Variable", "Subgroup", "N",
                                     "Hazard ratio (95% CI)", "", "p-value")
 
-# ---------- Render and export the DFI forest plot
-pdf("C:/Users/user/Desktop/Multivariate_Cox_DFI_0_10_Forestplot.pdf", width = 20, height = 24)
+# ---------- Render and export the DFI forest plot (APC only, HR axis max 8)
+pdf("C:/Users/user/Desktop/Multivariate_Cox_DFI_APC_0_8_Forestplot.pdf", width = 20, height = 24)
 
 p_final = forest(
   df_forest_input[, 1:6],
@@ -6103,8 +6080,8 @@ p_final = forest(
   size = 0.5,
   ci_column = 5,
   ref_line = 1,
-  xlim = c(0, 18),
-  ticks_at = c(0, 2, 4, 6, 8, 10),
+  xlim = c(0, 8),
+  ticks_at = c(0, 2, 4, 6, 8),
   xlab = "Hazard ratio (95% CI)"
 )
 
@@ -6112,7 +6089,7 @@ print(p_final)
 dev.off()
 
 print(p_final)
-cat("\nMultivariable DFI Cox forest plot (cancer_types, 12 organ-system groups) saved to the desktop.\n")
+cat("\nMultivariable DFI Cox forest plot (APC only, HR axis max 8) saved to the desktop.\n")
 
 ################################################################################Multivariable visualisation of PFI####
 rm(list = ls())
@@ -6198,14 +6175,6 @@ if ("race" %in% colnames(data_PFI)) {
   data_PFI$race = factor(data_PFI$race, levels = c("White", "Black", "Asian", "Unknown"))
 }
 
-if ("tumor_status" %in% colnames(data_PFI)) {
-  data_PFI$tumor_status = as.character(data_PFI$tumor_status)
-  data_PFI$tumor_status[data_PFI$tumor_status %in% c("", "NA")] = "Unknown"
-  data_PFI$tumor_status[is.na(data_PFI$tumor_status)] = "Unknown"
-  data_PFI$tumor_status = factor(data_PFI$tumor_status,
-                                  levels = c("Tumor free", "With tumor", "Unknown"))
-}
-
 if ("outcome" %in% colnames(data_PFI)) {
   data_PFI$outcome = as.character(data_PFI$outcome)
   data_PFI$outcome[data_PFI$outcome %in% c("", "NA")] = "Unknown"
@@ -6214,8 +6183,8 @@ if ("outcome" %in% colnames(data_PFI)) {
                              levels = c("CR/PR", "SD/PD", "Unknown"))
 }
 
-# ---------- Mutation variables: missing becomes Unknown
-gene_list = c("APC", "AXIN1", "AXIN2", "RNF43", "DKK1", "DKK3", "TCF7L2", "GSK3B", "CTNNB1")
+# ---------- Mutation variables: APC only
+gene_list = c("APC")
 for (g in gene_list) {
   if (g %in% colnames(data_PFI)) {
     data_PFI[[g]] = as.character(data_PFI[[g]])
@@ -6225,9 +6194,9 @@ for (g in gene_list) {
   }
 }
 
-# ---------- Covariates and the Cox model
+# ---------- Covariates and the Cox model (tumor_status and the other genes removed)
 all_covariates = c("level", "cancer_types", "stage",
-                    "age", "gender", "race", "tumor_status", "outcome", gene_list)
+                    "age", "gender", "race", "outcome", gene_list)
 all_covariates = all_covariates[all_covariates %in% colnames(data_PFI)]
 
 # Drop factor levels that have no samples
@@ -6240,9 +6209,6 @@ fit_cox = coxph(cox_formula, data = data_PFI)
 
 res_tidy = tidy(fit_cox, exponentiate = TRUE, conf.int = TRUE)
 
-# Unestimable terms (collinear or no events) have an NA p-value
-# res_tidy %>% filter(is.na(p.value)) %>% print()
-
 # ---------- Display-name mapping
 var_labels = c(
   "level"        = "panWSS labels",
@@ -6251,7 +6217,6 @@ var_labels = c(
   "gender"       = "Gender",
   "age"          = "Age",
   "race"         = "Race",
-  "tumor_status" = "Tumor status",
   "outcome"      = "Outcome"
 )
 for (g in gene_list) {
@@ -6338,8 +6303,8 @@ df_forest_input = bind_rows(plot_rows)
 colnames(df_forest_input)[1:6] = c("Variable", "Subgroup", "N",
                                     "Hazard ratio (95% CI)", "", "p-value")
 
-# ---------- Render and export the PFI forest plot (panWSS2 as reference)
-pdf("C:/Users/user/Desktop/Multivariate_Cox_PFI_panWSS2_ref_0_10_Forestplot.pdf", width = 20, height = 24)
+# ---------- Render and export the PFI forest plot (APC only, HR axis max 7)
+pdf("C:/Users/user/Desktop/Multivariate_Cox_PFI_APC_0_7_Forestplot.pdf", width = 20, height = 24)
 
 p_final = forest(
   df_forest_input[, 1:6],
@@ -6349,8 +6314,8 @@ p_final = forest(
   size = 0.5,
   ci_column = 5,
   ref_line = 1,
-  xlim = c(0, 18),
-  ticks_at = c(0, 2, 4, 6, 8, 10),
+  xlim = c(0, 7),
+  ticks_at = c(0, 1, 2, 3, 4, 5, 6, 7),
   xlab = "Hazard ratio (95% CI)"
 )
 
@@ -6358,4 +6323,4 @@ print(p_final)
 dev.off()
 
 print(p_final)
-cat("\nMultivariable PFI Cox forest plot (cancer_types, 12 groups; panWSS2 as reference; x-axis 0-10) saved to the desktop.\n")
+cat("\nMultivariable PFI Cox forest plot (APC only, HR axis max 7) saved to the desktop.\n")
