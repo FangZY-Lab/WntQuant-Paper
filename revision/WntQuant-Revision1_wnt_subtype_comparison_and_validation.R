@@ -5256,7 +5256,6 @@ race$race = ifelse(race$race == "WHITE", "White",
                     ifelse(race$race == "BLACK OR AFRICAN AMERICAN", "Black",
                            ifelse(race$race == "ASIAN", "Asian", "Other/Unknown")))
 
-
 # 4. Stage handling: prefer the pathologic stage (column 7), fill gaps from the clinical stage (column 8), map to Stage 0-4
 stage = survival_data[, c(1, 7, 8)]
 colnames(stage) = c("Tag", "stage_path", "stage_clin")
@@ -5338,9 +5337,9 @@ mut_t = as.data.frame(mut_mat, stringsAsFactors = FALSE)
 mut_t$Tag = rownames(mut_t)
 
 # 7. Survival data cleaning
-os_tbl  = survival_data[, c(1, 26, 27)]
+os_tbl = survival_data[, c(1, 26, 27)]
 colnames(os_tbl) = c("Tag", "OS", "OS.time")
-os_tbl  = os_tbl[!is.na(os_tbl$OS) & !is.na(os_tbl$OS.time) & os_tbl$OS.time > 0, ]
+os_tbl = os_tbl[!is.na(os_tbl$OS) & !is.na(os_tbl$OS.time) & os_tbl$OS.time > 0, ]
 
 dss_tbl = survival_data[, c(1, 28, 29)]
 colnames(dss_tbl) = c("Tag", "DSS", "DSS.time")
@@ -5368,7 +5367,7 @@ build_data = function(surv_tbl) {
   return(d)
 }
 
-data_OS  = build_data(os_tbl)
+data_OS = build_data(os_tbl)
 data_DSS = build_data(dss_tbl)
 data_DFI = build_data(dfi_tbl)
 data_PFI = build_data(pfi_tbl)
@@ -5588,7 +5587,7 @@ for (v in factors_in_model) {
       plot_rows[[paste0(v, "_", l)]] = data.frame(
         col1 = "", col2 = paste0("   ", l_display), col3 = as.character(n_val),
         col4 = hr_str, col5 = paste(rep(" ", 25), collapse = " "), col6 = p_str,
-        HR    = if (nrow(sub_res) > 0 && !is.na(sub_res$estimate[1]))  sub_res$estimate[1]  else NA,
+        HR = if (nrow(sub_res) > 0 && !is.na(sub_res$estimate[1]))  sub_res$estimate[1]  else NA,
         lower = if (nrow(sub_res) > 0 && !is.na(sub_res$conf.low[1]))  sub_res$conf.low[1]  else NA,
         upper = if (nrow(sub_res) > 0 && !is.na(sub_res$conf.high[1])) sub_res$conf.high[1] else NA,
         stringsAsFactors = FALSE
@@ -5822,7 +5821,7 @@ for (v in factors_in_model) {
       plot_rows[[paste0(v, "_", l)]] = data.frame(
         col1 = "", col2 = paste0("   ", l_display), col3 = as.character(n_val),
         col4 = hr_str, col5 = paste(rep(" ", 25), collapse = " "), col6 = p_str,
-        HR    = if (nrow(sub_res) > 0 && !is.na(sub_res$estimate[1]))  sub_res$estimate[1]  else NA,
+        HR = if (nrow(sub_res) > 0 && !is.na(sub_res$estimate[1]))  sub_res$estimate[1]  else NA,
         lower = if (nrow(sub_res) > 0 && !is.na(sub_res$conf.low[1]))  sub_res$conf.low[1]  else NA,
         upper = if (nrow(sub_res) > 0 && !is.na(sub_res$conf.high[1])) sub_res$conf.high[1] else NA,
         stringsAsFactors = FALSE
@@ -6056,7 +6055,7 @@ for (v in factors_in_model) {
       plot_rows[[paste0(v, "_", l)]] = data.frame(
         col1 = "", col2 = paste0("   ", l_display), col3 = as.character(n_val),
         col4 = hr_str, col5 = paste(rep(" ", 25), collapse = " "), col6 = p_str,
-        HR    = if (nrow(sub_res) > 0 && !is.na(sub_res$estimate[1]))  sub_res$estimate[1]  else NA,
+        HR = if (nrow(sub_res) > 0 && !is.na(sub_res$estimate[1]))  sub_res$estimate[1]  else NA,
         lower = if (nrow(sub_res) > 0 && !is.na(sub_res$conf.low[1]))  sub_res$conf.low[1]  else NA,
         upper = if (nrow(sub_res) > 0 && !is.na(sub_res$conf.high[1])) sub_res$conf.high[1] else NA,
         stringsAsFactors = FALSE
@@ -6290,7 +6289,7 @@ for (v in factors_in_model) {
       plot_rows[[paste0(v, "_", l)]] = data.frame(
         col1 = "", col2 = paste0("   ", l_display), col3 = as.character(n_val),
         col4 = hr_str, col5 = paste(rep(" ", 25), collapse = " "), col6 = p_str,
-        HR    = if (nrow(sub_res) > 0 && !is.na(sub_res$estimate[1]))  sub_res$estimate[1]  else NA,
+        HR = if (nrow(sub_res) > 0 && !is.na(sub_res$estimate[1]))  sub_res$estimate[1]  else NA,
         lower = if (nrow(sub_res) > 0 && !is.na(sub_res$conf.low[1]))  sub_res$conf.low[1]  else NA,
         upper = if (nrow(sub_res) > 0 && !is.na(sub_res$conf.high[1])) sub_res$conf.high[1] else NA,
         stringsAsFactors = FALSE
