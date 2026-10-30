@@ -5227,13 +5227,16 @@ setwd("C:/Users/user/Desktop/input")
 
 load("C:/Users/user/Desktop/input/pancancer_cluster.Rdata")
 
-# Core check: no NA or empty cluster labels in pancancer_cluster
-pancancer_cluster = pancancer_cluster[!is.na(pancancer_cluster$cluster) & pancancer_cluster$cluster != "", ]
-
 survival_data = read.delim("Survival_SupplementalTable_S1_20171025_xena_sp",
                             check.names = FALSE)
 mut_data = read.delim("mc3.v0.2.8.PUBLIC.nonsilentGene.xena",
                        check.names = FALSE)
+
+# Read the treatment data
+treatment = read.delim("TCGA_treatment_summary.txt", check.names = FALSE)
+colnames(treatment) = c("Tag", "treatment")
+treatment$treatment[treatment$treatment %in% c("", "Unknown")] = NA
+treatment$treatment = factor(treatment$treatment)
 
 # 1. Age handling
 age = survival_data[, c(1, 4)]
@@ -5246,33 +5249,37 @@ age$age = factor(age$age, levels = c("age<=40", "40<age<=60", "age>60"))
 # 2. Sex handling
 gender = survival_data[, c(1, 5)]
 colnames(gender) = c("Tag", "gender")
-gender$gender = ifelse(gender$gender == "MALE", "Male", "Female")
+gender$gender[gender$gender %in% c("", "NA", "[Not Evaluated]", "[Unknown]", NA)] = NA
+gender = na.omit(gender)
+gender$gender = ifelse(gender$gender == "MALE", "Male",
+                        ifelse(gender$gender == "FEMALE", "Female", NA))
+gender$gender = factor(gender$gender, levels = c("Female", "Male"))
 
 # 3. Race handling
 race = survival_data[, c(1, 6)]
 colnames(race) = c("Tag", "race")
-race$race[race$race %in% c("", "[Not Evaluated]", "[Unknown]")] = "Other/Unknown"
+race$race[race$race %in% c("", "[Not Evaluated]", "[Unknown]",
+                           "AMERICAN INDIAN OR ALASKA NATIVE",
+                           "NATIVE HAWAIIAN OR OTHER PACIFIC ISLANDER")] = NA
+race = na.omit(race)
 race$race = ifelse(race$race == "WHITE", "White",
                     ifelse(race$race == "BLACK OR AFRICAN AMERICAN", "Black",
                            ifelse(race$race == "ASIAN", "Asian", "Other/Unknown")))
 
-# 4. Stage handling: prefer the pathologic stage (column 7), fill gaps from the clinical stage (column 8), map to Stage 0-4
+# 4. Stage handling: prefer the pathologic stage (column 7), fill gaps from the clinical stage (column 8), and treat Stage 0 as NA
 stage = survival_data[, c(1, 7, 8)]
 colnames(stage) = c("Tag", "stage_path", "stage_clin")
 
-# Strip whitespace
 stage$stage_path = trimws(as.character(stage$stage_path))
 stage$stage_clin = trimws(as.character(stage$stage_clin))
 
-# Values that cannot be mapped become NA
 na_set = c("", "[Discrepancy]", "[Unknown]", "Stage X", "X", "Unknown", "I/II NOS")
 stage$stage_path[stage$stage_path %in% na_set] = NA
 stage$stage_clin[stage$stage_clin %in% na_set] = NA
 
-# Normalise any spelling to Stage 0/1/2/3/4, or NA
 normalize_stage = function(x) {
   ifelse(
-    x %in% c("0", "Stage 0", "IS", "Stage IS"), "Stage 0",
+    x %in% c("0", "Stage 0", "IS", "Stage IS"), NA,
     ifelse(
       x %in% c("I", "Stage I", "Stage IA", "Stage IA1", "Stage IA2",
                "Stage IB", "Stage IB1", "Stage IB2", "Stage IC"), "Stage 1",
@@ -5292,38 +5299,15 @@ normalize_stage = function(x) {
   )
 }
 
-# Pathologic stage wins; clinical stage fills the gaps
 stage$stage_path_n = normalize_stage(stage$stage_path)
 stage$stage_clin_n = normalize_stage(stage$stage_clin)
 stage$stage = ifelse(!is.na(stage$stage_path_n), stage$stage_path_n, stage$stage_clin_n)
 
-# Keep Tag and stage only, then convert to a factor
 stage = stage[, c("Tag", "stage")]
-stage$stage = factor(stage$stage, levels = c("Stage 0", "Stage 1", "Stage 2", "Stage 3", "Stage 4"))
+stage$stage = factor(stage$stage, levels = c("Stage 1", "Stage 2", "Stage 3", "Stage 4"))
 
-# Check the result
-table(stage$stage, useNA = "ifany")
-
-# 5. Tumour status and response (grade removed)
-tumor_status = survival_data[, c(1, 15)]
-colnames(tumor_status) = c("Tag", "tumor_status")
-tumor_status$tumor_status[tumor_status$tumor_status %in% c("", "[Discrepancy]")] = NA
-tumor_status$tumor_status = ifelse(tumor_status$tumor_status == "TUMOR FREE",
-                                    "Tumor free", "With tumor")
-
-outcome = survival_data[, c(1, 23)]
-colnames(outcome) = c("Tag", "outcome")
-outcome$outcome[outcome$outcome %in% c("", "[Discrepancy]", "[Unknown]", "[Not Evaluated]")] = NA
-outcome$outcome = ifelse(
-  outcome$outcome %in% c("Complete Remission/Response",
-                         "No Measureable Tumor or Tumor Markers",
-                         "Normalization of Tumor Markers, but Residual Tumor Mass",
-                         "Partial Remission/Response"),
-  "CR/PR", "SD/PD")
-
-# 6. Mutation data (fixes the earlier matrix-structure crash)
-gene_list = c("APC","AXIN1","AXIN2","RNF43",
-               "DKK1","DKK3","TCF7L2","GSK3B","CTNNB1")
+# 5. Mutation data (APC only)
+gene_list = c("APC")
 
 mut_sub = mut_data[mut_data[[1]] %in% gene_list, ]
 rownames(mut_sub) = mut_sub[[1]]
@@ -5336,10 +5320,10 @@ mut_mat[mut_mat != "MT"] = "WT"
 mut_t = as.data.frame(mut_mat, stringsAsFactors = FALSE)
 mut_t$Tag = rownames(mut_t)
 
-# 7. Survival data cleaning
-os_tbl = survival_data[, c(1, 26, 27)]
+# 6. Survival data cleaning
+os_tbl  = survival_data[, c(1, 26, 27)]
 colnames(os_tbl) = c("Tag", "OS", "OS.time")
-os_tbl = os_tbl[!is.na(os_tbl$OS) & !is.na(os_tbl$OS.time) & os_tbl$OS.time > 0, ]
+os_tbl  = os_tbl[!is.na(os_tbl$OS) & !is.na(os_tbl$OS.time) & os_tbl$OS.time > 0, ]
 
 dss_tbl = survival_data[, c(1, 28, 29)]
 colnames(dss_tbl) = c("Tag", "DSS", "DSS.time")
@@ -5353,33 +5337,32 @@ pfi_tbl = survival_data[, c(1, 32, 33)]
 colnames(pfi_tbl) = c("Tag", "PFI", "PFI.time")
 pfi_tbl = pfi_tbl[!is.na(pfi_tbl$PFI) & !is.na(pfi_tbl$PFI.time) & pfi_tbl$PFI.time > 0, ]
 
-# 8. Build the final data frames with merge()
+# 7. Build the final data frame
 build_data = function(surv_tbl) {
   d = pancancer_cluster
-  d = merge(d, age,          by = "Tag", all = TRUE)
-  d = merge(d, gender,       by = "Tag", all = TRUE)
-  d = merge(d, race,         by = "Tag", all = TRUE)
-  d = merge(d, stage,        by = "Tag", all = TRUE)
-  d = merge(d, tumor_status, by = "Tag", all = TRUE)
-  d = merge(d, outcome,      by = "Tag", all = TRUE)
-  d = merge(d, mut_t,        by = "Tag", all = TRUE)
-  d = merge(d, surv_tbl,     by = "Tag")
+  d = merge(d, age,       by = "Tag", all = TRUE)
+  d = merge(d, gender,    by = "Tag", all = TRUE)
+  d = merge(d, race,      by = "Tag", all = TRUE)
+  d = merge(d, stage,     by = "Tag", all = TRUE)
+  d = merge(d, treatment, by = "Tag", all = TRUE)
+  d = merge(d, mut_t,     by = "Tag", all = TRUE)
+  d = merge(d, surv_tbl,  by = "Tag")
   return(d)
 }
 
-data_OS = build_data(os_tbl)
+data_OS  = build_data(os_tbl)
 data_DSS = build_data(dss_tbl)
 data_DFI = build_data(dfi_tbl)
 data_PFI = build_data(pfi_tbl)
 
-# 9. Inspect the data, including the NA check on the cluster variable
+# 8. Inspect the data
 check_data = function(d, name, evt, time) {
   cat("\n=====", name, "=====\n")
   cat("Dimensions:", dim(d), "\n")
   cat("Missing cluster:", sum(is.na(d$cluster)), "\n")
   cat("Missing event:", sum(is.na(d[[evt]])), "\n")
   cat("Missing time:", sum(is.na(d[[time]])), "\n")
-  cat("Event distribution:\n"); print(table(d[[evt]], useNA = "ifany"))
+  cat("Gender distribution:\n"); print(table(d$gender, useNA = "ifany"))
 }
 
 check_data(data_OS,  "data_OS",  "OS",  "OS.time")
@@ -5387,7 +5370,7 @@ check_data(data_DSS, "data_DSS", "DSS", "DSS.time")
 check_data(data_DFI, "data_DFI", "DFI", "DFI.time")
 check_data(data_PFI, "data_PFI", "PFI", "PFI.time")
 
-# 10. Save
+# 9. Save
 save(data_OS,  file = "data_OS.Rdata")
 save(data_DSS, file = "data_DSS.Rdata")
 save(data_DFI, file = "data_DFI.Rdata")
@@ -5396,10 +5379,12 @@ save(data_PFI, file = "data_PFI.Rdata")
 ################################################################################Multivariable visualisation of OS####
 rm(list = ls())
 gc()
+
 library(survival)
 library(dplyr)
 library(broom)
 library(forestploter)
+
 setwd("C:/Users/user/Desktop/input")
 load("data_OS.Rdata")
 load("C:/Users/user/Desktop/input/pancancer_group.Rdata")
@@ -5415,7 +5400,7 @@ data_OS = data_OS %>%
 data_OS = data_OS %>%
   mutate(
     cancer_types = case_when(
-      is.na(Project) ~ "Unknown",
+      is.na(Project) ~ NA_character_,
       Project %in% c("OV", "UCEC", "CESC", "BRCA") ~ "Gynecologic",
       Project %in% c("BLCA", "PRAD", "TGCT", "KIRC", "KICH", "KIRP") ~ "Urologic",
       Project %in% c("THCA", "ACC") ~ "Endocrine",
@@ -5428,81 +5413,82 @@ data_OS = data_OS %>%
       Project %in% c("PCPG") ~ "Neural_crest_derived",
       Project %in% c("SKCM", "UVM") ~ "Melanocytic",
       Project %in% c("LAML", "DLBC", "THYM") ~ "Hematologic_and_lymphatic",
-      TRUE ~ "Unknown"
+      TRUE ~ NA_character_
     )
   )
-data_OS$cancer_types = as.character(data_OS$cancer_types)
-data_OS$cancer_types[is.na(data_OS$cancer_types) | data_OS$cancer_types == ""] = "Unknown"
 data_OS$cancer_types = factor(data_OS$cancer_types,
                                levels = c("Gynecologic", "Urologic", "Endocrine",
                                           "Core_gastrointestinal", "Developmental_gastrointestinal",
                                           "Head_and_neck", "Thoracic", "Central_nervous_system",
                                           "Soft_tissue", "Neural_crest_derived", "Melanocytic",
-                                          "Hematologic_and_lymphatic", "Unknown"))
+                                          "Hematologic_and_lymphatic"))
 
-# ---------- Stage: unmappable values and Stage 0 become Unknown
+# ---------- Stage: unmappable values and Stage 0 become NA
 data_OS$stage = trimws(as.character(data_OS$stage))
 data_OS$stage[data_OS$stage %in% c("", "NA", "[Discrepancy]", "[Unknown]",
                                    "Stage X", "X", "Unknown", "I/II NOS",
-                                   "Stage 0")] = "Unknown"
-data_OS$stage[is.na(data_OS$stage)] = "Unknown"
+                                   "Stage 0")] = NA
 data_OS$stage = factor(data_OS$stage,
-                        levels = c("Stage 1", "Stage 2", "Stage 3", "Stage 4", "Unknown"))
+                        levels = c("Stage 1", "Stage 2", "Stage 3", "Stage 4"))
 
 # ---------- WSS subtype
 data_OS$level = as.character(data_OS$cluster)
-data_OS$level[is.na(data_OS$level) | data_OS$level == ""] = "Unknown"
+data_OS$level[is.na(data_OS$level) | data_OS$level == "" | data_OS$level == "Unknown"] = NA
 data_OS$level = factor(data_OS$level,
-                        levels = c("panWSS4", "panWSS1", "panWSS2", "panWSS3", "Unknown"))
+                        levels = c("panWSS4", "panWSS1", "panWSS2", "panWSS3"))
 
-# ---------- Demographics and clinical variables: missing becomes Unknown
+# ---------- Demographics and clinical variables: Unknown becomes NA
 data_OS$age = as.character(data_OS$age)
-data_OS$age[is.na(data_OS$age) | data_OS$age == ""] = "Unknown"
+data_OS$age[is.na(data_OS$age) | data_OS$age == "" | data_OS$age == "Unknown"] = NA
 data_OS$age = factor(data_OS$age,
-                      levels = c("age<=40", "40<age<=60", "age>60", "Unknown"))
+                      levels = c("age<=40", "40<age<=60", "age>60"))
 
 data_OS$gender = as.character(data_OS$gender)
-data_OS$gender[is.na(data_OS$gender) | data_OS$gender == ""] = "Unknown"
-data_OS$gender = factor(data_OS$gender, levels = c("Female", "Male", "Unknown"))
+data_OS$gender[is.na(data_OS$gender) | data_OS$gender == "" | data_OS$gender == "Unknown"] = NA
+data_OS$gender = factor(data_OS$gender, levels = c("Female", "Male"))
 
 if ("race" %in% colnames(data_OS)) {
   data_OS$race = as.character(data_OS$race)
-  data_OS$race[data_OS$race %in% c("", "Other/Unknown")] = "Unknown"
-  data_OS$race[is.na(data_OS$race)] = "Unknown"
-  data_OS$race = factor(data_OS$race, levels = c("White", "Black", "Asian", "Unknown"))
+  data_OS$race[data_OS$race %in% c("", "Other/Unknown", "Unknown")] = NA
+  data_OS$race = factor(data_OS$race, levels = c("White", "Black", "Asian"))
 }
 
-if ("outcome" %in% colnames(data_OS)) {
-  data_OS$outcome = as.character(data_OS$outcome)
-  data_OS$outcome[data_OS$outcome %in% c("", "NA")] = "Unknown"
-  data_OS$outcome[is.na(data_OS$outcome)] = "Unknown"
-  data_OS$outcome = factor(data_OS$outcome,
-                            levels = c("CR/PR", "SD/PD", "Unknown"))
+# ---------- Treatment: Neither is the reference level, Unknown becomes NA
+if ("treatment" %in% colnames(data_OS)) {
+  data_OS$treatment = as.character(data_OS$treatment)
+  data_OS$treatment[data_OS$treatment %in% c("", "NA", "Unknown")] = NA
+
+  other_treats = setdiff(unique(data_OS$treatment), c("Neither", NA))
+  data_OS$treatment = factor(data_OS$treatment,
+                              levels = c("Neither", other_treats))
 }
 
-# ---------- Mutation variables: APC only
+# ---------- Mutation variables: APC only, Unknown becomes NA
 gene_list = c("APC")
 for (g in gene_list) {
   if (g %in% colnames(data_OS)) {
     data_OS[[g]] = as.character(data_OS[[g]])
-    data_OS[[g]][data_OS[[g]] %in% c("", "NA")] = "Unknown"
-    data_OS[[g]][is.na(data_OS[[g]])] = "Unknown"
-    data_OS[[g]] = factor(data_OS[[g]], levels = c("WT", "MT", "Unknown"))
+    data_OS[[g]][data_OS[[g]] %in% c("", "NA", "Unknown")] = NA
+    data_OS[[g]] = factor(data_OS[[g]], levels = c("WT", "MT"))
   }
 }
 
-# ---------- Covariates and the Cox model (tumor_status and the other genes removed)
+# ---------- Covariates and model data: drop rows with NA so Unknown never enters the model
 all_covariates = c("level", "cancer_types", "stage",
-                    "age", "gender", "race", "outcome", gene_list)
+                    "age", "gender", "race", "treatment", gene_list)
 all_covariates = all_covariates[all_covariates %in% colnames(data_OS)]
+
+model_vars = c("OS.time", "OS", all_covariates)
+data_model = data_OS[, model_vars]
+data_model = na.omit(data_model) # This removes every sample with an NA or Unknown value
 
 # Drop factor levels that have no samples
 for (v in all_covariates) {
-  if (is.factor(data_OS[[v]])) data_OS[[v]] = droplevels(data_OS[[v]])
+  if (is.factor(data_model[[v]])) data_model[[v]] = droplevels(data_model[[v]])
 }
 
 cox_formula = as.formula(paste("Surv(OS.time, OS) ~", paste(all_covariates, collapse = " + ")))
-fit_cox = coxph(cox_formula, data = data_OS)
+fit_cox = coxph(cox_formula, data = data_model)
 
 res_tidy = tidy(fit_cox, exponentiate = TRUE, conf.int = TRUE)
 
@@ -5514,13 +5500,12 @@ var_labels = c(
   "gender"       = "Gender",
   "age"          = "Age",
   "race"         = "Race",
-  "outcome"      = "Outcome"
+  "treatment"    = "Treatment"
 )
 for (g in gene_list) {
   var_labels[g] = paste0(g, " mutation")
 }
 
-# Readable labels for the 12 cancer-type levels
 cancer_level_labels = c(
   "Gynecologic"                      = "Gynecologic",
   "Urologic"                         = "Urologic",
@@ -5533,17 +5518,16 @@ cancer_level_labels = c(
   "Soft_tissue"                      = "Soft tissue",
   "Neural_crest_derived"             = "Neural-crest-derived",
   "Melanocytic"                      = "Melanocytic",
-  "Hematologic_and_lymphatic"        = "Hematologic and lymphatic",
-  "Unknown"                          = "Unknown"
+  "Hematologic_and_lymphatic"        = "Hematologic and lymphatic"
 )
 
 factors_in_model = all_covariates
 plot_rows = list()
 
-# ---------- Build the forest-plot table rows
+# ---------- Build the forest-plot rows (N taken from the cleaned data_model)
 for (v in factors_in_model) {
-  if (!v %in% names(data_OS)) next
-  lvls = levels(data_OS[[v]])
+  if (!v %in% names(data_model)) next
+  lvls = levels(data_model[[v]])
   if (is.null(lvls)) next
 
   display_var_name = ifelse(v %in% names(var_labels), var_labels[v], v)
@@ -5556,7 +5540,7 @@ for (v in factors_in_model) {
 
   for (i in seq_along(lvls)) {
     l = lvls[i]
-    n_val = sum(data_OS[[v]] == l, na.rm = TRUE)
+    n_val = sum(data_model[[v]] == l, na.rm = TRUE)
 
     if (n_val == 0) next
 
@@ -5568,7 +5552,7 @@ for (v in factors_in_model) {
 
     if (i == 1) {
       plot_rows[[paste0(v, "_", l)]] = data.frame(
-        col1 = "", col2 = paste0("   ", l_display), col3 = as.character(n_val),
+        col1 = "", col2 = paste0("    ", l_display), col3 = as.character(n_val),
         col4 = "Reference", col5 = paste(rep(" ", 25), collapse = " "), col6 = "",
         HR = 1.0, lower = 1.0, upper = 1.0, stringsAsFactors = FALSE
       )
@@ -5585,9 +5569,9 @@ for (v in factors_in_model) {
       } else ""
 
       plot_rows[[paste0(v, "_", l)]] = data.frame(
-        col1 = "", col2 = paste0("   ", l_display), col3 = as.character(n_val),
+        col1 = "", col2 = paste0("    ", l_display), col3 = as.character(n_val),
         col4 = hr_str, col5 = paste(rep(" ", 25), collapse = " "), col6 = p_str,
-        HR = if (nrow(sub_res) > 0 && !is.na(sub_res$estimate[1]))  sub_res$estimate[1]  else NA,
+        HR    = if (nrow(sub_res) > 0 && !is.na(sub_res$estimate[1]))  sub_res$estimate[1]  else NA,
         lower = if (nrow(sub_res) > 0 && !is.na(sub_res$conf.low[1]))  sub_res$conf.low[1]  else NA,
         upper = if (nrow(sub_res) > 0 && !is.na(sub_res$conf.high[1])) sub_res$conf.high[1] else NA,
         stringsAsFactors = FALSE
@@ -5620,7 +5604,7 @@ print(p_final)
 dev.off()
 
 print(p_final)
-cat("\nMultivariable OS Cox forest plot (APC only, HR axis max 7) saved to the desktop.\n")
+cat("\nDone: every Unknown was dropped as missing; the multivariable Cox forest plot was saved to the desktop.\n")
 
 ################################################################################Multivariable visualisation of DSS####
 rm(list = ls())
@@ -5643,11 +5627,11 @@ data_DSS = data_DSS %>%
   filter(sample_code <= 10) %>%
   select(-sample_code)
 
-# ---------- Cancer type: 12 organ-system groups
+# ---------- Cancer type: 12 organ-system groups (unknown set to NA and excluded)
 data_DSS = data_DSS %>%
   mutate(
     cancer_types = case_when(
-      is.na(Project) ~ "Unknown",
+      is.na(Project) ~ NA_character_,
       Project %in% c("OV", "UCEC", "CESC", "BRCA") ~ "Gynecologic",
       Project %in% c("BLCA", "PRAD", "TGCT", "KIRC", "KICH", "KIRP") ~ "Urologic",
       Project %in% c("THCA", "ACC") ~ "Endocrine",
@@ -5660,83 +5644,82 @@ data_DSS = data_DSS %>%
       Project %in% c("PCPG") ~ "Neural_crest_derived",
       Project %in% c("SKCM", "UVM") ~ "Melanocytic",
       Project %in% c("LAML", "DLBC", "THYM") ~ "Hematologic_and_lymphatic",
-      TRUE ~ "Unknown"
+      TRUE ~ NA_character_
     )
   )
-data_DSS$cancer_types = as.character(data_DSS$cancer_types)
-data_DSS$cancer_types[is.na(data_DSS$cancer_types) | data_DSS$cancer_types == ""] = "Unknown"
 data_DSS$cancer_types = factor(data_DSS$cancer_types,
                                 levels = c("Gynecologic", "Urologic", "Endocrine",
                                            "Core_gastrointestinal", "Developmental_gastrointestinal",
                                            "Head_and_neck", "Thoracic", "Central_nervous_system",
                                            "Soft_tissue", "Neural_crest_derived", "Melanocytic",
-                                           "Hematologic_and_lymphatic", "Unknown"))
-table(data_DSS$cancer_types, useNA = "ifany")
+                                           "Hematologic_and_lymphatic"))
 
-# ---------- Stage: unmappable values and Stage 0 become Unknown
+# ---------- Stage: unmappable values and Stage 0 become NA
 data_DSS$stage = trimws(as.character(data_DSS$stage))
 data_DSS$stage[data_DSS$stage %in% c("", "NA", "[Discrepancy]", "[Unknown]",
                                      "Stage X", "X", "Unknown", "I/II NOS",
-                                     "Stage 0")] = "Unknown"
-data_DSS$stage[is.na(data_DSS$stage)] = "Unknown"
+                                     "Stage 0")] = NA
 data_DSS$stage = factor(data_DSS$stage,
-                         levels = c("Stage 1", "Stage 2", "Stage 3", "Stage 4", "Unknown"))
-table(data_DSS$stage, useNA = "ifany")
+                         levels = c("Stage 1", "Stage 2", "Stage 3", "Stage 4"))
 
 # ---------- WSS subtype
 data_DSS$level = as.character(data_DSS$cluster)
-data_DSS$level[is.na(data_DSS$level) | data_DSS$level == ""] = "Unknown"
+data_DSS$level[is.na(data_DSS$level) | data_DSS$level == "" | data_DSS$level == "Unknown"] = NA
 data_DSS$level = factor(data_DSS$level,
-                         levels = c("panWSS4", "panWSS1", "panWSS2", "panWSS3", "Unknown"))
+                         levels = c("panWSS4", "panWSS1", "panWSS2", "panWSS3"))
 
-# ---------- Demographics and clinical variables: missing becomes Unknown
+# ---------- Demographics and clinical variables: Unknown or missing becomes NA
 data_DSS$age = as.character(data_DSS$age)
-data_DSS$age[is.na(data_DSS$age) | data_DSS$age == ""] = "Unknown"
+data_DSS$age[is.na(data_DSS$age) | data_DSS$age == "" | data_DSS$age == "Unknown"] = NA
 data_DSS$age = factor(data_DSS$age,
-                       levels = c("age<=40", "40<age<=60", "age>60", "Unknown"))
+                       levels = c("age<=40", "40<age<=60", "age>60"))
 
 data_DSS$gender = as.character(data_DSS$gender)
-data_DSS$gender[is.na(data_DSS$gender) | data_DSS$gender == ""] = "Unknown"
-data_DSS$gender = factor(data_DSS$gender, levels = c("Female", "Male", "Unknown"))
+data_DSS$gender[is.na(data_DSS$gender) | data_DSS$gender == "" | data_DSS$gender == "Unknown"] = NA
+data_DSS$gender = factor(data_DSS$gender, levels = c("Female", "Male"))
 
 if ("race" %in% colnames(data_DSS)) {
   data_DSS$race = as.character(data_DSS$race)
-  data_DSS$race[data_DSS$race %in% c("", "Other/Unknown")] = "Unknown"
-  data_DSS$race[is.na(data_DSS$race)] = "Unknown"
-  data_DSS$race = factor(data_DSS$race, levels = c("White", "Black", "Asian", "Unknown"))
+  data_DSS$race[data_DSS$race %in% c("", "Other/Unknown", "Unknown")] = NA
+  data_DSS$race = factor(data_DSS$race, levels = c("White", "Black", "Asian"))
 }
 
-if ("outcome" %in% colnames(data_DSS)) {
-  data_DSS$outcome = as.character(data_DSS$outcome)
-  data_DSS$outcome[data_DSS$outcome %in% c("", "NA")] = "Unknown"
-  data_DSS$outcome[is.na(data_DSS$outcome)] = "Unknown"
-  data_DSS$outcome = factor(data_DSS$outcome,
-                             levels = c("CR/PR", "SD/PD", "Unknown"))
+# ---------- Treatment: Neither is the reference level, Unknown becomes NA
+if ("treatment" %in% colnames(data_DSS)) {
+  data_DSS$treatment = as.character(data_DSS$treatment)
+  data_DSS$treatment[data_DSS$treatment %in% c("", "NA", "Unknown")] = NA
+
+  other_treats = setdiff(unique(data_DSS$treatment), c("Neither", NA))
+  data_DSS$treatment = factor(data_DSS$treatment,
+                               levels = c("Neither", other_treats))
 }
 
-# ---------- Mutation variables: APC only
+# ---------- Mutation variables: APC only, Unknown becomes NA
 gene_list = c("APC")
 for (g in gene_list) {
   if (g %in% colnames(data_DSS)) {
     data_DSS[[g]] = as.character(data_DSS[[g]])
-    data_DSS[[g]][data_DSS[[g]] %in% c("", "NA")] = "Unknown"
-    data_DSS[[g]][is.na(data_DSS[[g]])] = "Unknown"
-    data_DSS[[g]] = factor(data_DSS[[g]], levels = c("WT", "MT", "Unknown"))
+    data_DSS[[g]][data_DSS[[g]] %in% c("", "NA", "Unknown")] = NA
+    data_DSS[[g]] = factor(data_DSS[[g]], levels = c("WT", "MT"))
   }
 }
 
-# ---------- Covariates and the Cox model (tumor_status and the other genes removed)
+# ---------- Covariates and model data: na.omit drops every row with NA or Unknown
 all_covariates = c("level", "cancer_types", "stage",
-                    "age", "gender", "race", "outcome", gene_list)
+                    "age", "gender", "race", "treatment", gene_list)
 all_covariates = all_covariates[all_covariates %in% colnames(data_DSS)]
+
+model_vars = c("DSS.time", "DSS", all_covariates)
+data_model = data_DSS[, model_vars]
+data_model = na.omit(data_model)
 
 # Drop factor levels that have no samples
 for (v in all_covariates) {
-  if (is.factor(data_DSS[[v]])) data_DSS[[v]] = droplevels(data_DSS[[v]])
+  if (is.factor(data_model[[v]])) data_model[[v]] = droplevels(data_model[[v]])
 }
 
 cox_formula = as.formula(paste("Surv(DSS.time, DSS) ~", paste(all_covariates, collapse = " + ")))
-fit_cox = coxph(cox_formula, data = data_DSS)
+fit_cox = coxph(cox_formula, data = data_model)
 
 res_tidy = tidy(fit_cox, exponentiate = TRUE, conf.int = TRUE)
 
@@ -5748,7 +5731,7 @@ var_labels = c(
   "gender"       = "Gender",
   "age"          = "Age",
   "race"         = "Race",
-  "outcome"      = "Outcome"
+  "treatment"    = "Treatment"
 )
 for (g in gene_list) {
   var_labels[g] = paste0(g, " mutation")
@@ -5767,17 +5750,16 @@ cancer_level_labels = c(
   "Soft_tissue"                      = "Soft tissue",
   "Neural_crest_derived"             = "Neural-crest-derived",
   "Melanocytic"                      = "Melanocytic",
-  "Hematologic_and_lymphatic"        = "Hematologic and lymphatic",
-  "Unknown"                          = "Unknown"
+  "Hematologic_and_lymphatic"        = "Hematologic and lymphatic"
 )
 
 factors_in_model = all_covariates
 plot_rows = list()
 
-# ---------- Build the forest-plot table rows
+# ---------- Build the forest-plot rows (N taken from the cleaned data_model)
 for (v in factors_in_model) {
-  if (!v %in% names(data_DSS)) next
-  lvls = levels(data_DSS[[v]])
+  if (!v %in% names(data_model)) next
+  lvls = levels(data_model[[v]])
   if (is.null(lvls)) next
 
   display_var_name = ifelse(v %in% names(var_labels), var_labels[v], v)
@@ -5790,7 +5772,7 @@ for (v in factors_in_model) {
 
   for (i in seq_along(lvls)) {
     l = lvls[i]
-    n_val = sum(data_DSS[[v]] == l, na.rm = TRUE)
+    n_val = sum(data_model[[v]] == l, na.rm = TRUE)
 
     if (n_val == 0) next
 
@@ -5802,7 +5784,7 @@ for (v in factors_in_model) {
 
     if (i == 1) {
       plot_rows[[paste0(v, "_", l)]] = data.frame(
-        col1 = "", col2 = paste0("   ", l_display), col3 = as.character(n_val),
+        col1 = "", col2 = paste0("    ", l_display), col3 = as.character(n_val),
         col4 = "Reference", col5 = paste(rep(" ", 25), collapse = " "), col6 = "",
         HR = 1.0, lower = 1.0, upper = 1.0, stringsAsFactors = FALSE
       )
@@ -5819,9 +5801,9 @@ for (v in factors_in_model) {
       } else ""
 
       plot_rows[[paste0(v, "_", l)]] = data.frame(
-        col1 = "", col2 = paste0("   ", l_display), col3 = as.character(n_val),
+        col1 = "", col2 = paste0("    ", l_display), col3 = as.character(n_val),
         col4 = hr_str, col5 = paste(rep(" ", 25), collapse = " "), col6 = p_str,
-        HR = if (nrow(sub_res) > 0 && !is.na(sub_res$estimate[1]))  sub_res$estimate[1]  else NA,
+        HR    = if (nrow(sub_res) > 0 && !is.na(sub_res$estimate[1]))  sub_res$estimate[1]  else NA,
         lower = if (nrow(sub_res) > 0 && !is.na(sub_res$conf.low[1]))  sub_res$conf.low[1]  else NA,
         upper = if (nrow(sub_res) > 0 && !is.na(sub_res$conf.high[1])) sub_res$conf.high[1] else NA,
         stringsAsFactors = FALSE
@@ -5834,8 +5816,8 @@ df_forest_input = bind_rows(plot_rows)
 colnames(df_forest_input)[1:6] = c("Variable", "Subgroup", "N",
                                     "Hazard ratio (95% CI)", "", "p-value")
 
-# ---------- Render and export the DSS forest plot (APC only, HR axis max 11)
-pdf("C:/Users/user/Desktop/Multivariate_Cox_DSS_APC_0_11_Forestplot.pdf", width = 20, height = 24)
+# ---------- Render and export the DSS forest plot (HR axis max 10)
+pdf("C:/Users/user/Desktop/Multivariate_Cox_DSS_APC_0_10_Forestplot.pdf", width = 20, height = 24)
 
 p_final = forest(
   df_forest_input[, 1:6],
@@ -5845,8 +5827,8 @@ p_final = forest(
   size = 0.5,
   ci_column = 5,
   ref_line = 1,
-  xlim = c(0, 11),
-  ticks_at = c(0, 2, 4, 6, 8, 10, 11),
+  xlim = c(0, 10),
+  ticks_at = c(0, 2, 4, 6, 8, 10),
   xlab = "Hazard ratio (95% CI)"
 )
 
@@ -5854,7 +5836,7 @@ print(p_final)
 dev.off()
 
 print(p_final)
-cat("\nMultivariable DSS Cox forest plot (APC only, HR axis max 11) saved to the desktop.\n")
+cat("\nMultivariable DSS Cox forest plot (HR axis max 10) saved to the desktop.\n")
 
 ################################################################################Multivariable visualisation of DFI####
 rm(list = ls())
@@ -5877,11 +5859,11 @@ data_DFI = data_DFI %>%
   filter(sample_code <= 10) %>%
   select(-sample_code)
 
-# ---------- Cancer type: 12 organ-system groups
+# ---------- Cancer type: 12 organ-system groups (unknown set to NA and excluded)
 data_DFI = data_DFI %>%
   mutate(
     cancer_types = case_when(
-      is.na(Project) ~ "Unknown",
+      is.na(Project) ~ NA_character_,
       Project %in% c("OV", "UCEC", "CESC", "BRCA") ~ "Gynecologic",
       Project %in% c("BLCA", "PRAD", "TGCT", "KIRC", "KICH", "KIRP") ~ "Urologic",
       Project %in% c("THCA", "ACC") ~ "Endocrine",
@@ -5894,83 +5876,82 @@ data_DFI = data_DFI %>%
       Project %in% c("PCPG") ~ "Neural_crest_derived",
       Project %in% c("SKCM", "UVM") ~ "Melanocytic",
       Project %in% c("LAML", "DLBC", "THYM") ~ "Hematologic_and_lymphatic",
-      TRUE ~ "Unknown"
+      TRUE ~ NA_character_
     )
   )
-data_DFI$cancer_types = as.character(data_DFI$cancer_types)
-data_DFI$cancer_types[is.na(data_DFI$cancer_types) | data_DFI$cancer_types == ""] = "Unknown"
 data_DFI$cancer_types = factor(data_DFI$cancer_types,
                                 levels = c("Gynecologic", "Urologic", "Endocrine",
                                            "Core_gastrointestinal", "Developmental_gastrointestinal",
                                            "Head_and_neck", "Thoracic", "Central_nervous_system",
                                            "Soft_tissue", "Neural_crest_derived", "Melanocytic",
-                                           "Hematologic_and_lymphatic", "Unknown"))
-table(data_DFI$cancer_types, useNA = "ifany")
+                                           "Hematologic_and_lymphatic"))
 
-# ---------- Stage: unmappable values and Stage 0 become Unknown
+# ---------- Stage: unmappable values and Stage 0 become NA
 data_DFI$stage = trimws(as.character(data_DFI$stage))
 data_DFI$stage[data_DFI$stage %in% c("", "NA", "[Discrepancy]", "[Unknown]",
                                      "Stage X", "X", "Unknown", "I/II NOS",
-                                     "Stage 0")] = "Unknown"
-data_DFI$stage[is.na(data_DFI$stage)] = "Unknown"
+                                     "Stage 0")] = NA
 data_DFI$stage = factor(data_DFI$stage,
-                         levels = c("Stage 1", "Stage 2", "Stage 3", "Stage 4", "Unknown"))
-table(data_DFI$stage, useNA = "ifany")
+                         levels = c("Stage 1", "Stage 2", "Stage 3", "Stage 4"))
 
 # ---------- WSS subtype
 data_DFI$level = as.character(data_DFI$cluster)
-data_DFI$level[is.na(data_DFI$level) | data_DFI$level == ""] = "Unknown"
+data_DFI$level[is.na(data_DFI$level) | data_DFI$level == "" | data_DFI$level == "Unknown"] = NA
 data_DFI$level = factor(data_DFI$level,
-                         levels = c("panWSS4", "panWSS1", "panWSS2", "panWSS3", "Unknown"))
+                         levels = c("panWSS4", "panWSS1", "panWSS2", "panWSS3"))
 
-# ---------- Demographics and clinical variables: missing becomes Unknown
+# ---------- Demographics and clinical variables: Unknown or missing becomes NA
 data_DFI$age = as.character(data_DFI$age)
-data_DFI$age[is.na(data_DFI$age) | data_DFI$age == ""] = "Unknown"
+data_DFI$age[is.na(data_DFI$age) | data_DFI$age == "" | data_DFI$age == "Unknown"] = NA
 data_DFI$age = factor(data_DFI$age,
-                       levels = c("age<=40", "40<age<=60", "age>60", "Unknown"))
+                       levels = c("age<=40", "40<age<=60", "age>60"))
 
 data_DFI$gender = as.character(data_DFI$gender)
-data_DFI$gender[is.na(data_DFI$gender) | data_DFI$gender == ""] = "Unknown"
-data_DFI$gender = factor(data_DFI$gender, levels = c("Female", "Male", "Unknown"))
+data_DFI$gender[is.na(data_DFI$gender) | data_DFI$gender == "" | data_DFI$gender == "Unknown"] = NA
+data_DFI$gender = factor(data_DFI$gender, levels = c("Female", "Male"))
 
 if ("race" %in% colnames(data_DFI)) {
   data_DFI$race = as.character(data_DFI$race)
-  data_DFI$race[data_DFI$race %in% c("", "Other/Unknown")] = "Unknown"
-  data_DFI$race[is.na(data_DFI$race)] = "Unknown"
-  data_DFI$race = factor(data_DFI$race, levels = c("White", "Black", "Asian", "Unknown"))
+  data_DFI$race[data_DFI$race %in% c("", "Other/Unknown", "Unknown")] = NA
+  data_DFI$race = factor(data_DFI$race, levels = c("White", "Black", "Asian"))
 }
 
-if ("outcome" %in% colnames(data_DFI)) {
-  data_DFI$outcome = as.character(data_DFI$outcome)
-  data_DFI$outcome[data_DFI$outcome %in% c("", "NA")] = "Unknown"
-  data_DFI$outcome[is.na(data_DFI$outcome)] = "Unknown"
-  data_DFI$outcome = factor(data_DFI$outcome,
-                             levels = c("CR/PR", "SD/PD", "Unknown"))
+# ---------- Treatment: Neither is the reference level, Unknown becomes NA
+if ("treatment" %in% colnames(data_DFI)) {
+  data_DFI$treatment = as.character(data_DFI$treatment)
+  data_DFI$treatment[data_DFI$treatment %in% c("", "NA", "Unknown")] = NA
+
+  other_treats = setdiff(unique(data_DFI$treatment), c("Neither", NA))
+  data_DFI$treatment = factor(data_DFI$treatment,
+                               levels = c("Neither", other_treats))
 }
 
-# ---------- Mutation variables: APC only
+# ---------- Mutation variables: APC only, Unknown becomes NA
 gene_list = c("APC")
 for (g in gene_list) {
   if (g %in% colnames(data_DFI)) {
     data_DFI[[g]] = as.character(data_DFI[[g]])
-    data_DFI[[g]][data_DFI[[g]] %in% c("", "NA")] = "Unknown"
-    data_DFI[[g]][is.na(data_DFI[[g]])] = "Unknown"
-    data_DFI[[g]] = factor(data_DFI[[g]], levels = c("WT", "MT", "Unknown"))
+    data_DFI[[g]][data_DFI[[g]] %in% c("", "NA", "Unknown")] = NA
+    data_DFI[[g]] = factor(data_DFI[[g]], levels = c("WT", "MT"))
   }
 }
 
-# ---------- Covariates and the Cox model (tumor_status and the other genes removed)
+# ---------- Covariates and model data: na.omit drops every row with NA or Unknown
 all_covariates = c("level", "cancer_types", "stage",
-                    "age", "gender", "race", "outcome", gene_list)
+                    "age", "gender", "race", "treatment", gene_list)
 all_covariates = all_covariates[all_covariates %in% colnames(data_DFI)]
+
+model_vars = c("DFI.time", "DFI", all_covariates)
+data_model = data_DFI[, model_vars]
+data_model = na.omit(data_model)
 
 # Drop factor levels that have no samples
 for (v in all_covariates) {
-  if (is.factor(data_DFI[[v]])) data_DFI[[v]] = droplevels(data_DFI[[v]])
+  if (is.factor(data_model[[v]])) data_model[[v]] = droplevels(data_model[[v]])
 }
 
 cox_formula = as.formula(paste("Surv(DFI.time, DFI) ~", paste(all_covariates, collapse = " + ")))
-fit_cox = coxph(cox_formula, data = data_DFI)
+fit_cox = coxph(cox_formula, data = data_model)
 
 res_tidy = tidy(fit_cox, exponentiate = TRUE, conf.int = TRUE)
 
@@ -5982,7 +5963,7 @@ var_labels = c(
   "gender"       = "Gender",
   "age"          = "Age",
   "race"         = "Race",
-  "outcome"      = "Outcome"
+  "treatment"    = "Treatment"
 )
 for (g in gene_list) {
   var_labels[g] = paste0(g, " mutation")
@@ -6001,17 +5982,16 @@ cancer_level_labels = c(
   "Soft_tissue"                      = "Soft tissue",
   "Neural_crest_derived"             = "Neural-crest-derived",
   "Melanocytic"                      = "Melanocytic",
-  "Hematologic_and_lymphatic"        = "Hematologic and lymphatic",
-  "Unknown"                          = "Unknown"
+  "Hematologic_and_lymphatic"        = "Hematologic and lymphatic"
 )
 
 factors_in_model = all_covariates
 plot_rows = list()
 
-# ---------- Build the forest-plot table rows
+# ---------- Build the forest-plot rows (N taken from the cleaned data_model)
 for (v in factors_in_model) {
-  if (!v %in% names(data_DFI)) next
-  lvls = levels(data_DFI[[v]])
+  if (!v %in% names(data_model)) next
+  lvls = levels(data_model[[v]])
   if (is.null(lvls)) next
 
   display_var_name = ifelse(v %in% names(var_labels), var_labels[v], v)
@@ -6024,7 +6004,7 @@ for (v in factors_in_model) {
 
   for (i in seq_along(lvls)) {
     l = lvls[i]
-    n_val = sum(data_DFI[[v]] == l, na.rm = TRUE)
+    n_val = sum(data_model[[v]] == l, na.rm = TRUE)
 
     if (n_val == 0) next
 
@@ -6036,7 +6016,7 @@ for (v in factors_in_model) {
 
     if (i == 1) {
       plot_rows[[paste0(v, "_", l)]] = data.frame(
-        col1 = "", col2 = paste0("   ", l_display), col3 = as.character(n_val),
+        col1 = "", col2 = paste0("    ", l_display), col3 = as.character(n_val),
         col4 = "Reference", col5 = paste(rep(" ", 25), collapse = " "), col6 = "",
         HR = 1.0, lower = 1.0, upper = 1.0, stringsAsFactors = FALSE
       )
@@ -6053,9 +6033,9 @@ for (v in factors_in_model) {
       } else ""
 
       plot_rows[[paste0(v, "_", l)]] = data.frame(
-        col1 = "", col2 = paste0("   ", l_display), col3 = as.character(n_val),
+        col1 = "", col2 = paste0("    ", l_display), col3 = as.character(n_val),
         col4 = hr_str, col5 = paste(rep(" ", 25), collapse = " "), col6 = p_str,
-        HR = if (nrow(sub_res) > 0 && !is.na(sub_res$estimate[1]))  sub_res$estimate[1]  else NA,
+        HR    = if (nrow(sub_res) > 0 && !is.na(sub_res$estimate[1]))  sub_res$estimate[1]  else NA,
         lower = if (nrow(sub_res) > 0 && !is.na(sub_res$conf.low[1]))  sub_res$conf.low[1]  else NA,
         upper = if (nrow(sub_res) > 0 && !is.na(sub_res$conf.high[1])) sub_res$conf.high[1] else NA,
         stringsAsFactors = FALSE
@@ -6068,8 +6048,8 @@ df_forest_input = bind_rows(plot_rows)
 colnames(df_forest_input)[1:6] = c("Variable", "Subgroup", "N",
                                     "Hazard ratio (95% CI)", "", "p-value")
 
-# ---------- Render and export the DFI forest plot (APC only, HR axis max 8)
-pdf("C:/Users/user/Desktop/Multivariate_Cox_DFI_APC_0_8_Forestplot.pdf", width = 20, height = 24)
+# ---------- Render and export the DFI forest plot (HR axis max 14.5)
+pdf("C:/Users/user/Desktop/Multivariate_Cox_DFI_APC_0_14.5_Forestplot.pdf", width = 20, height = 24)
 
 p_final = forest(
   df_forest_input[, 1:6],
@@ -6079,8 +6059,8 @@ p_final = forest(
   size = 0.5,
   ci_column = 5,
   ref_line = 1,
-  xlim = c(0, 8),
-  ticks_at = c(0, 2, 4, 6, 8),
+  xlim = c(0, 14.5),
+  ticks_at = c(0, 2, 4, 6, 8, 10, 12, 14),
   xlab = "Hazard ratio (95% CI)"
 )
 
@@ -6088,7 +6068,7 @@ print(p_final)
 dev.off()
 
 print(p_final)
-cat("\nMultivariable DFI Cox forest plot (APC only, HR axis max 8) saved to the desktop.\n")
+cat("\nMultivariable DFI Cox forest plot (HR axis max 14.5) saved to the desktop.\n")
 
 ################################################################################Multivariable visualisation of PFI####
 rm(list = ls())
@@ -6111,11 +6091,11 @@ data_PFI = data_PFI %>%
   filter(sample_code <= 10) %>%
   select(-sample_code)
 
-# ---------- Cancer type: 12 organ-system groups
+# ---------- Cancer type: 12 organ-system groups (unknown set to NA and excluded)
 data_PFI = data_PFI %>%
   mutate(
     cancer_types = case_when(
-      is.na(Project) ~ "Unknown",
+      is.na(Project) ~ NA_character_,
       Project %in% c("OV", "UCEC", "CESC", "BRCA") ~ "Gynecologic",
       Project %in% c("BLCA", "PRAD", "TGCT", "KIRC", "KICH", "KIRP") ~ "Urologic",
       Project %in% c("THCA", "ACC") ~ "Endocrine",
@@ -6128,83 +6108,82 @@ data_PFI = data_PFI %>%
       Project %in% c("PCPG") ~ "Neural_crest_derived",
       Project %in% c("SKCM", "UVM") ~ "Melanocytic",
       Project %in% c("LAML", "DLBC", "THYM") ~ "Hematologic_and_lymphatic",
-      TRUE ~ "Unknown"
+      TRUE ~ NA_character_
     )
   )
-data_PFI$cancer_types = as.character(data_PFI$cancer_types)
-data_PFI$cancer_types[is.na(data_PFI$cancer_types) | data_PFI$cancer_types == ""] = "Unknown"
 data_PFI$cancer_types = factor(data_PFI$cancer_types,
                                 levels = c("Gynecologic", "Urologic", "Endocrine",
                                            "Core_gastrointestinal", "Developmental_gastrointestinal",
                                            "Head_and_neck", "Thoracic", "Central_nervous_system",
                                            "Soft_tissue", "Neural_crest_derived", "Melanocytic",
-                                           "Hematologic_and_lymphatic", "Unknown"))
-table(data_PFI$cancer_types, useNA = "ifany")
+                                           "Hematologic_and_lymphatic"))
 
-# ---------- Stage: unmappable values and Stage 0 become Unknown
+# ---------- Stage: unmappable values and Stage 0 become NA
 data_PFI$stage = trimws(as.character(data_PFI$stage))
 data_PFI$stage[data_PFI$stage %in% c("", "NA", "[Discrepancy]", "[Unknown]",
                                      "Stage X", "X", "Unknown", "I/II NOS",
-                                     "Stage 0")] = "Unknown"
-data_PFI$stage[is.na(data_PFI$stage)] = "Unknown"
+                                     "Stage 0")] = NA
 data_PFI$stage = factor(data_PFI$stage,
-                         levels = c("Stage 1", "Stage 2", "Stage 3", "Stage 4", "Unknown"))
-table(data_PFI$stage, useNA = "ifany")
+                         levels = c("Stage 1", "Stage 2", "Stage 3", "Stage 4"))
 
-# ---------- WSS subtype, with panWSS4 as the reference
+# ---------- WSS subtype
 data_PFI$level = as.character(data_PFI$cluster)
-data_PFI$level[is.na(data_PFI$level) | data_PFI$level == ""] = "Unknown"
+data_PFI$level[is.na(data_PFI$level) | data_PFI$level == "" | data_PFI$level == "Unknown"] = NA
 data_PFI$level = factor(data_PFI$level,
-                         levels = c("panWSS4", "panWSS1", "panWSS2", "panWSS3", "Unknown"))
+                         levels = c("panWSS4", "panWSS1", "panWSS2", "panWSS3"))
 
-# ---------- Demographics and clinical variables: missing becomes Unknown
+# ---------- Demographics and clinical variables: Unknown or missing becomes NA
 data_PFI$age = as.character(data_PFI$age)
-data_PFI$age[is.na(data_PFI$age) | data_PFI$age == ""] = "Unknown"
+data_PFI$age[is.na(data_PFI$age) | data_PFI$age == "" | data_PFI$age == "Unknown"] = NA
 data_PFI$age = factor(data_PFI$age,
-                       levels = c("age<=40", "40<age<=60", "age>60", "Unknown"))
+                       levels = c("age<=40", "40<age<=60", "age>60"))
 
 data_PFI$gender = as.character(data_PFI$gender)
-data_PFI$gender[is.na(data_PFI$gender) | data_PFI$gender == ""] = "Unknown"
-data_PFI$gender = factor(data_PFI$gender, levels = c("Female", "Male", "Unknown"))
+data_PFI$gender[is.na(data_PFI$gender) | data_PFI$gender == "" | data_PFI$gender == "Unknown"] = NA
+data_PFI$gender = factor(data_PFI$gender, levels = c("Female", "Male"))
 
 if ("race" %in% colnames(data_PFI)) {
   data_PFI$race = as.character(data_PFI$race)
-  data_PFI$race[data_PFI$race %in% c("", "Other/Unknown")] = "Unknown"
-  data_PFI$race[is.na(data_PFI$race)] = "Unknown"
-  data_PFI$race = factor(data_PFI$race, levels = c("White", "Black", "Asian", "Unknown"))
+  data_PFI$race[data_PFI$race %in% c("", "Other/Unknown", "Unknown")] = NA
+  data_PFI$race = factor(data_PFI$race, levels = c("White", "Black", "Asian"))
 }
 
-if ("outcome" %in% colnames(data_PFI)) {
-  data_PFI$outcome = as.character(data_PFI$outcome)
-  data_PFI$outcome[data_PFI$outcome %in% c("", "NA")] = "Unknown"
-  data_PFI$outcome[is.na(data_PFI$outcome)] = "Unknown"
-  data_PFI$outcome = factor(data_PFI$outcome,
-                             levels = c("CR/PR", "SD/PD", "Unknown"))
+# ---------- Treatment: Neither is the reference level, Unknown becomes NA
+if ("treatment" %in% colnames(data_PFI)) {
+  data_PFI$treatment = as.character(data_PFI$treatment)
+  data_PFI$treatment[data_PFI$treatment %in% c("", "NA", "Unknown")] = NA
+
+  other_treats = setdiff(unique(data_PFI$treatment), c("Neither", NA))
+  data_PFI$treatment = factor(data_PFI$treatment,
+                               levels = c("Neither", other_treats))
 }
 
-# ---------- Mutation variables: APC only
+# ---------- Mutation variables: APC only, Unknown becomes NA
 gene_list = c("APC")
 for (g in gene_list) {
   if (g %in% colnames(data_PFI)) {
     data_PFI[[g]] = as.character(data_PFI[[g]])
-    data_PFI[[g]][data_PFI[[g]] %in% c("", "NA")] = "Unknown"
-    data_PFI[[g]][is.na(data_PFI[[g]])] = "Unknown"
-    data_PFI[[g]] = factor(data_PFI[[g]], levels = c("WT", "MT", "Unknown"))
+    data_PFI[[g]][data_PFI[[g]] %in% c("", "NA", "Unknown")] = NA
+    data_PFI[[g]] = factor(data_PFI[[g]], levels = c("WT", "MT"))
   }
 }
 
-# ---------- Covariates and the Cox model (tumor_status and the other genes removed)
+# ---------- Covariates and model data: na.omit drops every row with NA or Unknown
 all_covariates = c("level", "cancer_types", "stage",
-                    "age", "gender", "race", "outcome", gene_list)
+                    "age", "gender", "race", "treatment", gene_list)
 all_covariates = all_covariates[all_covariates %in% colnames(data_PFI)]
+
+model_vars = c("PFI.time", "PFI", all_covariates)
+data_model = data_PFI[, model_vars]
+data_model = na.omit(data_model)
 
 # Drop factor levels that have no samples
 for (v in all_covariates) {
-  if (is.factor(data_PFI[[v]])) data_PFI[[v]] = droplevels(data_PFI[[v]])
+  if (is.factor(data_model[[v]])) data_model[[v]] = droplevels(data_model[[v]])
 }
 
 cox_formula = as.formula(paste("Surv(PFI.time, PFI) ~", paste(all_covariates, collapse = " + ")))
-fit_cox = coxph(cox_formula, data = data_PFI)
+fit_cox = coxph(cox_formula, data = data_model)
 
 res_tidy = tidy(fit_cox, exponentiate = TRUE, conf.int = TRUE)
 
@@ -6216,7 +6195,7 @@ var_labels = c(
   "gender"       = "Gender",
   "age"          = "Age",
   "race"         = "Race",
-  "outcome"      = "Outcome"
+  "treatment"    = "Treatment"
 )
 for (g in gene_list) {
   var_labels[g] = paste0(g, " mutation")
@@ -6235,17 +6214,16 @@ cancer_level_labels = c(
   "Soft_tissue"                      = "Soft tissue",
   "Neural_crest_derived"             = "Neural-crest-derived",
   "Melanocytic"                      = "Melanocytic",
-  "Hematologic_and_lymphatic"        = "Hematologic and lymphatic",
-  "Unknown"                          = "Unknown"
+  "Hematologic_and_lymphatic"        = "Hematologic and lymphatic"
 )
 
 factors_in_model = all_covariates
 plot_rows = list()
 
-# ---------- Build the forest-plot table rows
+# ---------- Build the forest-plot rows (N taken from the cleaned data_model)
 for (v in factors_in_model) {
-  if (!v %in% names(data_PFI)) next
-  lvls = levels(data_PFI[[v]])
+  if (!v %in% names(data_model)) next
+  lvls = levels(data_model[[v]])
   if (is.null(lvls)) next
 
   display_var_name = ifelse(v %in% names(var_labels), var_labels[v], v)
@@ -6258,7 +6236,7 @@ for (v in factors_in_model) {
 
   for (i in seq_along(lvls)) {
     l = lvls[i]
-    n_val = sum(data_PFI[[v]] == l, na.rm = TRUE)
+    n_val = sum(data_model[[v]] == l, na.rm = TRUE)
 
     if (n_val == 0) next
 
@@ -6270,7 +6248,7 @@ for (v in factors_in_model) {
 
     if (i == 1) {
       plot_rows[[paste0(v, "_", l)]] = data.frame(
-        col1 = "", col2 = paste0("   ", l_display), col3 = as.character(n_val),
+        col1 = "", col2 = paste0("    ", l_display), col3 = as.character(n_val),
         col4 = "Reference", col5 = paste(rep(" ", 25), collapse = " "), col6 = "",
         HR = 1.0, lower = 1.0, upper = 1.0, stringsAsFactors = FALSE
       )
@@ -6287,9 +6265,9 @@ for (v in factors_in_model) {
       } else ""
 
       plot_rows[[paste0(v, "_", l)]] = data.frame(
-        col1 = "", col2 = paste0("   ", l_display), col3 = as.character(n_val),
+        col1 = "", col2 = paste0("    ", l_display), col3 = as.character(n_val),
         col4 = hr_str, col5 = paste(rep(" ", 25), collapse = " "), col6 = p_str,
-        HR = if (nrow(sub_res) > 0 && !is.na(sub_res$estimate[1]))  sub_res$estimate[1]  else NA,
+        HR    = if (nrow(sub_res) > 0 && !is.na(sub_res$estimate[1]))  sub_res$estimate[1]  else NA,
         lower = if (nrow(sub_res) > 0 && !is.na(sub_res$conf.low[1]))  sub_res$conf.low[1]  else NA,
         upper = if (nrow(sub_res) > 0 && !is.na(sub_res$conf.high[1])) sub_res$conf.high[1] else NA,
         stringsAsFactors = FALSE
@@ -6302,8 +6280,8 @@ df_forest_input = bind_rows(plot_rows)
 colnames(df_forest_input)[1:6] = c("Variable", "Subgroup", "N",
                                     "Hazard ratio (95% CI)", "", "p-value")
 
-# ---------- Render and export the PFI forest plot (APC only, HR axis max 7)
-pdf("C:/Users/user/Desktop/Multivariate_Cox_PFI_APC_0_7_Forestplot.pdf", width = 20, height = 24)
+# ---------- Render and export the PFI forest plot (HR axis max 10)
+pdf("C:/Users/user/Desktop/Multivariate_Cox_PFI_APC_0_10_Forestplot.pdf", width = 20, height = 24)
 
 p_final = forest(
   df_forest_input[, 1:6],
@@ -6313,8 +6291,8 @@ p_final = forest(
   size = 0.5,
   ci_column = 5,
   ref_line = 1,
-  xlim = c(0, 7),
-  ticks_at = c(0, 1, 2, 3, 4, 5, 6, 7),
+  xlim = c(0, 10),
+  ticks_at = c(0, 2, 4, 6, 8, 10),
   xlab = "Hazard ratio (95% CI)"
 )
 
@@ -6322,4 +6300,4 @@ print(p_final)
 dev.off()
 
 print(p_final)
-cat("\nMultivariable PFI Cox forest plot (APC only, HR axis max 7) saved to the desktop.\n")
+cat("\nMultivariable PFI Cox forest plot (HR axis max 10) saved to the desktop.\n")
