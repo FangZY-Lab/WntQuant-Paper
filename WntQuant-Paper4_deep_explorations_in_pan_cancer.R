@@ -22,12 +22,12 @@ library(ggplot2)
 library (cluster)
 library(fpc)
 set.seed(123)
-fviz_nbclust(genesets, kmeans, method = "wss") +   
+fviz_nbclust(genesets, kmeans, method = "wss") +
   geom_vline(xintercept = 4, linetype = 2) +
-  ggtitle("Optimal number of clusters") + 
+  ggtitle("Optimal number of clusters") +
   labs(x = "Number of clusters", y = "Total within sum of square") +
   theme_minimal() +
-  theme(  
+  theme(
     text = element_text(size = 16, color = "black"),
     plot.title = element_text(size = 16, color = "black"),
     axis.title = element_text(size = 16, color = "black"),
@@ -49,21 +49,21 @@ rank=data.frame(Tag=c(1,2,3,4),value=c(rank1, rank2, rank3, rank4))
 rank=rank[order(-rank$value),]
 km_result$cluster=ifelse(km_result$cluster==rank$Tag[1],1,ifelse(km_result$cluster==rank$Tag[2],2,ifelse(km_result$cluster==rank$Tag[3],3,4)))
 dd=cbind(genesets, cluster = km_result$cluster)
-fviz_cluster(km_result, data = genesets,  
-             palette = c("#d71345","#f47920","#145b7d","#6950a1"),  
-             ellipse.type = "euclid",  
-             star.plot = TRUE,   
-             repel = TRUE,  
+fviz_cluster(km_result, data = genesets,
+             palette = c("#d71345","#f47920","#145b7d","#6950a1"),
+             ellipse.type = "euclid",
+             star.plot = TRUE,
+             repel = TRUE,
              geom = "point",
-             pointsize = 0.5) +   
-  ggtitle("K-means") +   
-  theme_minimal() +  
-  theme(  
+             pointsize = 0.5) +
+  ggtitle("K-means") +
+  theme_minimal() +
+  theme(
     text = element_text(size = 16, color = "black"),
     plot.title = element_text(size = 16, color = "black"),
     axis.title = element_text(size = 16, color = "black"),
     axis.text = element_text(size = 16, color = "black")
-  )  
+  )
 cluster=data.frame(Tag = rownames(as.data.frame(dd)),cluster=as.data.frame(dd)$cluster,stringsAsFactors = FALSE)
 cluster$cluster = paste("cluster",cluster$cluster, sep = "")
 cluster$cluster=ifelse(cluster$cluster=="cluster1","panWSS1",
@@ -79,30 +79,30 @@ library(ggpubr)
 library(RColorBrewer)
 combinations=combn(c("panWSS1","panWSS2","panWSS3","panWSS4"), 2)
 my.comparisons=split(combinations, rep(1:ncol(combinations), each = nrow(combinations)))
-p=ggplot(WNT, aes(x = cluster, y = activity_score, fill = cluster)) +  
-  geom_violin(width = 0.5, scale = "area", trim = FALSE, position = position_dodge(0.9), show.legend = FALSE) +   
-  geom_boxplot(width = 0.2, position = position_dodge(0.9), show.legend = FALSE) +   
-  xlab("") +  
-  ylab("Wnt/β-catenin pathway activity score") +  
-  guides(fill = "none") +  
-  scale_x_discrete(labels = c(paste0("panWSS1\n(n=",table(WNT$cluster)[1],")"),   
-                              paste0("panWSS2\n(n=",table(WNT$cluster)[2],")"),  
-                              paste0("panWSS3\n(n=",table(WNT$cluster)[3],")"),  
-                              paste0("panWSS4\n(n=",table(WNT$cluster)[4],")"))) +  
-  theme_bw() +  
-  theme(  
+p=ggplot(WNT, aes(x = cluster, y = activity_score, fill = cluster)) +
+  geom_violin(width = 0.5, scale = "area", trim = FALSE, position = position_dodge(0.9), show.legend = FALSE) +
+  geom_boxplot(width = 0.2, position = position_dodge(0.9), show.legend = FALSE) +
+  xlab("") +
+  ylab("Wnt/β-catenin pathway activity score") +
+  guides(fill = "none") +
+  scale_x_discrete(labels = c(paste0("panWSS1\n(n=",table(WNT$cluster)[1],")"),
+                              paste0("panWSS2\n(n=",table(WNT$cluster)[2],")"),
+                              paste0("panWSS3\n(n=",table(WNT$cluster)[3],")"),
+                              paste0("panWSS4\n(n=",table(WNT$cluster)[4],")"))) +
+  theme_bw() +
+  theme(
     axis.text = element_text(size = 16, color = "black"),
     axis.title = element_text(size = 16, color = "black"),
     plot.title = element_text(size = 16,  color = "black"),
     legend.text = element_text(size = 16, color = "black"),
     legend.title = element_text(size = 16, color = "black")
-  ) +  
-  stat_compare_means(comparisons = my.comparisons,   
-                     method = "wilcox.test",  
-                     label = "p.format",  
-                     size = 4) +  
-  scale_fill_manual(values = c("#d71345","#f47920","#145b7d","#6950a1")) +  
-  ggtitle("TCGA-Pancancer")  
+  ) +
+  stat_compare_means(comparisons = my.comparisons,
+                     method = "wilcox.test",
+                     label = "p.format",
+                     size = 4) +
+  scale_fill_manual(values = c("#d71345","#f47920","#145b7d","#6950a1")) +
+  ggtitle("TCGA-Pancancer")
 print(p)
 pancancer_cluster=cluster
 save(pancancer_cluster,file="pancancer_cluster.Rdata")
@@ -123,12 +123,12 @@ library(ggplot2)
 library (cluster)
 library(fpc)
 set.seed(123)
-fviz_nbclust(genesets, kmeans, method = "wss") +   
+fviz_nbclust(genesets, kmeans, method = "wss") +
   geom_vline(xintercept = 4, linetype = 2) +
   ggtitle("Optimal number of clusters") +
-  labs(x = "Number of clusters", y = "Total within sum of square") + 
+  labs(x = "Number of clusters", y = "Total within sum of square") +
   theme_minimal() +
-  theme(  
+  theme(
     text = element_text(size = 16, color = "black"),
     plot.title = element_text(size = 16, color = "black"),
     axis.title = element_text(size = 16, color = "black"),
@@ -150,21 +150,21 @@ rank=data.frame(Tag=c(1,2,3,4),value=c(rank1, rank2, rank3, rank4))
 rank=rank[order(-rank$value),]
 km_result$cluster=ifelse(km_result$cluster==rank$Tag[1],1,ifelse(km_result$cluster==rank$Tag[2],2,ifelse(km_result$cluster==rank$Tag[3],3,4)))
 dd=cbind(genesets, cluster = km_result$cluster)
-fviz_cluster(km_result, data = genesets,  
-             palette = c("#d71345","#f47920","#145b7d","#6950a1"),  
-             ellipse.type = "euclid",  
-             star.plot = TRUE,   
-             repel = TRUE,  
+fviz_cluster(km_result, data = genesets,
+             palette = c("#d71345","#f47920","#145b7d","#6950a1"),
+             ellipse.type = "euclid",
+             star.plot = TRUE,
+             repel = TRUE,
              geom = "point",
-             pointsize = 0.5) +   
-  ggtitle("K-means") +   
-  theme_minimal() +  
-  theme(  
+             pointsize = 0.5) +
+  ggtitle("K-means") +
+  theme_minimal() +
+  theme(
     text = element_text(size = 16, color = "black"),
     plot.title = element_text(size = 16, color = "black"),
     axis.title = element_text(size = 16, color = "black"),
     axis.text = element_text(size = 16, color = "black")
-  )  
+  )
 cluster=data.frame(Tag = rownames(as.data.frame(dd)),cluster=as.data.frame(dd)$cluster,stringsAsFactors = FALSE)
 cluster$cluster = paste("cluster",cluster$cluster, sep = "")
 cluster$cluster=ifelse(cluster$cluster=="cluster1","panWSS1",
@@ -180,30 +180,30 @@ library(ggpubr)
 library(RColorBrewer)
 combinations=combn(c("panWSS1","panWSS2","panWSS3","panWSS4"), 2)
 my.comparisons=split(combinations, rep(1:ncol(combinations), each = nrow(combinations)))
-p=ggplot(WNT, aes(x = cluster, y = activity_score, fill = cluster)) +  
-  geom_violin(width = 0.5, scale = "area", trim = FALSE, position = position_dodge(0.9), show.legend = FALSE) +   
-  geom_boxplot(width = 0.2, position = position_dodge(0.9), show.legend = FALSE) +   
-  xlab("") +  
-  ylab("Wnt/β-catenin pathway activity score") +  
-  guides(fill = "none") +  
-  scale_x_discrete(labels = c(paste0("panWSS1\n(n=",table(WNT$cluster)[1],")"),   
-                              paste0("panWSS2\n(n=",table(WNT$cluster)[2],")"),  
-                              paste0("panWSS3\n(n=",table(WNT$cluster)[3],")"),  
-                              paste0("panWSS4\n(n=",table(WNT$cluster)[4],")"))) +  
-  theme_bw() +  
-  theme(  
+p=ggplot(WNT, aes(x = cluster, y = activity_score, fill = cluster)) +
+  geom_violin(width = 0.5, scale = "area", trim = FALSE, position = position_dodge(0.9), show.legend = FALSE) +
+  geom_boxplot(width = 0.2, position = position_dodge(0.9), show.legend = FALSE) +
+  xlab("") +
+  ylab("Wnt/β-catenin pathway activity score") +
+  guides(fill = "none") +
+  scale_x_discrete(labels = c(paste0("panWSS1\n(n=",table(WNT$cluster)[1],")"),
+                              paste0("panWSS2\n(n=",table(WNT$cluster)[2],")"),
+                              paste0("panWSS3\n(n=",table(WNT$cluster)[3],")"),
+                              paste0("panWSS4\n(n=",table(WNT$cluster)[4],")"))) +
+  theme_bw() +
+  theme(
     axis.text = element_text(size = 16, color = "black"),
     axis.title = element_text(size = 16, color = "black"),
     plot.title = element_text(size = 16,  color = "black"),
     legend.text = element_text(size = 16, color = "black"),
     legend.title = element_text(size = 16, color = "black")
-  ) +  
-  stat_compare_means(comparisons = my.comparisons,   
-                     method = "wilcox.test",  
-                     label = "p.format",  
-                     size = 4) +  
-  scale_fill_manual(values = c("#d71345","#f47920","#145b7d","#6950a1")) +  
-  ggtitle("TARGET-Pancancer")  
+  ) +
+  stat_compare_means(comparisons = my.comparisons,
+                     method = "wilcox.test",
+                     label = "p.format",
+                     size = 4) +
+  scale_fill_manual(values = c("#d71345","#f47920","#145b7d","#6950a1")) +
+  ggtitle("TARGET-Pancancer")
 print(p)
 TARGET_cluster=cluster
 save(TARGET_cluster,file="TARGET_cluster.Rdata")
@@ -271,30 +271,30 @@ library(ggpubr)
 library(RColorBrewer)
 combinations=combn(c("panWSS1","panWSS2","panWSS3","panWSS4"), 2)
 my.comparisons=split(combinations, rep(1:ncol(combinations), each = nrow(combinations)))
-p=ggplot(WNT, aes(x = cluster, y = AXIN2, fill = cluster)) +  
-  geom_violin(width = 0.5, scale = "area", trim = FALSE, position = position_dodge(0.9), show.legend = FALSE) +   
-  geom_boxplot(width = 0.2, position = position_dodge(0.9), show.legend = FALSE) +   
-  xlab("") +  
-  ylab("AXIN2 expression") +  
-  guides(fill = "none") +  
-  scale_x_discrete(labels = c(paste0("panWSS1\n(n=",table(WNT$cluster)[1],")"),   
-                              paste0("panWSS2\n(n=",table(WNT$cluster)[2],")"),  
-                              paste0("panWSS3\n(n=",table(WNT$cluster)[3],")"),  
-                              paste0("panWSS4\n(n=",table(WNT$cluster)[4],")"))) +  
-  theme_bw() +  
-  theme(  
+p=ggplot(WNT, aes(x = cluster, y = AXIN2, fill = cluster)) +
+  geom_violin(width = 0.5, scale = "area", trim = FALSE, position = position_dodge(0.9), show.legend = FALSE) +
+  geom_boxplot(width = 0.2, position = position_dodge(0.9), show.legend = FALSE) +
+  xlab("") +
+  ylab("AXIN2 expression") +
+  guides(fill = "none") +
+  scale_x_discrete(labels = c(paste0("panWSS1\n(n=",table(WNT$cluster)[1],")"),
+                              paste0("panWSS2\n(n=",table(WNT$cluster)[2],")"),
+                              paste0("panWSS3\n(n=",table(WNT$cluster)[3],")"),
+                              paste0("panWSS4\n(n=",table(WNT$cluster)[4],")"))) +
+  theme_bw() +
+  theme(
     axis.text = element_text(size = 16, color = "black"),
     axis.title = element_text(size = 16, color = "black"),
     plot.title = element_text(size = 16,  color = "black"),
     legend.text = element_text(size = 16, color = "black"),
     legend.title = element_text(size = 16, color = "black")
-  ) +  
-  stat_compare_means(comparisons = my.comparisons,   
-                     method = "wilcox.test",  
-                     label = "p.format",  
-                     size = 4) +  
-  scale_fill_manual(values = c("#d71345","#f47920","#145b7d","#6950a1")) +  
-  ggtitle("TCGA-Pancancer")  
+  ) +
+  stat_compare_means(comparisons = my.comparisons,
+                     method = "wilcox.test",
+                     label = "p.format",
+                     size = 4) +
+  scale_fill_manual(values = c("#d71345","#f47920","#145b7d","#6950a1")) +
+  ggtitle("TCGA-Pancancer")
 print(p)
 # ------------------------------------------------------------------------------
 # Expression of the AXIN2 gene in a new typology of TARGET
@@ -326,30 +326,30 @@ library(ggpubr)
 library(RColorBrewer)
 combinations=combn(c("panWSS1","panWSS2","panWSS3","panWSS4"), 2)
 my.comparisons=split(combinations, rep(1:ncol(combinations), each = nrow(combinations)))
-p=ggplot(WNT, aes(x = cluster, y = AXIN2, fill = cluster)) +  
-  geom_violin(width = 0.5, scale = "area", trim = FALSE, position = position_dodge(0.9), show.legend = FALSE) +   
-  geom_boxplot(width = 0.2, position = position_dodge(0.9), show.legend = FALSE) +   
-  xlab("") +  
-  ylab("AXIN2 expression") +  
-  guides(fill = "none") +  
-  scale_x_discrete(labels = c(paste0("panWSS1\n(n=",table(WNT$cluster)[1],")"),   
-                              paste0("panWSS2\n(n=",table(WNT$cluster)[2],")"),  
-                              paste0("panWSS3\n(n=",table(WNT$cluster)[3],")"),  
-                              paste0("panWSS4\n(n=",table(WNT$cluster)[4],")"))) +  
-  theme_bw() +  
-  theme(  
+p=ggplot(WNT, aes(x = cluster, y = AXIN2, fill = cluster)) +
+  geom_violin(width = 0.5, scale = "area", trim = FALSE, position = position_dodge(0.9), show.legend = FALSE) +
+  geom_boxplot(width = 0.2, position = position_dodge(0.9), show.legend = FALSE) +
+  xlab("") +
+  ylab("AXIN2 expression") +
+  guides(fill = "none") +
+  scale_x_discrete(labels = c(paste0("panWSS1\n(n=",table(WNT$cluster)[1],")"),
+                              paste0("panWSS2\n(n=",table(WNT$cluster)[2],")"),
+                              paste0("panWSS3\n(n=",table(WNT$cluster)[3],")"),
+                              paste0("panWSS4\n(n=",table(WNT$cluster)[4],")"))) +
+  theme_bw() +
+  theme(
     axis.text = element_text(size = 16, color = "black"),
     axis.title = element_text(size = 16, color = "black"),
     plot.title = element_text(size = 16,  color = "black"),
     legend.text = element_text(size = 16, color = "black"),
     legend.title = element_text(size = 16, color = "black")
-  ) +  
-  stat_compare_means(comparisons = my.comparisons,   
-                     method = "wilcox.test",  
-                     label = "p.format",  
-                     size = 4) +  
-  scale_fill_manual(values = c("#d71345","#f47920","#145b7d","#6950a1")) +  
-  ggtitle("TARGET-Pancancer")  
+  ) +
+  stat_compare_means(comparisons = my.comparisons,
+                     method = "wilcox.test",
+                     label = "p.format",
+                     size = 4) +
+  scale_fill_manual(values = c("#d71345","#f47920","#145b7d","#6950a1")) +
+  ggtitle("TARGET-Pancancer")
 print(p)
 # ------------------------------------------------------------------------------
 # TCGA-OS
@@ -378,29 +378,29 @@ names(fit$strata)=gsub("group=", "", names(fit$strata))
 library(RColorBrewer)
 library(tibble)
 library(ggpp)
-p=ggsurvplot(  
-  fit = fit,  
+p=ggsurvplot(
+  fit = fit,
   conf.int = FALSE,
   risk.table = F,
-  risk.table.col = "strata",  
+  risk.table.col = "strata",
   palette = mycol,
-  data = survival_data_cms,  
+  data = survival_data_cms,
   xlim = c(0, 376),
-  size = 0.1,  
+  size = 0.1,
   break.time.by = 48,
   legend.title = "",
   xlab = "Time (months)",
   ylab = "Probability",
   risk.table.y.text = FALSE,
-  tables.height = 0.25, 
+  tables.height = 0.25,
   title = paste0("OS(TCGA-Pancancer,n=",length(survival_data_cms$sample),")"),
   ylim = c(0, 1)
-)  
-p.lab = paste0("log-rank test p",  
+)
+p.lab = paste0("log-rank test p",
                 ifelse(p.val < 0.001, " < 0.001",
-                       paste0(" = ", round(p.val, 3))))  
-p$plot = p$plot +   
-  annotate("text", x = 0, y = 0, hjust = 0, vjust = 0,   
+                       paste0(" = ", round(p.val, 3))))
+p$plot = p$plot +
+  annotate("text", x = 0, y = 0, hjust = 0, vjust = 0,
            fontface = "italic", label = p.lab, size =6) +
   theme(text = element_text(size = 16))
 print(p)
@@ -449,15 +449,15 @@ names(fit$strata)=gsub("group=", "", names(fit$strata))
 library(RColorBrewer)
 library(tibble)
 library(ggpp)
-p=ggsurvplot(  
-  fit = fit,  
+p=ggsurvplot(
+  fit = fit,
   conf.int = FALSE,
   risk.table = F,
-  risk.table.col = "strata",  
+  risk.table.col = "strata",
   palette = mycol,
-  data = survival_data_cms,  
+  data = survival_data_cms,
   xlim = c(0, 153),
-  size = 0.9,  
+  size = 0.9,
   break.time.by = 48,
   legend.title = "",
   xlab = "Time (months)",
@@ -466,12 +466,12 @@ p=ggsurvplot(
   tables.height = 0.25,
   title = paste0("OS(TARGET-Pancancer,n=",length(survival_data_cms$sample),")"),
   ylim = c(0, 1)
-)  
-p.lab = paste0("log-rank test p",  
+)
+p.lab = paste0("log-rank test p",
                 ifelse(p.val < 0.001, " < 0.001",
-                       paste0(" = ", round(p.val, 3))))  
-p$plot = p$plot +   
-  annotate("text", x = 0, y = 0, hjust = 0, vjust = 0,   
+                       paste0(" = ", round(p.val, 3))))
+p$plot = p$plot +
+  annotate("text", x = 0, y = 0, hjust = 0, vjust = 0,
            fontface = "italic", label = p.lab, size =6) +
   theme(text = element_text(size = 16))
 print(p)
@@ -502,15 +502,15 @@ names(fit$strata)=gsub("group=", "", names(fit$strata))
 library(RColorBrewer)
 library(tibble)
 library(ggpp)
-p=ggsurvplot(  
-  fit = fit,  
+p=ggsurvplot(
+  fit = fit,
   conf.int = FALSE,
   risk.table = F,
-  risk.table.col = "strata",  
+  risk.table.col = "strata",
   palette = mycol,
-  data = survival_data_cms,  
+  data = survival_data_cms,
   xlim = c(0, 376),
-  size = 0.1,  
+  size = 0.1,
   break.time.by = 48,
   legend.title = "",
   xlab = "Time (months)",
@@ -519,12 +519,12 @@ p=ggsurvplot(
   tables.height = 0.25,
   title = paste0("DSS(TCGA-Pancancer,n=",length(survival_data_cms$sample),")"),
   ylim = c(0, 1)
-)  
-p.lab = paste0("log-rank test p",  
+)
+p.lab = paste0("log-rank test p",
                 ifelse(p.val < 0.001, " < 0.001",
-                       paste0(" = ", round(p.val, 3))))  
-p$plot = p$plot +   
-  annotate("text", x = 0, y = 0, hjust = 0, vjust = 0,   
+                       paste0(" = ", round(p.val, 3))))
+p$plot = p$plot +
+  annotate("text", x = 0, y = 0, hjust = 0, vjust = 0,
            fontface = "italic", label = p.lab, size =6) +
   theme(text = element_text(size = 16))
 print(p)
@@ -555,15 +555,15 @@ names(fit$strata)=gsub("group=", "", names(fit$strata))
 library(RColorBrewer)
 library(tibble)
 library(ggpp)
-p=ggsurvplot(  
-  fit = fit,  
+p=ggsurvplot(
+  fit = fit,
   conf.int = FALSE,
   risk.table = F,
-  risk.table.col = "strata",  
+  risk.table.col = "strata",
   palette = mycol,
-  data = survival_data_cms,  
+  data = survival_data_cms,
   xlim = c(0, 376),
-  size = 0.1,  
+  size = 0.1,
   break.time.by = 48,
   legend.title = "",
   xlab = "Time (months)",
@@ -572,13 +572,13 @@ p=ggsurvplot(
   tables.height = 0.25,
   title = paste0("DFI(TCGA-Pancancer,n=",length(survival_data_cms$sample),")"),
   ylim = c(0, 1)
-)  
-p.lab = paste0("log-rank test p",  
+)
+p.lab = paste0("log-rank test p",
                 ifelse(p.val < 0.001, " < 0.001",
-                       paste0(" = ", round(p.val, 3))))  
-p$plot = p$plot +   
-  annotate("text", x = 0, y = 0, hjust = 0, vjust = 0,   
-           fontface = "italic", label = p.lab, size =6) + 
+                       paste0(" = ", round(p.val, 3))))
+p$plot = p$plot +
+  annotate("text", x = 0, y = 0, hjust = 0, vjust = 0,
+           fontface = "italic", label = p.lab, size =6) +
   theme(text = element_text(size = 16))
 print(p)
 # ------------------------------------------------------------------------------
@@ -608,15 +608,15 @@ names(fit$strata)=gsub("group=", "", names(fit$strata))
 library(RColorBrewer)
 library(tibble)
 library(ggpp)
-p=ggsurvplot(  
-  fit = fit,  
+p=ggsurvplot(
+  fit = fit,
   conf.int = FALSE,
   risk.table = F,
-  risk.table.col = "strata",  
+  risk.table.col = "strata",
   palette = mycol,
-  data = survival_data_cms,  
+  data = survival_data_cms,
   xlim = c(0, 376),
-  size = 0.1,  
+  size = 0.1,
   break.time.by = 48,
   legend.title = "",
   xlab = "Time (months)",
@@ -625,12 +625,12 @@ p=ggsurvplot(
   tables.height = 0.25,
   title = paste0("PFI(TCGA-Pancancer,n=",length(survival_data_cms$sample),")"),
   ylim = c(0, 1)
-)  
-p.lab = paste0("log-rank test p",  
+)
+p.lab = paste0("log-rank test p",
                 ifelse(p.val < 0.001, " < 0.001",
-                       paste0(" = ", round(p.val, 3))))  
-p$plot = p$plot +   
-  annotate("text", x = 0, y = 0, hjust = 0, vjust = 0,   
+                       paste0(" = ", round(p.val, 3))))
+p$plot = p$plot +
+  annotate("text", x = 0, y = 0, hjust = 0, vjust = 0,
            fontface = "italic", label = p.lab, size =6) +
   theme(text = element_text(size = 16))
 print(p)
@@ -659,68 +659,68 @@ WNT_cluster3=age[age$cluster=="panWSS3",]
 WNT_cluster4=age[age$cluster=="panWSS4",]
 age=age[,-c(1,4)]
 age=as.data.frame(table(age))
-contingency_table=acast(age, cluster ~ age, value.var = "Freq", fill = 0) 
+contingency_table=acast(age, cluster ~ age, value.var = "Freq", fill = 0)
 chi_square_result=chisq.test(contingency_table)
 chi_square_result=chi_square_result$p.value
-p.lab=paste0("chi-square test p",  
+p.lab=paste0("chi-square test p",
              ifelse(chi_square_result < 0.001, " < 0.001",
-                    paste0(" = ", round(chi_square_result, 3)))) 
+                    paste0(" = ", round(chi_square_result, 3))))
 library(ggplot2)
-p1 = ggplot(WNT_cluster1, aes(x = "", fill = age)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("age≤40" = "#90d7ec",   
-                               "40<age≤60" = "#009ad6",   
-                               "age>60" = "#145b7d")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS1)",subtitle = paste0(p.lab)) +  
+p1 = ggplot(WNT_cluster1, aes(x = "", fill = age)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("age≤40" = "#90d7ec",
+                               "40<age≤60" = "#009ad6",
+                               "age>60" = "#145b7d")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS1)",subtitle = paste0(p.lab)) +
   ggtitle("TCGA(n=10364, Age)") +
-  theme(  
+  theme(
     axis.text.x = element_blank(),
-    axis.ticks.x = element_blank(), 
-    legend.position = "none", 
+    axis.ticks.x = element_blank(),
+    legend.position = "none",
     text = element_text(color = "black", size = 16),
     plot.subtitle = element_text(size = 16, face = "italic")
-  )  
-p2 = ggplot(WNT_cluster2, aes(x = status, fill = age)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("age≤40" = "#90d7ec",   
-                               "40<age≤60" = "#009ad6",   
-                               "age>60" = "#145b7d")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS2)") +  
-  theme(  
+  )
+p2 = ggplot(WNT_cluster2, aes(x = status, fill = age)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("age≤40" = "#90d7ec",
+                               "40<age≤60" = "#009ad6",
+                               "age>60" = "#145b7d")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS2)") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16)
-  )  
-p3 = ggplot(WNT_cluster3, aes(x = status, fill = age)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("age≤40" = "#90d7ec",   
-                               "40<age≤60" = "#009ad6",   
-                               "age>60" = "#145b7d")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS3)") +  
-  theme(  
+  )
+p3 = ggplot(WNT_cluster3, aes(x = status, fill = age)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("age≤40" = "#90d7ec",
+                               "40<age≤60" = "#009ad6",
+                               "age>60" = "#145b7d")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS3)") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16)
-  )  
-p4 = ggplot(WNT_cluster4, aes(x = status, fill = age)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("age≤40" = "#90d7ec",   
-                               "40<age≤60" = "#009ad6",   
-                               "age>60" = "#145b7d")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS4)", fill = "") +  
-  theme(  
+  )
+p4 = ggplot(WNT_cluster4, aes(x = status, fill = age)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("age≤40" = "#90d7ec",
+                               "40<age≤60" = "#009ad6",
+                               "age>60" = "#145b7d")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS4)", fill = "") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     text = element_text(color = "black", size = 16)
-  ) 
+  )
 library(patchwork)
-final_plot = p1 | p2 | p3 | p4  
+final_plot = p1 | p2 | p3 | p4
 print(final_plot)
 # ------------------------------------------------------------------------------
 # TCGA-gender
@@ -745,60 +745,60 @@ WNT_cluster3=gender[gender$cluster=="panWSS3",]
 WNT_cluster4=gender[gender$cluster=="panWSS4",]
 gender=gender[,-3]
 gender=as.data.frame(table(gender))
-contingency_table=acast(gender, cluster ~ gender, value.var = "Freq", fill = 0) 
+contingency_table=acast(gender, cluster ~ gender, value.var = "Freq", fill = 0)
 chi_square_result=chisq.test(contingency_table)
 chi_square_result=chi_square_result$p.value
-p.lab=paste0("chi-square test p",  
+p.lab=paste0("chi-square test p",
              ifelse(chi_square_result < 0.001, " < 0.001",
-                    paste0(" = ", round(chi_square_result, 3)))) 
+                    paste0(" = ", round(chi_square_result, 3))))
 library(ggplot2)
-p1 = ggplot(WNT_cluster1, aes(x = "", fill = gender)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Male" = "#6EB9C3", "Female" = "#C98B88")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS1)",subtitle = paste0(p.lab)) +  
+p1 = ggplot(WNT_cluster1, aes(x = "", fill = gender)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Male" = "#6EB9C3", "Female" = "#C98B88")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS1)",subtitle = paste0(p.lab)) +
   ggtitle("TCGA(n=10415, Gender)") +
-  theme(  
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16),
     plot.subtitle = element_text(size = 16, face = "italic")
   )
-p2 = ggplot(WNT_cluster2, aes(x = status, fill = gender)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Male" = "#6EB9C3", "Female" = "#C98B88")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS2)") +  
-  theme(  
-    axis.text.x = element_blank(),
-    axis.ticks.x = element_blank(),
-    legend.position = "none", 
-    text = element_text(color = "black", size = 16)
-  )
-p3 = ggplot(WNT_cluster3, aes(x = status, fill = gender)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Male" = "#6EB9C3", "Female" = "#C98B88")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS3)") +  
-  theme(  
+p2 = ggplot(WNT_cluster2, aes(x = status, fill = gender)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Male" = "#6EB9C3", "Female" = "#C98B88")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS2)") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16)
   )
-p4 = ggplot(WNT_cluster4, aes(x = status, fill = gender)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Male" = "#6EB9C3", "Female" = "#C98B88")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS4)", fill = "") +  
-  theme(  
+p3 = ggplot(WNT_cluster3, aes(x = status, fill = gender)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Male" = "#6EB9C3", "Female" = "#C98B88")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS3)") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
-    text = element_text(color = "black", size = 16) 
-  ) 
-final_plot = p1 | p2 | p3 | p4  
-print(final_plot)  
+    legend.position = "none",
+    text = element_text(color = "black", size = 16)
+  )
+p4 = ggplot(WNT_cluster4, aes(x = status, fill = gender)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Male" = "#6EB9C3", "Female" = "#C98B88")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS4)", fill = "") +
+  theme(
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    text = element_text(color = "black", size = 16)
+  )
+final_plot = p1 | p2 | p3 | p4
+print(final_plot)
 # ------------------------------------------------------------------------------
 # TCGA-race
 # ------------------------------------------------------------------------------
@@ -829,59 +829,59 @@ WNT_cluster3=race[race$cluster=="panWSS3",]
 WNT_cluster4=race[race$cluster=="panWSS4",]
 race=race[,-3]
 race=as.data.frame(table(race))
-contingency_table=acast(race, cluster ~ race, value.var = "Freq", fill = 0) 
+contingency_table=acast(race, cluster ~ race, value.var = "Freq", fill = 0)
 chi_square_result=chisq.test(contingency_table)
 chi_square_result=chi_square_result$p.value
-p.lab=paste0("chi-square test p",  
+p.lab=paste0("chi-square test p",
              ifelse(chi_square_result < 0.001, " < 0.001",
-                    paste0(" = ", round(chi_square_result, 3)))) 
+                    paste0(" = ", round(chi_square_result, 3))))
 library(ggplot2)
-p1 = ggplot(WNT_cluster1, aes(x = "", fill = race)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Asian" = "#fedcbd","Black"="#d3d7d4","White"="#cde6c7")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS1)",subtitle = paste0(p.lab)) +  
+p1 = ggplot(WNT_cluster1, aes(x = "", fill = race)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Asian" = "#fedcbd","Black"="#d3d7d4","White"="#cde6c7")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS1)",subtitle = paste0(p.lab)) +
   ggtitle("TCGA(n=9113, Race)") +
-  theme(  
-    axis.text.x = element_blank(), 
-    axis.ticks.x = element_blank(), 
+  theme(
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16),
     plot.subtitle = element_text(size = 16, face = "italic")
   )
-p2 = ggplot(WNT_cluster2, aes(x = status, fill = race)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Asian" = "#fedcbd","Black"="#d3d7d4","White"="#cde6c7")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS2)") +  
-  theme(  
+p2 = ggplot(WNT_cluster2, aes(x = status, fill = race)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Asian" = "#fedcbd","Black"="#d3d7d4","White"="#cde6c7")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS2)") +
+  theme(
     axis.text.x = element_blank(),
-    axis.ticks.x = element_blank(), 
-    legend.position = "none",
-    text = element_text(color = "black", size = 16)
-  )
-p3 = ggplot(WNT_cluster3, aes(x = status, fill = race)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Asian" = "#fedcbd","Black"="#d3d7d4","White"="#cde6c7")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS3)") +  
-  theme(  
-    axis.text.x = element_blank(),  
     axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16)
   )
-p4 = ggplot(WNT_cluster4, aes(x = status, fill = race)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Asian" = "#fedcbd","Black"="#d3d7d4","White"="#cde6c7")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS4)", fill = "") +  
-  theme(  
+p3 = ggplot(WNT_cluster3, aes(x = status, fill = race)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Asian" = "#fedcbd","Black"="#d3d7d4","White"="#cde6c7")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS3)") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
-    text = element_text(color = "black", size = 16) 
+    legend.position = "none",
+    text = element_text(color = "black", size = 16)
   )
-final_plot = p1 | p2 | p3 | p4  
+p4 = ggplot(WNT_cluster4, aes(x = status, fill = race)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Asian" = "#fedcbd","Black"="#d3d7d4","White"="#cde6c7")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS4)", fill = "") +
+  theme(
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    text = element_text(color = "black", size = 16)
+  )
+final_plot = p1 | p2 | p3 | p4
 print(final_plot)
 # ------------------------------------------------------------------------------
 # TCGA-stage
@@ -910,67 +910,67 @@ WNT_cluster3=stage[stage$cluster=="panWSS3",]
 WNT_cluster4=stage[stage$cluster=="panWSS4",]
 stage=stage[,-c(1,4)]
 stage=as.data.frame(table(stage))
-contingency_table=acast(stage, cluster ~ stage, value.var = "Freq", fill = 0) 
+contingency_table=acast(stage, cluster ~ stage, value.var = "Freq", fill = 0)
 chi_square_result=chisq.test(contingency_table)
 chi_square_result=chi_square_result$p.value
-p.lab=paste0("chi-square test p",  
+p.lab=paste0("chi-square test p",
              ifelse(chi_square_result < 0.001, " < 0.001",
-                    paste0(" = ", round(chi_square_result, 3)))) 
+                    paste0(" = ", round(chi_square_result, 3))))
 library(ggplot2)
-p1 = ggplot(WNT_cluster1, aes(x = "", fill = stage)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Stage0" = "#cde6c7", "Stage1" = "#abc88b",   
-                               "Stage2" = "#84bf96", "Stage3" = "#45b97c",   
-                               "Stage4" = "#005831")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS1)",subtitle = paste0(p.lab)) +  
+p1 = ggplot(WNT_cluster1, aes(x = "", fill = stage)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Stage0" = "#cde6c7", "Stage1" = "#abc88b",
+                               "Stage2" = "#84bf96", "Stage3" = "#45b97c",
+                               "Stage4" = "#005831")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS1)",subtitle = paste0(p.lab)) +
   ggtitle("TCGA(n=2423, Clinical stage)") +
-  theme(  
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16),
     plot.subtitle = element_text(size = 16, face = "italic")
   )
-p2 = ggplot(WNT_cluster2, aes(x = status, fill = stage)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Stage0" = "#cde6c7", "Stage1" = "#abc88b",   
-                               "Stage2" = "#84bf96", "Stage3" = "#45b97c",   
-                               "Stage4" = "#005831")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS2)") +  
-  theme(  
+p2 = ggplot(WNT_cluster2, aes(x = status, fill = stage)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Stage0" = "#cde6c7", "Stage1" = "#abc88b",
+                               "Stage2" = "#84bf96", "Stage3" = "#45b97c",
+                               "Stage4" = "#005831")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS2)") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16)
   )
-p3 = ggplot(WNT_cluster3, aes(x = status, fill = stage)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Stage0" = "#cde6c7", "Stage1" = "#abc88b",   
-                               "Stage2" = "#84bf96", "Stage3" = "#45b97c",   
-                               "Stage4" = "#005831")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS3)") +  
-  theme(  
+p3 = ggplot(WNT_cluster3, aes(x = status, fill = stage)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Stage0" = "#cde6c7", "Stage1" = "#abc88b",
+                               "Stage2" = "#84bf96", "Stage3" = "#45b97c",
+                               "Stage4" = "#005831")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS3)") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16)
   )
-p4 = ggplot(WNT_cluster4, aes(x = status, fill = stage)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Stage0" = "#cde6c7", "Stage1" = "#abc88b",   
-                               "Stage2" = "#84bf96", "Stage3" = "#45b97c",   
-                               "Stage4" = "#005831")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS4)", fill = "") +  
-  theme(  
+p4 = ggplot(WNT_cluster4, aes(x = status, fill = stage)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Stage0" = "#cde6c7", "Stage1" = "#abc88b",
+                               "Stage2" = "#84bf96", "Stage3" = "#45b97c",
+                               "Stage4" = "#005831")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS4)", fill = "") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     text = element_text(color = "black", size = 16)
   )
-final_plot = p1 | p2 | p3 | p4  
+final_plot = p1 | p2 | p3 | p4
 print(final_plot)
 # ------------------------------------------------------------------------------
 # TCGA-grade
@@ -998,60 +998,60 @@ WNT_cluster3=grade[grade$cluster=="panWSS3",]
 WNT_cluster4=grade[grade$cluster=="panWSS4",]
 grade=grade[,-c(1,4)]
 grade=as.data.frame(table(grade))
-contingency_table=acast(grade, cluster ~ grade, value.var = "Freq", fill = 0) 
+contingency_table=acast(grade, cluster ~ grade, value.var = "Freq", fill = 0)
 chi_square_result=chisq.test(contingency_table)
 chi_square_result=chi_square_result$p.value
-p.lab=paste0("chi-square test p",  
+p.lab=paste0("chi-square test p",
              ifelse(chi_square_result < 0.001, " < 0.001",
-                    paste0(" = ", round(chi_square_result, 3)))) 
+                    paste0(" = ", round(chi_square_result, 3))))
 library(ggplot2)
-p1 = ggplot(WNT_cluster1, aes(x = "", fill = grade)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Low" = "#afb4db", "High" = "#6950a1")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS1)",subtitle = paste0(p.lab)) +  
+p1 = ggplot(WNT_cluster1, aes(x = "", fill = grade)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Low" = "#afb4db", "High" = "#6950a1")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS1)",subtitle = paste0(p.lab)) +
   ggtitle("TCGA(n=4322, Grade)") +
-  theme(  
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
-    legend.position = "none", 
+    legend.position = "none",
     text = element_text(color = "black", size = 16),
     plot.subtitle = element_text(size = 16, face = "italic")
   )
-p2 = ggplot(WNT_cluster2, aes(x = status, fill = grade)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Low" = "#afb4db", "High" = "#6950a1")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS2)") +  
-  theme(  
+p2 = ggplot(WNT_cluster2, aes(x = status, fill = grade)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Low" = "#afb4db", "High" = "#6950a1")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS2)") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16)
   )
-p3 = ggplot(WNT_cluster3, aes(x = status, fill = grade)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Low" = "#afb4db", "High" = "#6950a1")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS3)") +  
-  theme(  
+p3 = ggplot(WNT_cluster3, aes(x = status, fill = grade)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Low" = "#afb4db", "High" = "#6950a1")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS3)") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16)
   )
-p4 = ggplot(WNT_cluster4, aes(x = status, fill = grade)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Low" = "#afb4db", "High" = "#6950a1")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS4)", fill = "") +  
-  theme(  
+p4 = ggplot(WNT_cluster4, aes(x = status, fill = grade)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Low" = "#afb4db", "High" = "#6950a1")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS4)", fill = "") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     text = element_text(color = "black", size = 16)
   )
-final_plot = p1 | p2 | p3 | p4  
-print(final_plot) 
+final_plot = p1 | p2 | p3 | p4
+print(final_plot)
 # ------------------------------------------------------------------------------
 # TCGA-status
 # ------------------------------------------------------------------------------
@@ -1077,59 +1077,59 @@ WNT_cluster3=status[status$cluster=="panWSS3",]
 WNT_cluster4=status[status$cluster=="panWSS4",]
 status=status[,-c(1,4)]
 status=as.data.frame(table(status))
-contingency_table=acast(status, cluster ~ tumor_status, value.var = "Freq", fill = 0) 
+contingency_table=acast(status, cluster ~ tumor_status, value.var = "Freq", fill = 0)
 chi_square_result=chisq.test(contingency_table)
 chi_square_result=chi_square_result$p.value
-p.lab=paste0("chi-square test p",  
+p.lab=paste0("chi-square test p",
              ifelse(chi_square_result < 0.001, " < 0.001",
-                    paste0(" = ", round(chi_square_result, 3)))) 
+                    paste0(" = ", round(chi_square_result, 3))))
 library(ggplot2)
-p1 = ggplot(WNT_cluster1, aes(x = "", fill = tumor_status)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Tumor free" = "#f7acbc", "With tumor" = "#d71345")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS1)",subtitle = paste0(p.lab)) +  
-  ggtitle("TCGA(n=9601, Status)") + 
-  theme(  
+p1 = ggplot(WNT_cluster1, aes(x = "", fill = tumor_status)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Tumor free" = "#f7acbc", "With tumor" = "#d71345")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS1)",subtitle = paste0(p.lab)) +
+  ggtitle("TCGA(n=9601, Status)") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16),
     plot.subtitle = element_text(size = 16, face = "italic")
   )
-p2 = ggplot(WNT_cluster2, aes(x = status, fill = tumor_status)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Tumor free" = "#f7acbc", "With tumor" = "#d71345")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS2)") +  
-  theme(  
+p2 = ggplot(WNT_cluster2, aes(x = status, fill = tumor_status)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Tumor free" = "#f7acbc", "With tumor" = "#d71345")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS2)") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16)
   )
-p3 = ggplot(WNT_cluster3, aes(x = status, fill = tumor_status)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Tumor free" = "#f7acbc", "With tumor" = "#d71345")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS3)") +  
-  theme(  
+p3 = ggplot(WNT_cluster3, aes(x = status, fill = tumor_status)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Tumor free" = "#f7acbc", "With tumor" = "#d71345")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS3)") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16)
   )
-p4 = ggplot(WNT_cluster4, aes(x = status, fill = tumor_status)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Tumor free" = "#f7acbc", "With tumor" = "#d71345")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS4)", fill = "") +  
-  theme(  
+p4 = ggplot(WNT_cluster4, aes(x = status, fill = tumor_status)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Tumor free" = "#f7acbc", "With tumor" = "#d71345")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS4)", fill = "") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     text = element_text(color = "black", size = 16)
   )
-final_plot = p1 | p2 | p3 | p4  
+final_plot = p1 | p2 | p3 | p4
 print(final_plot)
 # ------------------------------------------------------------------------------
 # TCGA-outcome
@@ -1157,60 +1157,60 @@ WNT_cluster3=outcome[outcome$cluster=="panWSS3",]
 WNT_cluster4=outcome[outcome$cluster=="panWSS4",]
 outcome=outcome[,-c(1,4)]
 outcome=as.data.frame(table(outcome))
-contingency_table=acast(outcome, cluster ~ outcome, value.var = "Freq", fill = 0) 
+contingency_table=acast(outcome, cluster ~ outcome, value.var = "Freq", fill = 0)
 chi_square_result=chisq.test(contingency_table)
 chi_square_result=chi_square_result$p.value
-p.lab=paste0("chi-square test p",  
+p.lab=paste0("chi-square test p",
              ifelse(chi_square_result < 0.001, " < 0.001",
-                    paste0(" = ", round(chi_square_result, 3)))) 
+                    paste0(" = ", round(chi_square_result, 3))))
 library(ggplot2)
-p1 = ggplot(WNT_cluster1, aes(x = "", fill = outcome)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("CR/PR" = "#009ad6", "SD/PD" = "#d71345")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS1)",subtitle = paste0(p.lab)) +  
-  ggtitle("TCGA(n=5250, Outcome)") + 
-  theme(  
-    axis.text.x = element_blank(), 
-    axis.ticks.x = element_blank(), 
+p1 = ggplot(WNT_cluster1, aes(x = "", fill = outcome)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("CR/PR" = "#009ad6", "SD/PD" = "#d71345")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS1)",subtitle = paste0(p.lab)) +
+  ggtitle("TCGA(n=5250, Outcome)") +
+  theme(
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16),
-    plot.subtitle = element_text(size = 16, face = "italic") 
+    plot.subtitle = element_text(size = 16, face = "italic")
   )
-p2 = ggplot(WNT_cluster2, aes(x = status, fill = outcome)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("CR/PR" = "#009ad6", "SD/PD" = "#d71345")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS2)") +  
-  theme(  
-    axis.text.x = element_blank(),
-    axis.ticks.x = element_blank(), 
-    legend.position = "none", 
-    text = element_text(color = "black", size = 16) 
-  )
-p3 = ggplot(WNT_cluster3, aes(x = status, fill = outcome)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("CR/PR" = "#009ad6", "SD/PD" = "#d71345")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS3)") +  
-  theme(  
+p2 = ggplot(WNT_cluster2, aes(x = status, fill = outcome)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("CR/PR" = "#009ad6", "SD/PD" = "#d71345")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS2)") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16)
   )
-p4 = ggplot(WNT_cluster4, aes(x = status, fill = outcome)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("CR/PR" = "#009ad6", "SD/PD" = "#d71345")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS4)", fill = "") +  
-  theme(  
+p3 = ggplot(WNT_cluster3, aes(x = status, fill = outcome)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("CR/PR" = "#009ad6", "SD/PD" = "#d71345")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS3)") +
+  theme(
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    legend.position = "none",
+    text = element_text(color = "black", size = 16)
+  )
+p4 = ggplot(WNT_cluster4, aes(x = status, fill = outcome)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("CR/PR" = "#009ad6", "SD/PD" = "#d71345")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS4)", fill = "") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     text = element_text(color = "black", size = 16)
   )
 library(patchwork)
-final_plot = p1 | p2 | p3 | p4  
+final_plot = p1 | p2 | p3 | p4
 print(final_plot)
 # ------------------------------------------------------------------------------
 # TCGA-margin
@@ -1236,60 +1236,60 @@ WNT_cluster3=margin[margin$cluster=="panWSS3",]
 WNT_cluster4=margin[margin$cluster=="panWSS4",]
 margin=margin[,-c(1,4)]
 margin=as.data.frame(table(margin))
-contingency_table=acast(margin, cluster ~ margin, value.var = "Freq", fill = 0) 
+contingency_table=acast(margin, cluster ~ margin, value.var = "Freq", fill = 0)
 chi_square_result=chisq.test(contingency_table)
 chi_square_result=chi_square_result$p.value
-p.lab=paste0("chi-square test p",  
+p.lab=paste0("chi-square test p",
              ifelse(chi_square_result < 0.001, " < 0.001",
-                    paste0(" = ", round(chi_square_result, 3)))) 
+                    paste0(" = ", round(chi_square_result, 3))))
 library(ggplot2)
-p1 = ggplot(WNT_cluster1, aes(x = "", fill = margin)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Negative" = "#94d6da", "Positive" = "#f15b6c","Close"="#d3d7d4")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS1)",subtitle = paste0(p.lab)) +  
+p1 = ggplot(WNT_cluster1, aes(x = "", fill = margin)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Negative" = "#94d6da", "Positive" = "#f15b6c","Close"="#d3d7d4")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS1)",subtitle = paste0(p.lab)) +
   ggtitle("TCGA(n=1245, Margin status)") +
-  theme(  
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16),
     plot.subtitle = element_text(size = 16, face = "italic")
   )
-p2 = ggplot(WNT_cluster2, aes(x = status, fill = margin)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Negative" = "#94d6da", "Positive" = "#f15b6c","Close"="#d3d7d4")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS2)") +  
-  theme(  
+p2 = ggplot(WNT_cluster2, aes(x = status, fill = margin)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Negative" = "#94d6da", "Positive" = "#f15b6c","Close"="#d3d7d4")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS2)") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16)
   )
-p3 = ggplot(WNT_cluster3, aes(x = status, fill = margin)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Negative" = "#94d6da", "Positive" = "#f15b6c","Close"="#d3d7d4")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS3)") +  
-  theme(  
+p3 = ggplot(WNT_cluster3, aes(x = status, fill = margin)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Negative" = "#94d6da", "Positive" = "#f15b6c","Close"="#d3d7d4")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS3)") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16)
   )
-p4 = ggplot(WNT_cluster4, aes(x = status, fill = margin)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Negative" = "#94d6da", "Positive" = "#f15b6c","Close"="#d3d7d4")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS4)", fill = "") +  
-  theme(  
+p4 = ggplot(WNT_cluster4, aes(x = status, fill = margin)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Negative" = "#94d6da", "Positive" = "#f15b6c","Close"="#d3d7d4")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS4)", fill = "") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     text = element_text(color = "black", size = 16)
   )
 library(patchwork)
-final_plot = p1 | p2 | p3 | p4  
+final_plot = p1 | p2 | p3 | p4
 print(final_plot)
 # ------------------------------------------------------------------------------
 # TCGA-residual
@@ -1315,60 +1315,60 @@ WNT_cluster3=residual[residual$cluster=="panWSS3",]
 WNT_cluster4=residual[residual$cluster=="panWSS4",]
 residual=residual[,-c(1,4)]
 residual=as.data.frame(table(residual))
-contingency_table=acast(residual, cluster ~ residual, value.var = "Freq", fill = 0) 
+contingency_table=acast(residual, cluster ~ residual, value.var = "Freq", fill = 0)
 chi_square_result=chisq.test(contingency_table)
 chi_square_result=chi_square_result$p.value
-p.lab=paste0("chi-square test p",  
+p.lab=paste0("chi-square test p",
              ifelse(chi_square_result < 0.001, " < 0.001",
-                    paste0(" = ", round(chi_square_result, 3)))) 
+                    paste0(" = ", round(chi_square_result, 3))))
 library(ggplot2)
-p1 = ggplot(WNT_cluster1, aes(x = "", fill = residual)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("R0" = "#f173ac", "R1" = "#c77eb5","R2"="#8552a1","RX"="#f2eada")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS1)",subtitle = paste0(p.lab)) +  
+p1 = ggplot(WNT_cluster1, aes(x = "", fill = residual)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("R0" = "#f173ac", "R1" = "#c77eb5","R2"="#8552a1","RX"="#f2eada")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS1)",subtitle = paste0(p.lab)) +
   ggtitle("TCGA(n=1190, Residual tumor)") +
-  theme(  
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16),
     plot.subtitle = element_text(size = 16, face = "italic")
   )
-p2 = ggplot(WNT_cluster2, aes(x = status, fill = residual)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("R0" = "#f173ac", "R1" = "#c77eb5","R2"="#8552a1","RX"="#f2eada")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS2)") +  
-  theme(  
+p2 = ggplot(WNT_cluster2, aes(x = status, fill = residual)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("R0" = "#f173ac", "R1" = "#c77eb5","R2"="#8552a1","RX"="#f2eada")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS2)") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16)
   )
-p3 = ggplot(WNT_cluster3, aes(x = status, fill = residual)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("R0" = "#f173ac", "R1" = "#c77eb5","R2"="#8552a1","RX"="#f2eada")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS3)") +  
-  theme(  
+p3 = ggplot(WNT_cluster3, aes(x = status, fill = residual)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("R0" = "#f173ac", "R1" = "#c77eb5","R2"="#8552a1","RX"="#f2eada")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS3)") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16)
   )
-p4 = ggplot(WNT_cluster4, aes(x = status, fill = residual)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("R0" = "#f173ac", "R1" = "#c77eb5","R2"="#8552a1","RX"="#f2eada")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS4)", fill = "") +  
-  theme(  
+p4 = ggplot(WNT_cluster4, aes(x = status, fill = residual)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("R0" = "#f173ac", "R1" = "#c77eb5","R2"="#8552a1","RX"="#f2eada")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS4)", fill = "") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     text = element_text(color = "black", size = 16)
   )
 library(patchwork)
-final_plot = p1 | p2 | p3 | p4  
+final_plot = p1 | p2 | p3 | p4
 print(final_plot)
 # ------------------------------------------------------------------------------
 # TCGA-mutation
@@ -1400,60 +1400,60 @@ WNT_cluster3=gene[gene$cluster=="panWSS3",]
 WNT_cluster4=gene[gene$cluster=="panWSS4",]
 gene=gene[,-3]
 gene=as.data.frame(table(gene))
-contingency_table=acast(gene, cluster ~ gene, value.var = "Freq", fill = 0) 
+contingency_table=acast(gene, cluster ~ gene, value.var = "Freq", fill = 0)
 chi_square_result=chisq.test(contingency_table)
 chi_square_result=chi_square_result$p.value
-p.lab=paste0("chi-square test p",  
+p.lab=paste0("chi-square test p",
              ifelse(chi_square_result < 0.001, " < 0.001",
-                    paste0(" = ", round(chi_square_result, 3)))) 
+                    paste0(" = ", round(chi_square_result, 3))))
 library(ggplot2)
-p1 = ggplot(WNT_cluster1, aes(x = "", fill = gene)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("MT" = "#C24976", "WT" = "#469393")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS1)",subtitle = paste0(p.lab)) +  
+p1 = ggplot(WNT_cluster1, aes(x = "", fill = gene)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("MT" = "#C24976", "WT" = "#469393")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS1)",subtitle = paste0(p.lab)) +
   ggtitle("TCGA(n=8797, APC)") +
-  theme(  
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16),
     plot.subtitle = element_text(size = 16, face = "italic")
-  )  
-p2 = ggplot(WNT_cluster2, aes(x = status, fill = gene)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("MT" = "#C24976", "WT" = "#469393")) +  
-  theme_minimal() +   
-  labs(title = "", x = "", y = "Proportion(panWSS2)") +  
-  theme(  
+  )
+p2 = ggplot(WNT_cluster2, aes(x = status, fill = gene)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("MT" = "#C24976", "WT" = "#469393")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS2)") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16)
-  )  
-p3 = ggplot(WNT_cluster3, aes(x = status, fill = gene)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("MT" = "#C24976", "WT" = "#469393")) +  
-  theme_minimal() +   
-  labs(title = "", x = "", y = "Proportion(panWSS3)") +  
-  theme(  
+  )
+p3 = ggplot(WNT_cluster3, aes(x = status, fill = gene)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("MT" = "#C24976", "WT" = "#469393")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS3)") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16)
-  )  
-p4 = ggplot(WNT_cluster4, aes(x = status, fill = gene)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("MT" = "#C24976", "WT" = "#469393")) +  
-  theme_minimal() +   
-  labs(title = "", x = "", y = "Proportion(panWSS4)", fill = "") +  
-  theme(  
+  )
+p4 = ggplot(WNT_cluster4, aes(x = status, fill = gene)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("MT" = "#C24976", "WT" = "#469393")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS4)", fill = "") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     text = element_text(color = "black", size = 16)
-  ) 
+  )
 library(patchwork)
-final_plot = p1 | p2 | p3 | p4  
+final_plot = p1 | p2 | p3 | p4
 print(final_plot)
 # ------------------------------------------------------------------------------
 # Protein labelling standardisation
@@ -1533,30 +1533,30 @@ library(ggpubr)
 library(RColorBrewer)
 combinations=combn(c("panWSS1","panWSS2","panWSS3","panWSS4"), 2)
 my.comparisons=split(combinations, rep(1:ncol(combinations), each = nrow(combinations)))
-p=ggplot(WNT, aes(x = cluster, y = BETACATENIN, fill = cluster)) +  
-  geom_violin(width = 0.5, scale = "area", trim = FALSE, position = position_dodge(0.9), show.legend = FALSE) +   
-  geom_boxplot(width = 0.2, position = position_dodge(0.9), show.legend = FALSE) +   
-  xlab("") +  
-  ylab("β-catenin protein level") +  
-  guides(fill = "none") +  
-  scale_x_discrete(labels = c(paste0("panWSS1\n(n=",table(WNT$cluster)[1],")"),   
-                              paste0("panWSS2\n(n=",table(WNT$cluster)[2],")"),  
-                              paste0("panWSS3\n(n=",table(WNT$cluster)[3],")"),  
-                              paste0("panWSS4\n(n=",table(WNT$cluster)[4],")"))) +  
-  theme_bw() +  
-  theme(  
+p=ggplot(WNT, aes(x = cluster, y = BETACATENIN, fill = cluster)) +
+  geom_violin(width = 0.5, scale = "area", trim = FALSE, position = position_dodge(0.9), show.legend = FALSE) +
+  geom_boxplot(width = 0.2, position = position_dodge(0.9), show.legend = FALSE) +
+  xlab("") +
+  ylab("β-catenin protein level") +
+  guides(fill = "none") +
+  scale_x_discrete(labels = c(paste0("panWSS1\n(n=",table(WNT$cluster)[1],")"),
+                              paste0("panWSS2\n(n=",table(WNT$cluster)[2],")"),
+                              paste0("panWSS3\n(n=",table(WNT$cluster)[3],")"),
+                              paste0("panWSS4\n(n=",table(WNT$cluster)[4],")"))) +
+  theme_bw() +
+  theme(
     axis.text = element_text(size = 16, color = "black"),
     axis.title = element_text(size = 16, color = "black"),
     plot.title = element_text(size = 16,  color = "black"),
     legend.text = element_text(size = 16, color = "black"),
     legend.title = element_text(size = 16, color = "black")
-  ) +  
-  stat_compare_means(comparisons = my.comparisons,   
-                     method = "wilcox.test",  
-                     label = "p.format",  
-                     size = 4) +  
-  scale_fill_manual(values = c("#d71345","#f47920","#145b7d","#6950a1")) +  
-  ggtitle("TCGA-Pancancer")  
+  ) +
+  stat_compare_means(comparisons = my.comparisons,
+                     method = "wilcox.test",
+                     label = "p.format",
+                     size = 4) +
+  scale_fill_manual(values = c("#d71345","#f47920","#145b7d","#6950a1")) +
+  ggtitle("TCGA-Pancancer")
 print(p)
 # ------------------------------------------------------------------------------
 # Protein differential expression
@@ -1637,8 +1637,8 @@ result_dn = result_dn[order(result_dn$P.Value), ]
 top_genes = rbind(head(result_up, 8), head(result_dn, 8))
 volcano_p = ggplot(result, aes(logFC, -log10(P.Value))) +
   geom_point(aes(color = Sig, size = -log10(P.Value)), alpha = 0.5) +
-  scale_color_manual(values = c("Down" = "#90d7ec", 
-                                "No diff" = "grey30", 
+  scale_color_manual(values = c("Down" = "#90d7ec",
+                                "No diff" = "grey30",
                                 "Up" = "#f7acbc")) +
   theme_bw() +
   theme(
@@ -1648,7 +1648,7 @@ volcano_p = ggplot(result, aes(logFC, -log10(P.Value))) +
     legend.title = element_text(size = 15),
     legend.text = element_text(size = 15)
   ) +
-  labs(x = expression(log[2]("FC")), 
+  labs(x = expression(log[2]("FC")),
        y = expression(-log[10]("p"))) +
   xlim(-1.7, 1.7) +
   geom_text_repel(
@@ -1726,8 +1726,8 @@ result_dn = result_dn[order(result_dn$P.Value), ]
 top_genes = rbind(head(result_up, 8), head(result_dn, 8))
 volcano_p = ggplot(result, aes(logFC, -log10(P.Value))) +
   geom_point(aes(color = Sig, size = -log10(P.Value)), alpha = 0.5) +
-  scale_color_manual(values = c("Down" = "#90d7ec", 
-                                "No diff" = "grey30", 
+  scale_color_manual(values = c("Down" = "#90d7ec",
+                                "No diff" = "grey30",
                                 "Up" = "#f7acbc")) +
   theme_bw() +
   theme(
@@ -1737,7 +1737,7 @@ volcano_p = ggplot(result, aes(logFC, -log10(P.Value))) +
     legend.title = element_text(size = 15),
     legend.text = element_text(size = 15)
   ) +
-  labs(x = expression(log[2]("FC")), 
+  labs(x = expression(log[2]("FC")),
        y = expression(-log[10]("p"))) +
   xlim(-2, 2) +
   geom_text_repel(
@@ -1814,8 +1814,8 @@ result_dn = result_dn[order(result_dn$P.Value), ]
 top_genes = rbind(head(result_up, 8), head(result_dn, 8))
 volcano_p = ggplot(result, aes(logFC, -log10(P.Value))) +
   geom_point(aes(color = Sig, size = -log10(P.Value)), alpha = 0.5) +
-  scale_color_manual(values = c("Down" = "#90d7ec", 
-                                "No diff" = "grey30", 
+  scale_color_manual(values = c("Down" = "#90d7ec",
+                                "No diff" = "grey30",
                                 "Up" = "#f7acbc")) +
   theme_bw() +
   theme(
@@ -1825,7 +1825,7 @@ volcano_p = ggplot(result, aes(logFC, -log10(P.Value))) +
     legend.title = element_text(size = 15),
     legend.text = element_text(size = 15)
   ) +
-  labs(x = expression(log[2]("FC")), 
+  labs(x = expression(log[2]("FC")),
        y = expression(-log[10]("p"))) +
   xlim(-1.7, 1.7) +
   geom_text_repel(
@@ -1840,7 +1840,7 @@ volcano_p = ggplot(result, aes(logFC, -log10(P.Value))) +
     segment.size = 0.5,
     force = 1,
     nudge_x = 0.2,
-    nudge_y = 0.2 
+    nudge_y = 0.2
   )+ggtitle("panWSS3")
 print(volcano_p)
 # ------------------------------------------------------------------------------
@@ -1902,8 +1902,8 @@ result_dn = result_dn[order(result_dn$P.Value), ]
 top_genes = rbind(head(result_up, 8), head(result_dn, 8))
 volcano_p = ggplot(result, aes(logFC, -log10(P.Value))) +
   geom_point(aes(color = Sig, size = -log10(P.Value)), alpha = 0.5) +
-  scale_color_manual(values = c("Down" = "#90d7ec", 
-                                "No diff" = "grey30", 
+  scale_color_manual(values = c("Down" = "#90d7ec",
+                                "No diff" = "grey30",
                                 "Up" = "#f7acbc")) +
   theme_bw() +
   theme(
@@ -1913,7 +1913,7 @@ volcano_p = ggplot(result, aes(logFC, -log10(P.Value))) +
     legend.title = element_text(size = 15),
     legend.text = element_text(size = 15)
   ) +
-  labs(x = expression(log[2]("FC")), 
+  labs(x = expression(log[2]("FC")),
        y = expression(-log[10]("p"))) +
   xlim(-1.7, 1.7) +
   geom_text_repel(
@@ -2081,30 +2081,30 @@ library(ggpubr)
 library(RColorBrewer)
 combinations=combn(c("panWSS1","panWSS2","panWSS3","panWSS4"), 2)
 my.comparisons=split(combinations, rep(1:ncol(combinations), each = nrow(combinations)))
-p=ggplot(WNT, aes(x = cluster, y = HRD, fill = cluster)) +  
-  geom_violin(width = 0.5, scale = "area", trim = FALSE, position = position_dodge(0.9), show.legend = FALSE) +   
-  geom_boxplot(width = 0.2, position = position_dodge(0.9), show.legend = FALSE) +   
-  xlab("") +  
-  ylab("Homologous recombination deficiency") +  
-  guides(fill = "none") +  
-  scale_x_discrete(labels = c(paste0("panWSS1\n(n=",table(WNT$cluster)[1],")"),   
-                              paste0("panWSS2\n(n=",table(WNT$cluster)[2],")"),  
-                              paste0("panWSS3\n(n=",table(WNT$cluster)[3],")"),  
-                              paste0("panWSS4\n(n=",table(WNT$cluster)[4],")"))) +  
-  theme_bw() +  
-  theme(  
+p=ggplot(WNT, aes(x = cluster, y = HRD, fill = cluster)) +
+  geom_violin(width = 0.5, scale = "area", trim = FALSE, position = position_dodge(0.9), show.legend = FALSE) +
+  geom_boxplot(width = 0.2, position = position_dodge(0.9), show.legend = FALSE) +
+  xlab("") +
+  ylab("Homologous recombination deficiency") +
+  guides(fill = "none") +
+  scale_x_discrete(labels = c(paste0("panWSS1\n(n=",table(WNT$cluster)[1],")"),
+                              paste0("panWSS2\n(n=",table(WNT$cluster)[2],")"),
+                              paste0("panWSS3\n(n=",table(WNT$cluster)[3],")"),
+                              paste0("panWSS4\n(n=",table(WNT$cluster)[4],")"))) +
+  theme_bw() +
+  theme(
     axis.text = element_text(size = 16, color = "black"),
     axis.title = element_text(size = 16, color = "black"),
-    plot.title = element_text(size = 16,  color = "black"), 
+    plot.title = element_text(size = 16,  color = "black"),
     legend.text = element_text(size = 16, color = "black"),
-    legend.title = element_text(size = 16, color = "black") 
-  ) +  
-  stat_compare_means(comparisons = my.comparisons,   
-                     method = "wilcox.test",  
-                     label = "p.format",  
-                     size = 4) +  
-  scale_fill_manual(values = c("#d71345","#f47920","#145b7d","#6950a1")) +  
-  ggtitle("TCGA-Pancancer")  
+    legend.title = element_text(size = 16, color = "black")
+  ) +
+  stat_compare_means(comparisons = my.comparisons,
+                     method = "wilcox.test",
+                     label = "p.format",
+                     size = 4) +
+  scale_fill_manual(values = c("#d71345","#f47920","#145b7d","#6950a1")) +
+  ggtitle("TCGA-Pancancer")
 print(p)
 # ------------------------------------------------------------------------------
 # TARGET-age
@@ -2157,69 +2157,69 @@ WNT_cluster3=age[age$cluster=="panWSS3",]
 WNT_cluster4=age[age$cluster=="panWSS4",]
 age=age[,-c(1,4)]
 age=as.data.frame(table(age))
-contingency_table=acast(age, cluster ~ age, value.var = "Freq", fill = 0) 
+contingency_table=acast(age, cluster ~ age, value.var = "Freq", fill = 0)
 chi_square_result=chisq.test(contingency_table)
 chi_square_result=chi_square_result$p.value
-p.lab=paste0("chi-square test p",  
+p.lab=paste0("chi-square test p",
              ifelse(chi_square_result < 0.001, " < 0.001",
-                    paste0(" = ", round(chi_square_result, 3)))) 
+                    paste0(" = ", round(chi_square_result, 3))))
 library(ggplot2)
-p1 = ggplot(WNT_cluster1, aes(x = "", fill = age)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("age≤6" = "#90d7ec",   
-                               "6<age≤12" = "#009ad6",   
-                               "age>12" = "#145b7d")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS1)",subtitle = paste0(p.lab)) +  
+p1 = ggplot(WNT_cluster1, aes(x = "", fill = age)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("age≤6" = "#90d7ec",
+                               "6<age≤12" = "#009ad6",
+                               "age>12" = "#145b7d")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS1)",subtitle = paste0(p.lab)) +
   ggtitle("TARGET(n=3467, Age)") +
-  theme(  
+  theme(
     axis.text.x = element_blank(),
-    axis.ticks.x = element_blank(), 
-    legend.position = "none", 
+    axis.ticks.x = element_blank(),
+    legend.position = "none",
     text = element_text(color = "black", size = 16),
     plot.subtitle = element_text(size = 16, face = "italic")
-  )  
-p2 = ggplot(WNT_cluster2, aes(x = status, fill = age)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("age≤6" = "#90d7ec",   
-                               "6<age≤12" = "#009ad6",   
-                               "age>12" = "#145b7d")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS2)") +  
-  theme(  
+  )
+p2 = ggplot(WNT_cluster2, aes(x = status, fill = age)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("age≤6" = "#90d7ec",
+                               "6<age≤12" = "#009ad6",
+                               "age>12" = "#145b7d")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS2)") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16)
-  )  
-p3 = ggplot(WNT_cluster3, aes(x = status, fill = age)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("age≤6" = "#90d7ec",   
-                               "6<age≤12" = "#009ad6",   
-                               "age>12" = "#145b7d")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS3)") +  
-  theme(  
+  )
+p3 = ggplot(WNT_cluster3, aes(x = status, fill = age)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("age≤6" = "#90d7ec",
+                               "6<age≤12" = "#009ad6",
+                               "age>12" = "#145b7d")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS3)") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16)
-  )  
-p4 = ggplot(WNT_cluster4, aes(x = status, fill = age)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("age≤6" = "#90d7ec",   
-                               "6<age≤12" = "#009ad6",   
-                               "age>12" = "#145b7d")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS4)", fill = "") +  
-  theme(  
+  )
+p4 = ggplot(WNT_cluster4, aes(x = status, fill = age)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("age≤6" = "#90d7ec",
+                               "6<age≤12" = "#009ad6",
+                               "age>12" = "#145b7d")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS4)", fill = "") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     text = element_text(color = "black", size = 16)
-  ) 
+  )
 library(patchwork)
-final_plot = p1 | p2 | p3 | p4  
-print(final_plot) 
+final_plot = p1 | p2 | p3 | p4
+print(final_plot)
 # ------------------------------------------------------------------------------
 # TARGET-gender
 # ------------------------------------------------------------------------------
@@ -2271,59 +2271,59 @@ WNT_cluster3=gender[gender$cluster=="panWSS3",]
 WNT_cluster4=gender[gender$cluster=="panWSS4",]
 gender=gender[,-3]
 gender=as.data.frame(table(gender))
-contingency_table=acast(gender, cluster ~ gender, value.var = "Freq", fill = 0) 
+contingency_table=acast(gender, cluster ~ gender, value.var = "Freq", fill = 0)
 chi_square_result=chisq.test(contingency_table)
 chi_square_result=chi_square_result$p.value
-p.lab=paste0("chi-square test p",  
+p.lab=paste0("chi-square test p",
              ifelse(chi_square_result < 0.001, " < 0.001",
-                    paste0(" = ", round(chi_square_result, 3)))) 
+                    paste0(" = ", round(chi_square_result, 3))))
 library(ggplot2)
-p1 = ggplot(WNT_cluster1, aes(x = "", fill = gender)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Male" = "#6EB9C3", "Female" = "#C98B88")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS1)",subtitle = paste0(p.lab)) +  
-  ggtitle("TARGET(n=3504, Gender)") + 
-  theme(  
+p1 = ggplot(WNT_cluster1, aes(x = "", fill = gender)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Male" = "#6EB9C3", "Female" = "#C98B88")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS1)",subtitle = paste0(p.lab)) +
+  ggtitle("TARGET(n=3504, Gender)") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16),
     plot.subtitle = element_text(size = 16, face = "italic")
   )
-p2 = ggplot(WNT_cluster2, aes(x = status, fill = gender)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Male" = "#6EB9C3", "Female" = "#C98B88")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS2)") +  
-  theme(  
+p2 = ggplot(WNT_cluster2, aes(x = status, fill = gender)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Male" = "#6EB9C3", "Female" = "#C98B88")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS2)") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16)
   )
-p3 = ggplot(WNT_cluster3, aes(x = status, fill = gender)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Male" = "#6EB9C3", "Female" = "#C98B88")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS3)") +  
-  theme(  
+p3 = ggplot(WNT_cluster3, aes(x = status, fill = gender)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Male" = "#6EB9C3", "Female" = "#C98B88")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS3)") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16)
   )
-p4 = ggplot(WNT_cluster4, aes(x = status, fill = gender)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Male" = "#6EB9C3", "Female" = "#C98B88")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS4)", fill = "") +  
-  theme(  
+p4 = ggplot(WNT_cluster4, aes(x = status, fill = gender)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Male" = "#6EB9C3", "Female" = "#C98B88")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS4)", fill = "") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     text = element_text(color = "black", size = 16)
   )
-final_plot = p1 | p2 | p3 | p4  
+final_plot = p1 | p2 | p3 | p4
 print(final_plot)
 # ------------------------------------------------------------------------------
 # TARGET-race
@@ -2376,59 +2376,59 @@ WNT_cluster3=race[race$cluster=="panWSS3",]
 WNT_cluster4=race[race$cluster=="panWSS4",]
 race=race[,-3]
 race=as.data.frame(table(race))
-contingency_table=acast(race, cluster ~ race, value.var = "Freq", fill = 0) 
+contingency_table=acast(race, cluster ~ race, value.var = "Freq", fill = 0)
 chi_square_result=chisq.test(contingency_table)
 chi_square_result=chi_square_result$p.value
-p.lab=paste0("chi-square test p",  
+p.lab=paste0("chi-square test p",
              ifelse(chi_square_result < 0.001, " < 0.001",
-                    paste0(" = ", round(chi_square_result, 3)))) 
+                    paste0(" = ", round(chi_square_result, 3))))
 library(ggplot2)
-p1 = ggplot(WNT_cluster1, aes(x = "", fill = race)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Asian" = "#fedcbd","Black"="#d3d7d4","White"="#cde6c7")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS1)",subtitle = paste0(p.lab)) +  
+p1 = ggplot(WNT_cluster1, aes(x = "", fill = race)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Asian" = "#fedcbd","Black"="#d3d7d4","White"="#cde6c7")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS1)",subtitle = paste0(p.lab)) +
   ggtitle("TARGET(n=2968, Race)") +
-  theme(  
+  theme(
     axis.text.x = element_blank(),
-    axis.ticks.x = element_blank(), 
+    axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16),
     plot.subtitle = element_text(size = 16, face = "italic")
   )
-p2 = ggplot(WNT_cluster2, aes(x = status, fill = race)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Asian" = "#fedcbd","Black"="#d3d7d4","White"="#cde6c7")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS2)") +  
-  theme(  
+p2 = ggplot(WNT_cluster2, aes(x = status, fill = race)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Asian" = "#fedcbd","Black"="#d3d7d4","White"="#cde6c7")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS2)") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16)
   )
-p3 = ggplot(WNT_cluster3, aes(x = status, fill = race)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Asian" = "#fedcbd","Black"="#d3d7d4","White"="#cde6c7")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS3)") +  
-  theme(  
+p3 = ggplot(WNT_cluster3, aes(x = status, fill = race)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Asian" = "#fedcbd","Black"="#d3d7d4","White"="#cde6c7")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS3)") +
+  theme(
     axis.text.x = element_blank(),
-    axis.ticks.x = element_blank(), 
+    axis.ticks.x = element_blank(),
     legend.position = "none",
     text = element_text(color = "black", size = 16)
   )
-p4 = ggplot(WNT_cluster4, aes(x = status, fill = race)) +  
-  geom_bar(position = "fill", color = "black") +  
-  scale_fill_manual(values = c("Asian" = "#fedcbd","Black"="#d3d7d4","White"="#cde6c7")) +  
-  theme_minimal() +  
-  labs(title = "", x = "", y = "Proportion(panWSS4)", fill = "") +  
-  theme(  
+p4 = ggplot(WNT_cluster4, aes(x = status, fill = race)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_manual(values = c("Asian" = "#fedcbd","Black"="#d3d7d4","White"="#cde6c7")) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "Proportion(panWSS4)", fill = "") +
+  theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     text = element_text(color = "black", size = 16)
   )
-final_plot = p1 | p2 | p3 | p4  
+final_plot = p1 | p2 | p3 | p4
 print(final_plot)
 # ------------------------------------------------------------------------------
 # TCGA pan-cancer for single cancers
@@ -2468,16 +2468,16 @@ for(i in 1:length(fs)){
   rank=rank[order(-rank$value),]
   km_result$cluster=ifelse(km_result$cluster==rank$Tag[1],1,ifelse(km_result$cluster==rank$Tag[2],2,ifelse(km_result$cluster==rank$Tag[3],3,4)))
   dd=cbind(genesets_single, cluster = km_result$cluster)
-  p0=fviz_cluster(km_result, data = genesets_single,  
-                  palette = c("#d71345","#f47920","#145b7d","#6950a1"),  
-                  ellipse.type = "euclid",  
-                  star.plot = TRUE,   
-                  repel = TRUE,  
+  p0=fviz_cluster(km_result, data = genesets_single,
+                  palette = c("#d71345","#f47920","#145b7d","#6950a1"),
+                  ellipse.type = "euclid",
+                  star.plot = TRUE,
+                  repel = TRUE,
                   geom = "point",
-                  pointsize = 0.5) +   
-    ggtitle(paste0("TCGA_", fs[i])) +   
-    theme_minimal() +  
-    theme(  
+                  pointsize = 0.5) +
+    ggtitle(paste0("TCGA_", fs[i])) +
+    theme_minimal() +
+    theme(
       text = element_text(size = 16, color = "black"),
       plot.title = element_text(size = 16, color = "black"),
       axis.title = element_text(size = 16, color = "black"),
@@ -2505,30 +2505,30 @@ for(i in 1:length(fs)){
                        paste0(tolower(fs[i]),"WSS3"),
                        paste0(tolower(fs[i]),"WSS4")), 2)
   my.comparisons=split(combinations, rep(1:ncol(combinations), each = nrow(combinations)))
-  p1=ggplot(WNT, aes(x = cluster, y = activity_score, fill = cluster)) +  
-    geom_violin(width = 0.5, scale = "area", trim = FALSE, position = position_dodge(0.9), show.legend = FALSE) +   
-    geom_boxplot(width = 0.2, position = position_dodge(0.9), show.legend = FALSE) +   
-    xlab("") +  
-    ylab("Wnt/β-catenin pathway activity score") +  
-    guides(fill = "none") +  
-    scale_x_discrete(labels = c(paste0(tolower(fs[i]),"WSS1\n(n=",table(WNT$cluster)[1],")"),   
-                                paste0(tolower(fs[i]),"WSS2\n(n=",table(WNT$cluster)[2],")"),  
-                                paste0(tolower(fs[i]),"WSS3\n(n=",table(WNT$cluster)[3],")"),  
-                                paste0(tolower(fs[i]),"WSS4\n(n=",table(WNT$cluster)[4],")"))) +  
-    theme_bw() +  
-    theme(  
+  p1=ggplot(WNT, aes(x = cluster, y = activity_score, fill = cluster)) +
+    geom_violin(width = 0.5, scale = "area", trim = FALSE, position = position_dodge(0.9), show.legend = FALSE) +
+    geom_boxplot(width = 0.2, position = position_dodge(0.9), show.legend = FALSE) +
+    xlab("") +
+    ylab("Wnt/β-catenin pathway activity score") +
+    guides(fill = "none") +
+    scale_x_discrete(labels = c(paste0(tolower(fs[i]),"WSS1\n(n=",table(WNT$cluster)[1],")"),
+                                paste0(tolower(fs[i]),"WSS2\n(n=",table(WNT$cluster)[2],")"),
+                                paste0(tolower(fs[i]),"WSS3\n(n=",table(WNT$cluster)[3],")"),
+                                paste0(tolower(fs[i]),"WSS4\n(n=",table(WNT$cluster)[4],")"))) +
+    theme_bw() +
+    theme(
       axis.text = element_text(size = 16, color = "black"),
       axis.title = element_text(size = 16, color = "black"),
       plot.title = element_text(size = 16,  color = "black"),
       legend.text = element_text(size = 16, color = "black"),
       legend.title = element_text(size = 16, color = "black")
-    ) +  
-    stat_compare_means(comparisons = my.comparisons,   
-                       method = "wilcox.test",  
-                       label = "p.format",  
-                       size = 4) +  
-    scale_fill_manual(values = c("#d71345","#f47920","#145b7d","#6950a1")) +  
-    ggtitle(paste0("TCGA-",fs[i]))  
+    ) +
+    stat_compare_means(comparisons = my.comparisons,
+                       method = "wilcox.test",
+                       label = "p.format",
+                       size = 4) +
+    scale_fill_manual(values = c("#d71345","#f47920","#145b7d","#6950a1")) +
+    ggtitle(paste0("TCGA-",fs[i]))
   print(p1)
   setwd("input")
   assign(paste0(fs[i],"_cluster"),cluster)
@@ -2572,16 +2572,16 @@ for(i in 1:length(fs)){
   rank=rank[order(-rank$value),]
   km_result$cluster=ifelse(km_result$cluster==rank$Tag[1],1,ifelse(km_result$cluster==rank$Tag[2],2,ifelse(km_result$cluster==rank$Tag[3],3,4)))
   dd=cbind(genesets_single, cluster = km_result$cluster)
-  p0=fviz_cluster(km_result, data = genesets_single,  
-                  palette = c("#d71345","#f47920","#145b7d","#6950a1"),  
-                  ellipse.type = "euclid",  
-                  star.plot = TRUE,   
-                  repel = TRUE,  
+  p0=fviz_cluster(km_result, data = genesets_single,
+                  palette = c("#d71345","#f47920","#145b7d","#6950a1"),
+                  ellipse.type = "euclid",
+                  star.plot = TRUE,
+                  repel = TRUE,
                   geom = "point",
-                  pointsize = 0.5) +   
-    ggtitle(paste0("TARGET_", fs[i])) +   
-    theme_minimal() +  
-    theme(  
+                  pointsize = 0.5) +
+    ggtitle(paste0("TARGET_", fs[i])) +
+    theme_minimal() +
+    theme(
       text = element_text(size = 16, color = "black"),
       plot.title = element_text(size = 16, color = "black"),
       axis.title = element_text(size = 16, color = "black"),
@@ -2609,30 +2609,30 @@ for(i in 1:length(fs)){
                        paste0(tolower(fs[i]),"WSS3"),
                        paste0(tolower(fs[i]),"WSS4")), 2)
   my.comparisons=split(combinations, rep(1:ncol(combinations), each = nrow(combinations)))
-  p1=ggplot(WNT, aes(x = cluster, y = activity_score, fill = cluster)) +  
-    geom_violin(width = 0.5, scale = "area", trim = FALSE, position = position_dodge(0.9), show.legend = FALSE) +   
-    geom_boxplot(width = 0.2, position = position_dodge(0.9), show.legend = FALSE) +   
-    xlab("") +  
-    ylab("Wnt/β-catenin pathway activity score") +  
-    guides(fill = "none") +  
-    scale_x_discrete(labels = c(paste0(tolower(fs[i]),"WSS1\n(n=",table(WNT$cluster)[1],")"),   
-                                paste0(tolower(fs[i]),"WSS2\n(n=",table(WNT$cluster)[2],")"),  
-                                paste0(tolower(fs[i]),"WSS3\n(n=",table(WNT$cluster)[3],")"),  
-                                paste0(tolower(fs[i]),"WSS4\n(n=",table(WNT$cluster)[4],")"))) +  
-    theme_bw() +  
-    theme(  
+  p1=ggplot(WNT, aes(x = cluster, y = activity_score, fill = cluster)) +
+    geom_violin(width = 0.5, scale = "area", trim = FALSE, position = position_dodge(0.9), show.legend = FALSE) +
+    geom_boxplot(width = 0.2, position = position_dodge(0.9), show.legend = FALSE) +
+    xlab("") +
+    ylab("Wnt/β-catenin pathway activity score") +
+    guides(fill = "none") +
+    scale_x_discrete(labels = c(paste0(tolower(fs[i]),"WSS1\n(n=",table(WNT$cluster)[1],")"),
+                                paste0(tolower(fs[i]),"WSS2\n(n=",table(WNT$cluster)[2],")"),
+                                paste0(tolower(fs[i]),"WSS3\n(n=",table(WNT$cluster)[3],")"),
+                                paste0(tolower(fs[i]),"WSS4\n(n=",table(WNT$cluster)[4],")"))) +
+    theme_bw() +
+    theme(
       axis.text = element_text(size = 16, color = "black"),
       axis.title = element_text(size = 16, color = "black"),
       plot.title = element_text(size = 16,  color = "black"),
       legend.text = element_text(size = 16, color = "black"),
       legend.title = element_text(size = 16, color = "black")
-    ) +  
-    stat_compare_means(comparisons = my.comparisons,   
-                       method = "wilcox.test",  
-                       label = "p.format",  
-                       size = 4) +  
-    scale_fill_manual(values = c("#d71345","#f47920","#145b7d","#6950a1")) +  
-    ggtitle(paste0("TARGET-",fs[i]))  
+    ) +
+    stat_compare_means(comparisons = my.comparisons,
+                       method = "wilcox.test",
+                       label = "p.format",
+                       size = 4) +
+    scale_fill_manual(values = c("#d71345","#f47920","#145b7d","#6950a1")) +
+    ggtitle(paste0("TARGET-",fs[i]))
   print(p1)
   setwd("input")
   assign(paste0(fs[i],"_cluster"),cluster)
@@ -2677,15 +2677,15 @@ for(i in 1:length(fs)){
   library(RColorBrewer)
   library(tibble)
   library(ggpp)
-  p=ggsurvplot(  
-    fit = fit,  
+  p=ggsurvplot(
+    fit = fit,
     conf.int = FALSE,
     risk.table = F,
-    risk.table.col = "strata",  
+    risk.table.col = "strata",
     palette = mycol,
-    data = survival_data_cms,  
+    data = survival_data_cms,
     xlim = c(0, max(survival_data_cms$OS.time)),
-    size = 0.9,  
+    size = 0.9,
     break.time.by = 48,
     legend.title = "",
     xlab = "Time (months)",
@@ -2694,12 +2694,12 @@ for(i in 1:length(fs)){
     tables.height = 0.25,
     title = paste0("OS(TCGA-",fs[i],",n=",length(survival_data_cms$sample),")"),
     ylim = c(0, 1)
-  )  
-  p.lab = paste0("log-rank test p",  
+  )
+  p.lab = paste0("log-rank test p",
                   ifelse(p.val < 0.001, " < 0.001",
-                         paste0(" = ", round(p.val, 3))))  
-  p$plot = p$plot +   
-    annotate("text", x = 0, y = 0, hjust = 0, vjust = 0,   
+                         paste0(" = ", round(p.val, 3))))
+  p$plot = p$plot +
+    annotate("text", x = 0, y = 0, hjust = 0, vjust = 0,
              fontface = "italic", label = p.lab, size =6) +
     theme(text = element_text(size = 16))
   setwd("./supplementary_figures")
@@ -2762,29 +2762,29 @@ for(i in 1:length(fs)){
   library(RColorBrewer)
   library(tibble)
   library(ggpp)
-  p=ggsurvplot(  
-    fit = fit,  
-    conf.int = FALSE, 
-    risk.table = F, 
-    risk.table.col = "strata",  
-    palette = mycol, 
-    data = survival_data_cms,  
+  p=ggsurvplot(
+    fit = fit,
+    conf.int = FALSE,
+    risk.table = F,
+    risk.table.col = "strata",
+    palette = mycol,
+    data = survival_data_cms,
     xlim = c(0, max(survival_data_cms$OS.time)),
-    size = 0.9,  
-    break.time.by = 48,  
+    size = 0.9,
+    break.time.by = 48,
     legend.title = "",
     xlab = "Time (months)",
     ylab = "Probability",
-    risk.table.y.text = FALSE, 
+    risk.table.y.text = FALSE,
     tables.height = 0.25,
     title = paste0("OS(TARGET-",fs[i],",n=",length(survival_data_cms$sample),")"),
     ylim = c(0, 1)
-  )  
-  p.lab = paste0("log-rank test p",  
+  )
+  p.lab = paste0("log-rank test p",
                   ifelse(p.val < 0.001, " < 0.001",
-                         paste0(" = ", round(p.val, 3))))  
-  p$plot = p$plot +   
-    annotate("text", x = 0, y = 0, hjust = 0, vjust = 0,   
+                         paste0(" = ", round(p.val, 3))))
+  p$plot = p$plot +
+    annotate("text", x = 0, y = 0, hjust = 0, vjust = 0,
              fontface = "italic", label = p.lab, size =6) +
     theme(text = element_text(size = 16))
   setwd("./supplementary_figures")
@@ -2829,15 +2829,15 @@ for(i in 1:length(fs)){
   library(RColorBrewer)
   library(tibble)
   library(ggpp)
-  p=ggsurvplot(  
-    fit = fit,  
+  p=ggsurvplot(
+    fit = fit,
     conf.int = FALSE,
     risk.table = F,
-    risk.table.col = "strata",  
+    risk.table.col = "strata",
     palette = mycol,
-    data = survival_data_cms,  
+    data = survival_data_cms,
     xlim = c(0, max(survival_data_cms$DSS.time)),
-    size = 0.9,  
+    size = 0.9,
     break.time.by = 48,
     legend.title = "",
     xlab = "Time (months)",
@@ -2846,12 +2846,12 @@ for(i in 1:length(fs)){
     tables.height = 0.25,
     title = paste0("DSS(TCGA-",fs[i],",n=",length(survival_data_cms$sample),")"),
     ylim = c(0, 1)
-  )  
-  p.lab = paste0("log-rank test p",  
+  )
+  p.lab = paste0("log-rank test p",
                   ifelse(p.val < 0.001, " < 0.001",
-                         paste0(" = ", round(p.val, 3))))  
-  p$plot = p$plot +   
-    annotate("text", x = 0, y = 0, hjust = 0, vjust = 0,   
+                         paste0(" = ", round(p.val, 3))))
+  p$plot = p$plot +
+    annotate("text", x = 0, y = 0, hjust = 0, vjust = 0,
              fontface = "italic", label = p.lab, size =6) +
     theme(text = element_text(size = 16))
   setwd("./supplementary_figures")
@@ -2896,15 +2896,15 @@ for(i in 1:length(fs)){
   library(RColorBrewer)
   library(tibble)
   library(ggpp)
-  p=ggsurvplot(  
-    fit = fit,  
+  p=ggsurvplot(
+    fit = fit,
     conf.int = FALSE,
     risk.table = F,
-    risk.table.col = "strata",  
+    risk.table.col = "strata",
     palette = mycol,
-    data = survival_data_cms,  
+    data = survival_data_cms,
     xlim = c(0, max(survival_data_cms$DFI.time)),
-    size = 0.9,  
+    size = 0.9,
     break.time.by = 48,
     legend.title = "",
     xlab = "Time (months)",
@@ -2913,12 +2913,12 @@ for(i in 1:length(fs)){
     tables.height = 0.25,
     title = paste0("DFI(TCGA-",fs[i],",n=",length(survival_data_cms$sample),")"),
     ylim = c(0, 1)
-  )  
-  p.lab = paste0("log-rank test p",  
+  )
+  p.lab = paste0("log-rank test p",
                   ifelse(p.val < 0.001, " < 0.001",
-                         paste0(" = ", round(p.val, 3))))  
-  p$plot = p$plot +   
-    annotate("text", x = 0, y = 0, hjust = 0, vjust = 0,   
+                         paste0(" = ", round(p.val, 3))))
+  p$plot = p$plot +
+    annotate("text", x = 0, y = 0, hjust = 0, vjust = 0,
              fontface = "italic", label = p.lab, size =6) +
     theme(text = element_text(size = 16))
   setwd("./supplementary_figures")
@@ -2963,15 +2963,15 @@ for(i in 1:length(fs)){
   library(RColorBrewer)
   library(tibble)
   library(ggpp)
-  p=ggsurvplot(  
-    fit = fit,  
+  p=ggsurvplot(
+    fit = fit,
     conf.int = FALSE,
     risk.table = F,
-    risk.table.col = "strata",  
+    risk.table.col = "strata",
     palette = mycol,
-    data = survival_data_cms,  
+    data = survival_data_cms,
     xlim = c(0, max(survival_data_cms$PFI.time)),
-    size = 0.9,  
+    size = 0.9,
     break.time.by = 48,
     legend.title = "",
     xlab = "Time (months)",
@@ -2980,12 +2980,12 @@ for(i in 1:length(fs)){
     tables.height = 0.25,
     title = paste0("PFI(TCGA-",fs[i],",n=",length(survival_data_cms$sample),")"),
     ylim = c(0, 1)
-  )  
-  p.lab = paste0("log-rank test p",  
+  )
+  p.lab = paste0("log-rank test p",
                   ifelse(p.val < 0.001, " < 0.001",
-                         paste0(" = ", round(p.val, 3))))  
-  p$plot = p$plot +   
-    annotate("text", x = 0, y = 0, hjust = 0, vjust = 0,   
+                         paste0(" = ", round(p.val, 3))))
+  p$plot = p$plot +
+    annotate("text", x = 0, y = 0, hjust = 0, vjust = 0,
              fontface = "italic", label = p.lab, size =6) +
     theme(text = element_text(size = 16))
   setwd("./supplementary_figures")

@@ -182,7 +182,7 @@ target_genes <- c(
 )
 
 for (gene in target_genes) {
-  
+
   p <- FeaturePlot(
     scRNA,
     features = gene,
@@ -201,7 +201,7 @@ for (gene in target_genes) {
     ) +
     theme_classic(base_size = 14) +
     ggtitle(gene)
-  
+
   ggsave(
     filename = paste0(
       "FeaturePlot_tSNE_",
@@ -289,16 +289,16 @@ color_list <- list(
 )
 
 for (feature in features_to_plot) {
-  
+
   scores <- scRNA[[feature]][, 1]
   scores <- scores[!is.na(scores)]
-  
+
   min_val <- min(scores)
   q90 <- quantile(scores, 0.90)
   q93 <- quantile(scores, 0.93)
   q95 <- quantile(scores, 0.95)
   q99 <- quantile(scores, 0.99)
-  
+
   q_values <- scales::rescale(
     c(
       min_val,
@@ -309,7 +309,7 @@ for (feature in features_to_plot) {
     ),
     to = c(0, 1)
   )
-  
+
   p <- FeaturePlot(
     scRNA,
     features = feature,
@@ -327,7 +327,7 @@ for (feature in features_to_plot) {
     theme_classic(
       base_size = 14
     )
-  
+
   ggsave(
     paste0(
       "scRNA_",
@@ -439,27 +439,27 @@ setwd(work_path)
 load_sample <- function(sample_name, base_dir) {
   matrix_dir <- file.path(base_dir, "filtered_feature_bc_matrix")
   spatial_dir <- file.path(base_dir, "spatial")
-  
+
   counts <- Read10X(data.dir = matrix_dir)
   image_obj <- Read10X_Image(
     image.dir = spatial_dir,
     filter.matrix = TRUE
   )
-  
+
   obj <- CreateSeuratObject(
     counts = counts,
     assay = "Spatial"
   )
-  
+
   image_obj <- image_obj[Cells(obj)]
   DefaultAssay(image_obj) <- "Spatial"
   obj[[sample_name]] <- image_obj
-  
+
   obj[["percent.mt"]] <- PercentageFeatureSet(
     obj,
     pattern = "^MT-"
   )
-  
+
   obj$orig.ident <- sample_name
   return(obj)
 }
@@ -488,7 +488,7 @@ luad1 <- NormalizeData(
 
 extract_fang_signatures <- function(marker_file) {
   loaded_objects <- load(marker_file)
-  
+
   if ("markers" %in% loaded_objects && is.list(get("markers"))) {
     marker_list <- get("markers")
   } else {
@@ -499,35 +499,35 @@ extract_fang_signatures <- function(marker_file) {
         logical(1)
       )
     ]
-    
+
     if (length(list_objects) == 1) {
       marker_list <- get(list_objects[1])
     } else {
       marker_list <- NULL
     }
   }
-  
+
   if (!is.null(marker_list)) {
     marker_names <- names(marker_list)
-    
+
     adc_match <- grep(
       "ADC|LUAD|ADENO",
       marker_names,
       ignore.case = TRUE,
       value = TRUE
     )
-    
+
     scc_match <- grep(
       "SCC|LUSC|SQUAM",
       marker_names,
       ignore.case = TRUE,
       value = TRUE
     )
-    
+
     if (length(adc_match) == 0 || length(scc_match) == 0) {
       stop("Cannot identify ADC/LUAD and SCC/LUSC signatures in marker.Rdata.")
     }
-    
+
     adc_genes <- unique(as.character(marker_list[[adc_match[1]]]))
     scc_genes <- unique(as.character(marker_list[[scc_match[1]]]))
   } else {
@@ -537,22 +537,22 @@ extract_fang_signatures <- function(marker_file) {
       ignore.case = TRUE,
       value = TRUE
     )
-    
+
     scc_objects <- grep(
       "SCC|LUSC|SQUAM",
       loaded_objects,
       ignore.case = TRUE,
       value = TRUE
     )
-    
+
     if (length(adc_objects) == 0 || length(scc_objects) == 0) {
       stop("Cannot identify ADC/LUAD and SCC/LUSC signature objects in marker.Rdata.")
     }
-    
+
     adc_genes <- unique(as.character(get(adc_objects[1])))
     scc_genes <- unique(as.character(get(scc_objects[1])))
   }
-  
+
   list(
     ADC = adc_genes,
     SCC = scc_genes
@@ -600,35 +600,35 @@ luad1 <- AddModuleScore_UCell(
 mean_standardized_signature_score <- function(expression_matrix, genes) {
   genes <- intersect(genes, rownames(expression_matrix))
   mat <- expression_matrix[genes, , drop = FALSE]
-  
+
   n <- ncol(mat)
   gene_sum <- Matrix::rowSums(mat)
   gene_sq_sum <- Matrix::rowSums(mat ^ 2)
   gene_mean <- gene_sum / n
-  
+
   gene_var <- (
     gene_sq_sum - n * gene_mean ^ 2
   ) / max(n - 1, 1)
-  
+
   gene_sd <- sqrt(
     pmax(as.numeric(gene_var), 0)
   )
-  
+
   keep <- is.finite(gene_sd) & gene_sd > 0
-  
+
   mat <- mat[keep, , drop = FALSE]
   gene_mean <- gene_mean[keep]
   gene_sd <- gene_sd[keep]
-  
+
   if (nrow(mat) == 0) {
     stop("No variable genes remain for signature scoring.")
   }
-  
+
   scaled_sparse <- Diagonal(x = 1 / gene_sd) %*% mat
-  
+
   score <- Matrix::colMeans(scaled_sparse) - mean(gene_mean / gene_sd)
   names(score) <- colnames(mat)
-  
+
   return(score)
 }
 

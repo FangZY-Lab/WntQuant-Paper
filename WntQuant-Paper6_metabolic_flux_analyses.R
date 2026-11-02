@@ -215,7 +215,7 @@ load("input/TCGA_metabolism.Rdata")
 load("input/TARGET_metabolism.Rdata")
 load("input/pancancer_WNT_Score.Rdata")
 load("input/TARGET_WNT_Score.Rdata")
-TCGA=merge(pancancer_WNT_Score$final_activity_score[,c(1),drop=F], 
+TCGA=merge(pancancer_WNT_Score$final_activity_score[,c(1),drop=F],
            as.data.frame(t(TCGA_metabolism)), by="row.names")
 rownames(TCGA)=TCGA[,1]
 TCGA=TCGA[,-1]
@@ -267,7 +267,7 @@ library(ggplot2)
 library(ggpubr)
 p=ggscatter(TCGA_pred, x = "pred", y = "activity_score",
             add = "reg.line",
-            conf.int = TRUE, 
+            conf.int = TRUE,
             add.params = list(color = "#d71345", fill = "#BBBDBE"),
             color = "#90d7ec", size = 1) +
   stat_cor(method = "pearson",
@@ -306,7 +306,7 @@ save(xgboost_impor, file = "xgboost_impor.Rdata")
 # ------------------------------------------------------------------------------
 load("input/TARGET_metabolism.Rdata")
 load("input/TARGET_WNT_Score.Rdata")
-TARGET=merge(TARGET_WNT_Score$final_activity_score[,c(1),drop=F], 
+TARGET=merge(TARGET_WNT_Score$final_activity_score[,c(1),drop=F],
              as.data.frame(t(TARGET_metabolism)), by="row.names")
 rownames(TARGET)=TARGET[,1]
 TARGET=TARGET[,-1]
@@ -314,11 +314,11 @@ TARGET_pred=TARGET
 TARGET_pred$pred = predict(fit, as.matrix(TARGET_pred[, -1]))
 p=ggscatter(TARGET_pred, x = "pred", y = "activity_score",
             add = "reg.line",
-            conf.int = TRUE, 
+            conf.int = TRUE,
             add.params = list(color = "#d71345", fill = "#BBBDBE"),
             color = "#90d7ec", size = 1) +
   stat_cor(method = "pearson",
-           label.x = -1, 
+           label.x = -1,
            label.y = -2,
            size = 6) +
   theme_classic() +
@@ -339,7 +339,7 @@ print(p)
 # ------------------------------------------------------------------------------
 load("input/GDSC1_metabolism.Rdata")
 load("input/GDSC1_WNT_score.Rdata")
-GDSC1=merge(GDSC1_WNT_score[,c(1),drop=F], 
+GDSC1=merge(GDSC1_WNT_score[,c(1),drop=F],
             as.data.frame(t(GDSC1_metabolism)), by="row.names")
 rownames(GDSC1)=GDSC1[,1]
 GDSC1=GDSC1[,-1]
@@ -347,11 +347,11 @@ GDSC1_pred=GDSC1
 GDSC1_pred$pred=predict(fit, as.matrix(GDSC1_pred[, -1]))
 p=ggscatter(GDSC1_pred, x = "pred", y = "activity_score",
             add = "reg.line",
-            conf.int = TRUE, 
+            conf.int = TRUE,
             add.params = list(color = "#d71345", fill = "#BBBDBE"),
             color = "#90d7ec", size = 1) +
   stat_cor(method = "pearson",
-           label.x = -1, 
+           label.x = -1,
            label.y = -2,
            size = 6) +
   theme_classic() +
@@ -372,7 +372,7 @@ print(p)
 # ------------------------------------------------------------------------------
 load("input/GDSC2_metabolism.Rdata")
 load("input/GDSC2_WNT_score.Rdata")
-GDSC2=merge(GDSC2_WNT_score[,c(1),drop=F], 
+GDSC2=merge(GDSC2_WNT_score[,c(1),drop=F],
             as.data.frame(t(GDSC2_metabolism)), by="row.names")
 rownames(GDSC2)=GDSC2[,1]
 GDSC2=GDSC2[,-1]
@@ -380,11 +380,11 @@ GDSC2_pred=GDSC2
 GDSC2_pred$pred=predict(fit, as.matrix(GDSC2_pred[, -1]))
 p=ggscatter(GDSC2_pred, x = "pred", y = "activity_score",
             add = "reg.line",
-            conf.int = TRUE, 
+            conf.int = TRUE,
             add.params = list(color = "#d71345", fill = "#BBBDBE"),
             color = "#90d7ec", size = 1) +
   stat_cor(method = "pearson",
-           label.x = -1, 
+           label.x = -1,
            label.y = -2,
            size = 6) +
   theme_classic() +
@@ -405,7 +405,7 @@ print(p)
 # ------------------------------------------------------------------------------
 load("input/CCLE_metabolism.Rdata")
 load("input/CCLE_WNT_score.Rdata")
-CCLE=merge(CCLE_WNT_score[,c(1),drop=F], 
+CCLE=merge(CCLE_WNT_score[,c(1),drop=F],
            as.data.frame(t(CCLE_metabolism)), by="row.names")
 rownames(CCLE)=CCLE[,1]
 CCLE=CCLE[,-1]
@@ -413,11 +413,11 @@ CCLE_pred=CCLE
 CCLE_pred$pred=predict(fit, as.matrix(CCLE_pred[, -1]))
 p=ggscatter(CCLE_pred, x = "pred", y = "activity_score",
             add = "reg.line",
-            conf.int = TRUE, 
+            conf.int = TRUE,
             add.params = list(color = "#d71345", fill = "#BBBDBE"),
             color = "#90d7ec", size = 1) +
   stat_cor(method = "pearson",
-           label.x = -1, 
+           label.x = -1,
            label.y = -2,
            size = 6) +
   theme_classic() +
@@ -438,7 +438,7 @@ print(p)
 # ------------------------------------------------------------------------------
 load("input/CTRP_metabolism.Rdata")
 load("input/CTRP_WNT_score.Rdata")
-CTRP=merge(CTRP_WNT_score[,c(1),drop=F], 
+CTRP=merge(CTRP_WNT_score[,c(1),drop=F],
            as.data.frame(t(CTRP_metabolism)), by="row.names")
 rownames(CTRP)=CTRP[,1]
 CTRP=CTRP[,-1]
@@ -446,11 +446,11 @@ CTRP_pred=CTRP
 CTRP_pred$pred=predict(fit, as.matrix(CTRP_pred[, -1]))
 p=ggscatter(CTRP_pred, x = "pred", y = "activity_score",
             add = "reg.line",
-            conf.int = TRUE, 
+            conf.int = TRUE,
             add.params = list(color = "#d71345", fill = "#BBBDBE"),
             color = "#90d7ec", size = 1) +
   stat_cor(method = "pearson",
-           label.x = -1, 
+           label.x = -1,
            label.y = -2,
            size = 6) +
   theme_classic() +
@@ -482,7 +482,7 @@ library(Matrix)
 load("TCGA_metabolism.Rdata")
 name=rownames(TCGA_metabolism)
 load("pancancer_WNT_Score.Rdata")
-TCGA = merge(pancancer_WNT_Score$final_activity_score[,c(1),drop=F], 
+TCGA = merge(pancancer_WNT_Score$final_activity_score[,c(1),drop=F],
               as.data.frame(t(TCGA_metabolism)), by="row.names")
 rownames(TCGA) = TCGA[,1]
 TCGA = TCGA[,-1]
@@ -490,7 +490,7 @@ TCGA = as.matrix(TCGA)
 colnames(TCGA) = gsub("[^a-zA-Z0-9_.]", "_", colnames(TCGA))
 load("TARGET_metabolism.Rdata")
 load("TARGET_WNT_Score.Rdata")
-TARGET = merge(TARGET_WNT_Score$final_activity_score[,c(1),drop=F], 
+TARGET = merge(TARGET_WNT_Score$final_activity_score[,c(1),drop=F],
                 as.data.frame(t(TARGET_metabolism)), by="row.names")
 rownames(TARGET) = TARGET[,1]
 TARGET = TARGET[,-1]
@@ -534,7 +534,7 @@ for(i in 1:nrow(param_grid)) {
   }
   mean_score = mean(cv_scores)
   cat("Mean RMSE:", mean_score, "\n")
-  
+
   if(mean_score < best_score) {
     best_score = mean_score
     best_params = as.list(param_grid[i,])
@@ -562,7 +562,7 @@ TCGA_pred = as.data.frame(TCGA)
 TCGA_pred$pred = predict(fit, as.matrix(TCGA_pred[, -1]))
 p = ggscatter(TCGA_pred, x = "pred", y = "activity_score",
                add = "reg.line",
-               conf.int = TRUE, 
+               conf.int = TRUE,
                add.params = list(color = "#d71345", fill = "#BBBDBE"),
                color = "#90d7ec", size = 1) +
   stat_cor(method = "pearson",
@@ -602,11 +602,11 @@ TARGET_pred = as.data.frame(TARGET)
 TARGET_pred$pred = predict(fit, as.matrix(TARGET_pred[, -1]))
 p = ggscatter(TARGET_pred, x = "pred", y = "activity_score",
                add = "reg.line",
-               conf.int = TRUE, 
+               conf.int = TRUE,
                add.params = list(color = "#d71345", fill = "#BBBDBE"),
                color = "#90d7ec", size = 1) +
   stat_cor(method = "pearson",
-           label.x = 0, 
+           label.x = 0,
            label.y = -2,
            size = 6) +
   theme_classic() +
@@ -627,7 +627,7 @@ print(p)
 # ------------------------------------------------------------------------------
 load("GDSC1_metabolism.Rdata")
 load("GDSC1_WNT_score.Rdata")
-GDSC1 = merge(GDSC1_WNT_score[,c(1),drop=F], 
+GDSC1 = merge(GDSC1_WNT_score[,c(1),drop=F],
                as.data.frame(t(GDSC1_metabolism)), by="row.names")
 rownames(GDSC1) = GDSC1[,1]
 GDSC1 = GDSC1[,-1]
@@ -637,11 +637,11 @@ GDSC1_pred = as.data.frame(GDSC1)
 GDSC1_pred$pred = predict(fit, as.matrix(GDSC1_pred[, -1]))
 p = ggscatter(GDSC1_pred, x = "pred", y = "activity_score",
                add = "reg.line",
-               conf.int = TRUE, 
+               conf.int = TRUE,
                add.params = list(color = "#d71345", fill = "#BBBDBE"),
                color = "#90d7ec", size = 1) +
   stat_cor(method = "pearson",
-           label.x = -1, 
+           label.x = -1,
            label.y = -2,
            size = 6) +
   theme_classic() +
@@ -662,7 +662,7 @@ print(p)
 # ------------------------------------------------------------------------------
 load("GDSC2_metabolism.Rdata")
 load("GDSC2_WNT_score.Rdata")
-GDSC2 = merge(GDSC2_WNT_score[,c(1),drop=F], 
+GDSC2 = merge(GDSC2_WNT_score[,c(1),drop=F],
                as.data.frame(t(GDSC2_metabolism)), by="row.names")
 rownames(GDSC2) = GDSC2[,1]
 GDSC2 = GDSC2[,-1]
@@ -672,11 +672,11 @@ GDSC2_pred = as.data.frame(GDSC2)
 GDSC2_pred$pred = predict(fit, as.matrix(GDSC2_pred[, -1]))
 p = ggscatter(GDSC2_pred, x = "pred", y = "activity_score",
                add = "reg.line",
-               conf.int = TRUE, 
+               conf.int = TRUE,
                add.params = list(color = "#d71345", fill = "#BBBDBE"),
                color = "#90d7ec", size = 1) +
   stat_cor(method = "pearson",
-           label.x = -1, 
+           label.x = -1,
            label.y = -2,
            size = 6) +
   theme_classic() +
@@ -697,7 +697,7 @@ print(p)
 # ------------------------------------------------------------------------------
 load("CCLE_metabolism.Rdata")
 load("CCLE_WNT_score.Rdata")
-CCLE = merge(CCLE_WNT_score[,c(1),drop=F], 
+CCLE = merge(CCLE_WNT_score[,c(1),drop=F],
               as.data.frame(t(CCLE_metabolism)), by="row.names")
 rownames(CCLE) = CCLE[,1]
 CCLE = CCLE[,-1]
@@ -707,11 +707,11 @@ CCLE_pred = as.data.frame(CCLE)
 CCLE_pred$pred = predict(fit, as.matrix(CCLE_pred[, -1]))
 p = ggscatter(CCLE_pred, x = "pred", y = "activity_score",
                add = "reg.line",
-               conf.int = TRUE, 
+               conf.int = TRUE,
                add.params = list(color = "#d71345", fill = "#BBBDBE"),
                color = "#90d7ec", size = 1) +
   stat_cor(method = "pearson",
-           label.x = -1, 
+           label.x = -1,
            label.y = -2,
            size = 6) +
   theme_classic() +
@@ -732,7 +732,7 @@ print(p)
 # ------------------------------------------------------------------------------
 load("CTRP_metabolism.Rdata")
 load("CTRP_WNT_score.Rdata")
-CTRP = merge(CTRP_WNT_score[,c(1),drop=F], 
+CTRP = merge(CTRP_WNT_score[,c(1),drop=F],
               as.data.frame(t(CTRP_metabolism)), by="row.names")
 rownames(CTRP) = CTRP[,1]
 CTRP = CTRP[,-1]
@@ -742,11 +742,11 @@ CTRP_pred = as.data.frame(CTRP)
 CTRP_pred$pred = predict(fit, as.matrix(CTRP_pred[, -1]))
 p = ggscatter(CTRP_pred, x = "pred", y = "activity_score",
                add = "reg.line",
-               conf.int = TRUE, 
+               conf.int = TRUE,
                add.params = list(color = "#d71345", fill = "#BBBDBE"),
                color = "#90d7ec", size = 1) +
   stat_cor(method = "pearson",
-           label.x = -1, 
+           label.x = -1,
            label.y = -2,
            size = 6) +
   theme_classic() +
@@ -779,7 +779,7 @@ library(doParallel)
 set.seed(123)
 load("TCGA_metabolism.Rdata")
 load("pancancer_WNT_Score.Rdata")
-TCGA = merge(pancancer_WNT_Score$final_activity_score[,c(1),drop=F], 
+TCGA = merge(pancancer_WNT_Score$final_activity_score[,c(1),drop=F],
               as.data.frame(t(TCGA_metabolism)), by="row.names")
 rownames(TCGA) = TCGA[,1]
 TCGA = TCGA[,-1]
@@ -821,7 +821,7 @@ TCGA_pred = TCGA
 TCGA_pred$pred = predict(fit, data = TCGA_pred[, -1])$predictions
 p = ggscatter(TCGA_pred, x = "pred", y = "activity_score",
                add = "reg.line",
-               conf.int = TRUE, 
+               conf.int = TRUE,
                add.params = list(color = "#d71345", fill = "#BBBDBE"),
                color = "#90d7ec", size = 1) +
   stat_cor(method = "pearson",
@@ -862,7 +862,7 @@ save(rf_impor, file = "rf_impor.Rdata")
 # ------------------------------------------------------------------------------
 load("TARGET_metabolism.Rdata")
 load("TARGET_WNT_Score.Rdata")
-TARGET = merge(TARGET_WNT_Score$final_activity_score[,c(1),drop=F], 
+TARGET = merge(TARGET_WNT_Score$final_activity_score[,c(1),drop=F],
                 as.data.frame(t(TARGET_metabolism)), by="row.names")
 rownames(TARGET) = TARGET[,1]
 TARGET = TARGET[,-1]
@@ -870,11 +870,11 @@ TARGET_pred = TARGET
 TARGET_pred$pred = predict(fit, data = TARGET_pred[, -1])$predictions
 p = ggscatter(TARGET_pred, x = "pred", y = "activity_score",
                add = "reg.line",
-               conf.int = TRUE, 
+               conf.int = TRUE,
                add.params = list(color = "#d71345", fill = "#BBBDBE"),
                color = "#90d7ec", size = 1) +
   stat_cor(method = "pearson",
-           label.x = 0, 
+           label.x = 0,
            label.y = -2,
            size = 6) +
   theme_classic() +
@@ -895,7 +895,7 @@ print(p)
 # ------------------------------------------------------------------------------
 load("GDSC1_metabolism.Rdata")
 load("GDSC1_WNT_score.Rdata")
-GDSC1 = merge(GDSC1_WNT_score[,c(1),drop=F], 
+GDSC1 = merge(GDSC1_WNT_score[,c(1),drop=F],
                as.data.frame(t(GDSC1_metabolism)), by="row.names")
 rownames(GDSC1) = GDSC1[,1]
 GDSC1 = GDSC1[,-1]
@@ -903,11 +903,11 @@ GDSC1_pred = GDSC1
 GDSC1_pred$pred = predict(fit, data = GDSC1_pred[, -1])$predictions
 p = ggscatter(GDSC1_pred, x = "pred", y = "activity_score",
                add = "reg.line",
-               conf.int = TRUE, 
+               conf.int = TRUE,
                add.params = list(color = "#d71345", fill = "#BBBDBE"),
                color = "#90d7ec", size = 1) +
   stat_cor(method = "pearson",
-           label.x = 0, 
+           label.x = 0,
            label.y = -2,
            size = 6) +
   theme_classic() +
@@ -928,7 +928,7 @@ print(p)
 # ------------------------------------------------------------------------------
 load("GDSC2_metabolism.Rdata")
 load("GDSC2_WNT_score.Rdata")
-GDSC2 = merge(GDSC2_WNT_score[,c(1),drop=F], 
+GDSC2 = merge(GDSC2_WNT_score[,c(1),drop=F],
                as.data.frame(t(GDSC2_metabolism)), by="row.names")
 rownames(GDSC2) = GDSC2[,1]
 GDSC2 = GDSC2[,-1]
@@ -936,11 +936,11 @@ GDSC2_pred = GDSC2
 GDSC2_pred$pred = predict(fit, data = GDSC2_pred[, -1])$predictions
 p = ggscatter(GDSC2_pred, x = "pred", y = "activity_score",
                add = "reg.line",
-               conf.int = TRUE, 
+               conf.int = TRUE,
                add.params = list(color = "#d71345", fill = "#BBBDBE"),
                color = "#90d7ec", size = 1) +
   stat_cor(method = "pearson",
-           label.x = 0, 
+           label.x = 0,
            label.y = -2,
            size = 6) +
   theme_classic() +
@@ -961,7 +961,7 @@ print(p)
 # ------------------------------------------------------------------------------
 load("CCLE_metabolism.Rdata")
 load("CCLE_WNT_score.Rdata")
-CCLE = merge(CCLE_WNT_score[,c(1),drop=F], 
+CCLE = merge(CCLE_WNT_score[,c(1),drop=F],
               as.data.frame(t(CCLE_metabolism)), by="row.names")
 rownames(CCLE) = CCLE[,1]
 CCLE = CCLE[,-1]
@@ -969,11 +969,11 @@ CCLE_pred = CCLE
 CCLE_pred$pred = predict(fit, data = CCLE_pred[, -1])$predictions
 p = ggscatter(CCLE_pred, x = "pred", y = "activity_score",
                add = "reg.line",
-               conf.int = TRUE, 
+               conf.int = TRUE,
                add.params = list(color = "#d71345", fill = "#BBBDBE"),
                color = "#90d7ec", size = 1) +
   stat_cor(method = "pearson",
-           label.x = 0, 
+           label.x = 0,
            label.y = -2,
            size = 6) +
   theme_classic() +
@@ -994,7 +994,7 @@ print(p)
 # ------------------------------------------------------------------------------
 load("CTRP_metabolism.Rdata")
 load("CTRP_WNT_score.Rdata")
-CTRP = merge(CTRP_WNT_score[,c(1),drop=F], 
+CTRP = merge(CTRP_WNT_score[,c(1),drop=F],
               as.data.frame(t(CTRP_metabolism)), by="row.names")
 rownames(CTRP) = CTRP[,1]
 CTRP = CTRP[,-1]
@@ -1002,11 +1002,11 @@ CTRP_pred = CTRP
 CTRP_pred$pred = predict(fit, data = CTRP_pred[, -1])$predictions
 p = ggscatter(CTRP_pred, x = "pred", y = "activity_score",
                add = "reg.line",
-               conf.int = TRUE, 
+               conf.int = TRUE,
                add.params = list(color = "#d71345", fill = "#BBBDBE"),
                color = "#90d7ec", size = 1) +
   stat_cor(method = "pearson",
-           label.x = 0, 
+           label.x = 0,
            label.y = -2,
            size = 6) +
   theme_classic() +
@@ -1035,30 +1035,30 @@ library(catboost)
 library(ggplot2)
 library(caret)
 library(doParallel)
-shapviz.catboost.Model = function(object, X_pred, X = X_pred, collapse = NULL, ...) {  
-  if (!requireNamespace("catboost", quietly = TRUE)) {    
-    stop("Package 'catboost' not installed")  
-  }  
-  stopifnot(    
-    "X must be a matrix or data.frame. It can't be an object of class catboost.Pool" = 
-      is.matrix(X) || is.data.frame(X),    
-    "X_pred must be a matrix, a data.frame, or a catboost.Pool" = 
-      is.matrix(X_pred) || is.data.frame(X_pred) || inherits(X_pred, "catboost.Pool"),    
-    "X_pred must have column names" = !is.null(colnames(X_pred))  
-  )    
-  if (!inherits(X_pred, "catboost.Pool")) {    
-    X_pred = catboost.load_pool(X_pred)  
+shapviz.catboost.Model = function(object, X_pred, X = X_pred, collapse = NULL, ...) {
+  if (!requireNamespace("catboost", quietly = TRUE)) {
+    stop("Package 'catboost' not installed")
+  }
+  stopifnot(
+    "X must be a matrix or data.frame. It can't be an object of class catboost.Pool" =
+      is.matrix(X) || is.data.frame(X),
+    "X_pred must be a matrix, a data.frame, or a catboost.Pool" =
+      is.matrix(X_pred) || is.data.frame(X_pred) || inherits(X_pred, "catboost.Pool"),
+    "X_pred must have column names" = !is.null(colnames(X_pred))
+  )
+  if (!inherits(X_pred, "catboost.Pool")) {
+    X_pred = catboost.load_pool(X_pred)
   }
   S = catboost.get_feature_importance(object, X_pred, type = "ShapValues", ...)
-  pp = ncol(X_pred) + 1L  
-  baseline = S[1L, pp]  
-  S = S[, -pp, drop = FALSE]  
-  colnames(S) = colnames(X_pred)  
+  pp = ncol(X_pred) + 1L
+  baseline = S[1L, pp]
+  S = S[, -pp, drop = FALSE]
+  colnames(S) = colnames(X_pred)
   shapviz(S, X = X, baseline = baseline, collapse = collapse)
 }
 load("TCGA_metabolism.Rdata")
 load("pancancer_WNT_Score.Rdata")
-TCGA = merge(pancancer_WNT_Score$final_activity_score[,c(1),drop=F], 
+TCGA = merge(pancancer_WNT_Score$final_activity_score[,c(1),drop=F],
               as.data.frame(t(TCGA_metabolism)), by="row.names")
 rownames(TCGA) = TCGA[,1]
 TCGA = TCGA[,-1]
@@ -1118,7 +1118,7 @@ TCGA_pool = catboost.load_pool(TCGA_pred[, -1])
 TCGA_pred$pred = catboost.predict(fit, TCGA_pool)
 p = ggscatter(TCGA_pred, x = "pred", y = "activity_score",
                add = "reg.line",
-               conf.int = TRUE, 
+               conf.int = TRUE,
                add.params = list(color = "#d71345", fill = "#BBBDBE"),
                color = "#90d7ec", size = 1) +
   stat_cor(method = "pearson",
@@ -1157,7 +1157,7 @@ save(catboost_impor, file = "catboost_impor.Rdata")
 # ------------------------------------------------------------------------------
 load("TARGET_metabolism.Rdata")
 load("TARGET_WNT_Score.Rdata")
-TARGET = merge(TARGET_WNT_Score$final_activity_score[,c(1),drop=F], 
+TARGET = merge(TARGET_WNT_Score$final_activity_score[,c(1),drop=F],
                 as.data.frame(t(TARGET_metabolism)), by="row.names")
 rownames(TARGET) = TARGET[,1]
 TARGET = TARGET[,-1]
@@ -1166,11 +1166,11 @@ TARGET_pool = catboost.load_pool(TARGET_pred[, -1])
 TARGET_pred$pred = catboost.predict(fit, TARGET_pool)
 p = ggscatter(TARGET_pred, x = "pred", y = "activity_score",
                add = "reg.line",
-               conf.int = TRUE, 
+               conf.int = TRUE,
                add.params = list(color = "#d71345", fill = "#BBBDBE"),
                color = "#90d7ec", size = 1) +
   stat_cor(method = "pearson",
-           label.x = -1, 
+           label.x = -1,
            label.y = -2.5,
            size = 6) +
   theme_classic() +
@@ -1191,7 +1191,7 @@ print(p)
 # ------------------------------------------------------------------------------
 load("GDSC1_metabolism.Rdata")
 load("GDSC1_WNT_score.Rdata")
-GDSC1 = merge(GDSC1_WNT_score[,c(1),drop=F], 
+GDSC1 = merge(GDSC1_WNT_score[,c(1),drop=F],
                as.data.frame(t(GDSC1_metabolism)), by="row.names")
 rownames(GDSC1) = GDSC1[,1]
 GDSC1 = GDSC1[,-1]
@@ -1200,11 +1200,11 @@ GDSC1_pool = catboost.load_pool(GDSC1_pred[, -1])
 GDSC1_pred$pred = catboost.predict(fit, GDSC1_pool)
 p = ggscatter(GDSC1_pred, x = "pred", y = "activity_score",
                add = "reg.line",
-               conf.int = TRUE, 
+               conf.int = TRUE,
                add.params = list(color = "#d71345", fill = "#BBBDBE"),
                color = "#90d7ec", size = 1) +
   stat_cor(method = "pearson",
-           label.x = -1, 
+           label.x = -1,
            label.y = -2.5,
            size = 6) +
   theme_classic() +
@@ -1225,7 +1225,7 @@ print(p)
 # ------------------------------------------------------------------------------
 load("GDSC2_metabolism.Rdata")
 load("GDSC2_WNT_score.Rdata")
-GDSC2 = merge(GDSC2_WNT_score[,c(1),drop=F], 
+GDSC2 = merge(GDSC2_WNT_score[,c(1),drop=F],
                as.data.frame(t(GDSC2_metabolism)), by="row.names")
 rownames(GDSC2) = GDSC2[,1]
 GDSC2 = GDSC2[,-1]
@@ -1234,11 +1234,11 @@ GDSC2_pool = catboost.load_pool(GDSC2_pred[, -1])
 GDSC2_pred$pred = catboost.predict(fit, GDSC2_pool)
 p = ggscatter(GDSC2_pred, x = "pred", y = "activity_score",
                add = "reg.line",
-               conf.int = TRUE, 
+               conf.int = TRUE,
                add.params = list(color = "#d71345", fill = "#BBBDBE"),
                color = "#90d7ec", size = 1) +
   stat_cor(method = "pearson",
-           label.x = -1, 
+           label.x = -1,
            label.y = -2.5,
            size = 6) +
   theme_classic() +
@@ -1259,7 +1259,7 @@ print(p)
 # ------------------------------------------------------------------------------
 load("CCLE_metabolism.Rdata")
 load("CCLE_WNT_score.Rdata")
-CCLE = merge(CCLE_WNT_score[,c(1),drop=F], 
+CCLE = merge(CCLE_WNT_score[,c(1),drop=F],
               as.data.frame(t(CCLE_metabolism)), by="row.names")
 rownames(CCLE) = CCLE[,1]
 CCLE = CCLE[,-1]
@@ -1268,11 +1268,11 @@ CCLE_pool = catboost.load_pool(CCLE_pred[, -1])
 CCLE_pred$pred = catboost.predict(fit, CCLE_pool)
 p = ggscatter(CCLE_pred, x = "pred", y = "activity_score",
                add = "reg.line",
-               conf.int = TRUE, 
+               conf.int = TRUE,
                add.params = list(color = "#d71345", fill = "#BBBDBE"),
                color = "#90d7ec", size = 1) +
   stat_cor(method = "pearson",
-           label.x = -1, 
+           label.x = -1,
            label.y = -2.5,
            size = 6) +
   theme_classic() +
@@ -1293,7 +1293,7 @@ print(p)
 # ------------------------------------------------------------------------------
 load("CTRP_metabolism.Rdata")
 load("CTRP_WNT_score.Rdata")
-CTRP = merge(CTRP_WNT_score[,c(1),drop=F], 
+CTRP = merge(CTRP_WNT_score[,c(1),drop=F],
               as.data.frame(t(CTRP_metabolism)), by="row.names")
 rownames(CTRP) = CTRP[,1]
 CTRP = CTRP[,-1]
@@ -1302,11 +1302,11 @@ CTRP_pool = catboost.load_pool(CTRP_pred[, -1])
 CTRP_pred$pred = catboost.predict(fit, CTRP_pool)
 p = ggscatter(CTRP_pred, x = "pred", y = "activity_score",
                add = "reg.line",
-               conf.int = TRUE, 
+               conf.int = TRUE,
                add.params = list(color = "#d71345", fill = "#BBBDBE"),
                color = "#90d7ec", size = 1) +
   stat_cor(method = "pearson",
-           label.x = -1, 
+           label.x = -1,
            label.y = -2.5,
            size = 6) +
   theme_classic() +
@@ -1348,42 +1348,42 @@ heatmap_data=as.matrix(ML_importance[, -which(colnames(ML_importance) == "import
 ML_importance$feature=rownames(heatmap_data)
 ML_importance=head(ML_importance,20)
 heatmap_data=heatmap_data[rownames(ML_importance),]
-library(dplyr)  
-library(ggplot2)  
-library(patchwork)  
-library(tidyr)  
-library(tibble)  
-sorted_features = ML_importance %>%  
-  arrange(desc(importance)) %>%  
+library(dplyr)
+library(ggplot2)
+library(patchwork)
+library(tidyr)
+library(tibble)
+sorted_features = ML_importance %>%
+  arrange(desc(importance)) %>%
   pull(feature)
-heatmap_df = as.data.frame(heatmap_data) %>%  
-  tibble::rownames_to_column("feature") %>%  
-  mutate(feature = factor(feature, levels = sorted_features)) %>%  
+heatmap_df = as.data.frame(heatmap_data) %>%
+  tibble::rownames_to_column("feature") %>%
+  mutate(feature = factor(feature, levels = sorted_features)) %>%
   tidyr::pivot_longer(-feature)
-heatmap_plot = ggplot(heatmap_df, aes(x = name, y = feature, fill = value)) +  
-  geom_tile(color = "gray70", size = 0.5) + 
-  scale_fill_gradient2(low = "#1E88E5", mid = "white", high = "#D81B60") +  
+heatmap_plot = ggplot(heatmap_df, aes(x = name, y = feature, fill = value)) +
+  geom_tile(color = "gray70", size = 0.5) +
+  scale_fill_gradient2(low = "#1E88E5", mid = "white", high = "#D81B60") +
   theme_minimal(base_size = 12) +
-  labs(x = "", y = "", fill = "Value") +  
-  theme(  
+  labs(x = "", y = "", fill = "Value") +
+  theme(
     axis.text.x = element_text(angle = 45, hjust = 1, color = "black"),
     axis.text.y = element_text(color = "black"),
     legend.position = "none",
     text = element_text(color = "black")
   )
-barplot_plot = ML_importance %>%  
-  mutate(feature = factor(feature, levels = sorted_features)) %>%  
-  ggplot(aes(x = feature, y = importance)) +  
-  geom_col(fill = "#9b95c9", width = 0.8) +  
-  coord_flip() +  
+barplot_plot = ML_importance %>%
+  mutate(feature = factor(feature, levels = sorted_features)) %>%
+  ggplot(aes(x = feature, y = importance)) +
+  geom_col(fill = "#9b95c9", width = 0.8) +
+  coord_flip() +
   theme_minimal(base_size = 12) +
-  labs(x = "", y = "Importance") +  
-  theme(  
-    axis.text.y = element_blank(),  
+  labs(x = "", y = "Importance") +
+  theme(
+    axis.text.y = element_blank(),
     axis.text.x = element_text(color = "black"),
     legend.position = "none",
     text = element_text(color = "black")
-  )  
-combined_plot = heatmap_plot + barplot_plot +   
-  plot_layout(widths = c(2, 1))  
+  )
+combined_plot = heatmap_plot + barplot_plot +
+  plot_layout(widths = c(2, 1))
 print(combined_plot)

@@ -62,25 +62,25 @@ load("input/pancancer_WNT_Score.Rdata")
 load("input/pancancer_group.Rdata")
 pancancer_group$Project=paste0("TCGA_",pancancer_group$Project)
 WNT_Score_group=merge(pancancer_WNT_Score$final_activity_score,pancancer_group,by="row.names",all=T)
-p = ggplot(WNT_Score_group, aes(Project, activity_score, fill = Group, color = Group)) +  
-  geom_boxplot(outlier.shape = 21, outlier.fill = 'black', outlier.size = 0.25, color = "black") +  
-  labs(x = " ", y = "Wnt/β-catenin pathway activity score") + #activity, activation, inhibition  
-  theme_bw() +  
-  theme(  
-    legend.position = "right",  
-    panel.grid.major.x = element_line(linewidth = 1),  
-    panel.grid.major.y = element_line(linewidth = 1),  
-    panel.grid.minor.x = element_line(linewidth = 0.8),  
-    panel.grid.minor.y = element_line(linewidth = 0.8),  
-    axis.line.x = element_line(colour = 'black', linewidth = 1.5),  
-    axis.line.y = element_line(colour = 'black', linewidth = 1),  
-    axis.text.x = element_text(angle = 80, hjust = 1, vjust = 1, colour = "black", size = 16),  
+p = ggplot(WNT_Score_group, aes(Project, activity_score, fill = Group, color = Group)) +
+  geom_boxplot(outlier.shape = 21, outlier.fill = 'black', outlier.size = 0.25, color = "black") +
+  labs(x = " ", y = "Wnt/β-catenin pathway activity score") + #activity, activation, inhibition
+  theme_bw() +
+  theme(
+    legend.position = "right",
+    panel.grid.major.x = element_line(linewidth = 1),
+    panel.grid.major.y = element_line(linewidth = 1),
+    panel.grid.minor.x = element_line(linewidth = 0.8),
+    panel.grid.minor.y = element_line(linewidth = 0.8),
+    axis.line.x = element_line(colour = 'black', linewidth = 1.5),
+    axis.line.y = element_line(colour = 'black', linewidth = 1),
+    axis.text.x = element_text(angle = 80, hjust = 1, vjust = 1, colour = "black", size = 16),
     axis.text.y = element_text(colour = "black", size = 16),
     axis.title.x = element_text(colour = "black", size = 16),
     axis.title.y = element_text(angle = 90, colour = "black", size = 16)
-  ) +  
-  scale_fill_manual(values = c("#90d7ec", "#f58f98")) +  
-  stat_compare_means(aes(group = Group, label = ..p.signif..), method = "wilcox.test") 
+  ) +
+  scale_fill_manual(values = c("#90d7ec", "#f58f98")) +
+  stat_compare_means(aes(group = Group, label = ..p.signif..), method = "wilcox.test")
 p
 # ------------------------------------------------------------------------------
 # Comparison of TARGET pan-cancer WNT scores
@@ -95,25 +95,25 @@ load("input/TARGET_WNT_Score.Rdata")
 load("input/TARGET_G.Rdata")
 TARGET_G$Project=paste0("TARGET_",TARGET_G$Project)
 WNT_Score_group=merge(TARGET_WNT_Score$final_activity_score,TARGET_G,by="row.names",all=T)
-p = ggplot(WNT_Score_group, aes(Project, activity_score, fill = Group, color = Group)) +  
-  geom_boxplot(outlier.shape = 21, outlier.fill = 'black', outlier.size = 0.25, color = "black") +  
-  labs(x = " ", y = "Wnt/β-catenin pathway activity score") +  #activity, activation, inhibition  
-  theme_bw() +  
-  theme(  
-    legend.position = "right",  
-    panel.grid.major.x = element_line(linewidth = 1),  
-    panel.grid.major.y = element_line(linewidth = 1),  
-    panel.grid.minor.x = element_line(linewidth = 0.8),  
-    panel.grid.minor.y = element_line(linewidth = 0.8),  
-    axis.line.x = element_line(colour = 'black', linewidth = 1.5),  
-    axis.line.y = element_line(colour = 'black', linewidth = 1),  
+p = ggplot(WNT_Score_group, aes(Project, activity_score, fill = Group, color = Group)) +
+  geom_boxplot(outlier.shape = 21, outlier.fill = 'black', outlier.size = 0.25, color = "black") +
+  labs(x = " ", y = "Wnt/β-catenin pathway activity score") +  #activity, activation, inhibition
+  theme_bw() +
+  theme(
+    legend.position = "right",
+    panel.grid.major.x = element_line(linewidth = 1),
+    panel.grid.major.y = element_line(linewidth = 1),
+    panel.grid.minor.x = element_line(linewidth = 0.8),
+    panel.grid.minor.y = element_line(linewidth = 0.8),
+    axis.line.x = element_line(colour = 'black', linewidth = 1.5),
+    axis.line.y = element_line(colour = 'black', linewidth = 1),
     axis.text.x = element_text(angle = 80, hjust = 1, vjust = 1, colour = "black", size = 16),
     axis.text.y = element_text(colour = "black", size = 16),
     axis.title.x = element_text(colour = "black", size = 16),
     axis.title.y = element_text(angle = 90, colour = "black", size = 16)
-  ) +  
-  scale_fill_manual(values = c("#90d7ec", "#f58f98")) +  
-  stat_compare_means(aes(group = Group, label = ..p.signif..), method = "wilcox.test") 
+  ) +
+  scale_fill_manual(values = c("#90d7ec", "#f58f98")) +
+  stat_compare_means(aes(group = Group, label = ..p.signif..), method = "wilcox.test")
 p
 # ------------------------------------------------------------------------------
 # Matching comparison of TCGA-TARGET pan-cancer WNT scores
@@ -166,34 +166,34 @@ pairs_data <- pairs_data %>%
   filter(n() > 1)
 pairs_data$activity_score=as.numeric(pairs_data$activity_score)
 pairs_data=pairs_data[!pairs_data$Project%in%c("TCGA_SARC","TCGA_SKCM","TCGA_THYM"),]
-mytheme <- theme(plot.margin=unit(c(0.5,0.5,0.5,0.5), "cm"),  
-                 axis.line = element_line(color = "black", linewidth = 0.4),  
-                 panel.grid.minor = element_blank(),  
-                 panel.grid.major = element_line(size = 0.1, color = "#e5e5e5"),  
-                 axis.text.y = element_text(color = "black", size = 16),  
-                 axis.text.x = element_text(angle = 60, hjust = 1, color = "black", size = 16),  
-                 axis.title.y = element_text(color = "black", size = 16),  
-                 axis.title.x = element_text(color = "black", size = 16),  
-                 legend.position = "none",  
-                 panel.spacing = unit(0, "lines"),  
-                 plot.title = element_text(color = "black", size = 16))  
-fill.color = c(Normal = "#90d7ec", Tumor = "#f58f98")  
-p = ggplot(pairs_data, aes(x = type, y = activity_score, fill = type)) +  
-  geom_line(aes(group = ID), position = position_dodge(0.2), color = "grey90") +  
-  geom_point(aes(group = ID, size = activity_score), pch = 21,  
-             size = 1.8, position = position_jitter(w = 0.1)) +  
-  stat_summary(fun.data = 'mean_se', geom = "errorbar", color = "red",   
-               width = 0.25, size = 0.8, position = position_dodge(0.9)) +  
-  facet_wrap(. ~ Project, scales = "free_y", ncol = 10) +  
-  scale_fill_manual(values = fill.color) +  
-  labs(x = NULL, y = "Wnt/β-catenin pathway activity score") +  
-  stat_compare_means(aes(group = type),  
-                     paired = TRUE,  
-                     method = "wilcox.test",  
-                     label = "p.signif",  
-                     size = 3) +   
-  theme_bw() + mytheme +  
-  ggtitle("TCGA+TARGET") 
+mytheme <- theme(plot.margin=unit(c(0.5,0.5,0.5,0.5), "cm"),
+                 axis.line = element_line(color = "black", linewidth = 0.4),
+                 panel.grid.minor = element_blank(),
+                 panel.grid.major = element_line(size = 0.1, color = "#e5e5e5"),
+                 axis.text.y = element_text(color = "black", size = 16),
+                 axis.text.x = element_text(angle = 60, hjust = 1, color = "black", size = 16),
+                 axis.title.y = element_text(color = "black", size = 16),
+                 axis.title.x = element_text(color = "black", size = 16),
+                 legend.position = "none",
+                 panel.spacing = unit(0, "lines"),
+                 plot.title = element_text(color = "black", size = 16))
+fill.color = c(Normal = "#90d7ec", Tumor = "#f58f98")
+p = ggplot(pairs_data, aes(x = type, y = activity_score, fill = type)) +
+  geom_line(aes(group = ID), position = position_dodge(0.2), color = "grey90") +
+  geom_point(aes(group = ID, size = activity_score), pch = 21,
+             size = 1.8, position = position_jitter(w = 0.1)) +
+  stat_summary(fun.data = 'mean_se', geom = "errorbar", color = "red",
+               width = 0.25, size = 0.8, position = position_dodge(0.9)) +
+  facet_wrap(. ~ Project, scales = "free_y", ncol = 10) +
+  scale_fill_manual(values = fill.color) +
+  labs(x = NULL, y = "Wnt/β-catenin pathway activity score") +
+  stat_compare_means(aes(group = type),
+                     paired = TRUE,
+                     method = "wilcox.test",
+                     label = "p.signif",
+                     size = 3) +
+  theme_bw() + mytheme +
+  ggtitle("TCGA+TARGET")
 p
 # ------------------------------------------------------------------------------
 # Changes in Wnt-related genes
@@ -243,29 +243,29 @@ for(i in 1:length(fs)){
 }
 cancer_cor$cor[is.na(cancer_cor$cor)]=0
 cancer_cor$p.value[is.na(cancer_cor$p.value)]=1
-cancer_cor$pstar=ifelse(cancer_cor$p.value > 0.05, "", 
-                        ifelse(cancer_cor$p.value <= 0.05 & cancer_cor$p.value > 0.01, "*", 
+cancer_cor$pstar=ifelse(cancer_cor$p.value > 0.05, "",
+                        ifelse(cancer_cor$p.value <= 0.05 & cancer_cor$p.value > 0.01, "*",
                                ifelse(cancer_cor$p.value <= 0.01 & cancer_cor$p.value > 0.001, "**", "***")))
 library(ggplot2)
 library(dplyr)
 cancer_cor$tme=factor(cancer_cor$tme, levels = colnames(tme_all_fs))
-ggplot(cancer_cor, aes(cancer, tme)) +   
-  geom_tile(aes(fill = cor)) +  
-  scale_fill_gradient2(high = "#f58f98", mid = "white", low = "#90d7ec") +  
+ggplot(cancer_cor, aes(cancer, tme)) +
+  geom_tile(aes(fill = cor)) +
+  scale_fill_gradient2(high = "#f58f98", mid = "white", low = "#90d7ec") +
   geom_text(aes(label = pstar), color = "black", size = 6) +
   theme_minimal() +
-  theme(  
+  theme(
     axis.title.x = element_blank(),
     axis.ticks.x = element_blank(),
     axis.title.y = element_blank(),
     axis.text.x = element_text(angle = 60, hjust = 1, size = 16),
     axis.text.y = element_text(size = 16)
   ) +
-  labs(fill = paste0(" * p < 0.05", "\n\n", "** p < 0.01", "\n\n", "*** p < 0.001", "\n\n", "Correlation")) +  
-  theme(  
+  labs(fill = paste0(" * p < 0.05", "\n\n", "** p < 0.01", "\n\n", "*** p < 0.001", "\n\n", "Correlation")) +
+  theme(
     legend.text = element_text(size = 16),
     legend.title = element_text(size = 16)
-  )  
+  )
 # ------------------------------------------------------------------------------
 # Characterised gene validation gene set
 # ------------------------------------------------------------------------------
@@ -341,7 +341,7 @@ for (i in 1:length(vector)){
   group=gene_group[rownames(pancancer_group_fs),]
   group=group[,"AXIN2",drop=F]#Location of replacement genes
   library(dplyr)
-  group = group %>%  
+  group = group %>%
     mutate(group = ntile(AXIN2,2))#Location of replacement genes
   group$group <- factor(group$group, levels =1:2, labels = c("L","H"))
   group$Tag=rownames(group)
@@ -359,8 +359,8 @@ for (i in 1:length(vector)){
   alldiff=alldiff[order(alldiff$logFC,decreasing = T),]
   id=alldiff$logFC
   names(id)=alldiff$gene_id
-  canonical_pathways=do.call(rbind, lapply(geneSets, function(gs) {  
-    data.frame(term = gs@setName, gene = gs@geneIds, stringsAsFactors = FALSE)  
+  canonical_pathways=do.call(rbind, lapply(geneSets, function(gs) {
+    data.frame(term = gs@setName, gene = gs@geneIds, stringsAsFactors = FALSE)
   }))
   canonical_pathways=canonical_pathways[canonical_pathways$gene != "", ]
   canonical_pathways$term=as.character(canonical_pathways$term)
@@ -384,27 +384,27 @@ fgsea_all=fgsea_all[,-1]
 fgsea_all=as.data.frame(t(fgsea_all))
 library(ComplexHeatmap)
 library(circlize)
-ha = rowAnnotation(Group = factor(c(rep("WPAGSs", 36), rep("WPIGSs", 27))),  
-                   col = list(Group = c(WPAGSs = "#f15b6c", WPIGSs = "#009ad6")),  
-                   show_annotation_name = FALSE)  
-fgsea_all_transposed = t(as.matrix(fgsea_all))  
-Heatmap(fgsea_all_transposed, 
+ha = rowAnnotation(Group = factor(c(rep("WPAGSs", 36), rep("WPIGSs", 27))),
+                   col = list(Group = c(WPAGSs = "#f15b6c", WPIGSs = "#009ad6")),
+                   show_annotation_name = FALSE)
+fgsea_all_transposed = t(as.matrix(fgsea_all))
+Heatmap(fgsea_all_transposed,
         name = "NES",
-        col = colorRamp2(c(min(fgsea_all), 0, max(fgsea_all)),   
-                         c("#90d7ec", "white", "#f58f98")),  
-        left_annotation = ha, 
-        show_row_names = F,  
-        show_column_names = T, 
-        cluster_rows = TRUE,   
-        cluster_columns = TRUE,  
-        row_names_gp = gpar(fontsize = 10),  
-        column_names_gp = gpar(fontsize = 10),  
-        column_names_rot = 60,  
-        heatmap_legend_param = list(title = "NES",   
-                                    title_gp = gpar(fontsize = 12),   
-                                    labels_gp = gpar(fontsize = 12),  
-                                    annotation_name_gp = gpar(fontsize = 16)),  
-        rect_gp = gpar(col = "#77787b", lwd = 1) 
+        col = colorRamp2(c(min(fgsea_all), 0, max(fgsea_all)),
+                         c("#90d7ec", "white", "#f58f98")),
+        left_annotation = ha,
+        show_row_names = F,
+        show_column_names = T,
+        cluster_rows = TRUE,
+        cluster_columns = TRUE,
+        row_names_gp = gpar(fontsize = 10),
+        column_names_gp = gpar(fontsize = 10),
+        column_names_rot = 60,
+        heatmap_legend_param = list(title = "NES",
+                                    title_gp = gpar(fontsize = 12),
+                                    labels_gp = gpar(fontsize = 12),
+                                    annotation_name_gp = gpar(fontsize = 16)),
+        rect_gp = gpar(col = "#77787b", lwd = 1)
 )
 grid.text("AXIN2", x = 0.1, y = unit(0.97, "npc"), gp = gpar(fontsize = 16, fontface = "bold"))#Location of replacement genes
 # ------------------------------------------------------------------------------
@@ -481,7 +481,7 @@ for (i in 1:length(vector)){
   pancancer_group_fs=pancancer_group[pancancer_group$Project==vector[i],]
   group=pancancer_wnt[rownames(pancancer_group_fs),]
   library(dplyr)
-  group = group %>%  
+  group = group %>%
     mutate(group = ntile(activity_score,2))
   group$group <- factor(group$group, levels =1:2, labels = c("L","H"))
   group$Tag=rownames(group)
@@ -498,8 +498,8 @@ for (i in 1:length(vector)){
   alldiff=alldiff[order(alldiff$logFC,decreasing = T),]
   id=alldiff$logFC
   names(id)=alldiff$gene_id
-  canonical_pathways=do.call(rbind, lapply(geneSets, function(gs) {  
-    data.frame(term = gs@setName, gene = gs@geneIds, stringsAsFactors = FALSE)  
+  canonical_pathways=do.call(rbind, lapply(geneSets, function(gs) {
+    data.frame(term = gs@setName, gene = gs@geneIds, stringsAsFactors = FALSE)
   }))
   canonical_pathways=canonical_pathways[canonical_pathways$gene != "", ]
   canonical_pathways$term=as.character(canonical_pathways$term)
@@ -523,29 +523,29 @@ fgsea_all=fgsea_all[,-1]
 fgsea_all=as.data.frame(t(fgsea_all))
 library(ComplexHeatmap)
 library(circlize)
-ha = rowAnnotation(Group = factor(c(rep("WPAGSs", 36), rep("WPIGSs", 27))),  
-                   col = list(Group = c(WPAGSs = "#f15b6c", WPIGSs = "#009ad6")),  
-                   show_annotation_name = FALSE)  
-fgsea_all_transposed = t(as.matrix(fgsea_all))  
+ha = rowAnnotation(Group = factor(c(rep("WPAGSs", 36), rep("WPIGSs", 27))),
+                   col = list(Group = c(WPAGSs = "#f15b6c", WPIGSs = "#009ad6")),
+                   show_annotation_name = FALSE)
+fgsea_all_transposed = t(as.matrix(fgsea_all))
 Heatmap(fgsea_all_transposed,
         name = "NES",
-        col = colorRamp2(c(min(fgsea_all), 0, max(fgsea_all)),   
-                         c("#90d7ec", "white", "#f58f98")),  
+        col = colorRamp2(c(min(fgsea_all), 0, max(fgsea_all)),
+                         c("#90d7ec", "white", "#f58f98")),
         left_annotation = ha,
         show_row_names = F,
         show_column_names = T,
-        cluster_rows = TRUE,   
-        cluster_columns = TRUE,  
-        row_names_gp = gpar(fontsize = 10),  
-        column_names_gp = gpar(fontsize = 10),  
+        cluster_rows = TRUE,
+        cluster_columns = TRUE,
+        row_names_gp = gpar(fontsize = 10),
+        column_names_gp = gpar(fontsize = 10),
         column_names_rot = 60,
-        heatmap_legend_param = list(title = "NES",   
-                                    title_gp = gpar(fontsize = 12),   
-                                    labels_gp = gpar(fontsize = 12),  
-                                    annotation_name_gp = gpar(fontsize = 16)),  
+        heatmap_legend_param = list(title = "NES",
+                                    title_gp = gpar(fontsize = 12),
+                                    labels_gp = gpar(fontsize = 12),
+                                    annotation_name_gp = gpar(fontsize = 16)),
         rect_gp = gpar(col = "#77787b", lwd = 1)
 )
-grid.text("", x = 0.2, y = unit(0.99, "npc"), gp = gpar(fontsize = 12, fontface = "bold")) 
+grid.text("", x = 0.2, y = unit(0.99, "npc"), gp = gpar(fontsize = 12, fontface = "bold"))
 # ------------------------------------------------------------------------------
 # TCGA hallmark ssGSEA
 # ------------------------------------------------------------------------------
@@ -638,29 +638,29 @@ for(i in 1:length(fs)){
 }
 cancer_cor$cor[is.na(cancer_cor$cor)]=0
 cancer_cor$p.value[is.na(cancer_cor$p.value)]=1
-cancer_cor$pstar=ifelse(cancer_cor$p.value > 0.05, "", 
-                        ifelse(cancer_cor$p.value <= 0.05 & cancer_cor$p.value > 0.01, "*", 
+cancer_cor$pstar=ifelse(cancer_cor$p.value > 0.05, "",
+                        ifelse(cancer_cor$p.value <= 0.05 & cancer_cor$p.value > 0.01, "*",
                                ifelse(cancer_cor$p.value <= 0.01 & cancer_cor$p.value > 0.001, "**", "***")))
 library(ggplot2)
 library(dplyr)
 cancer_cor$tme=factor(cancer_cor$tme, levels = colnames(tme_all_fs))
-ggplot(cancer_cor, aes(cancer, tme)) +   
-  geom_tile(aes(fill = cor)) +  
-  scale_fill_gradient2(high = "#f58f98", mid = "white", low = "#90d7ec") +  
+ggplot(cancer_cor, aes(cancer, tme)) +
+  geom_tile(aes(fill = cor)) +
+  scale_fill_gradient2(high = "#f58f98", mid = "white", low = "#90d7ec") +
   geom_text(aes(label = pstar), color = "black", size = 6) +
   theme_minimal() +
-  theme(  
+  theme(
     axis.title.x = element_blank(),
-    axis.ticks.x = element_blank(), 
-    axis.title.y = element_blank(), 
+    axis.ticks.x = element_blank(),
+    axis.title.y = element_blank(),
     axis.text.x = element_text(angle = 60, hjust = 1, size = 16),
     axis.text.y = element_text(size = 16)
   ) +
-  labs(fill = paste0(" * p < 0.05", "\n\n", "** p < 0.01", "\n\n", "*** p < 0.001", "\n\n", "Correlation")) +  
-  theme(  
-    legend.text = element_text(size = 16), 
+  labs(fill = paste0(" * p < 0.05", "\n\n", "** p < 0.01", "\n\n", "*** p < 0.001", "\n\n", "Correlation")) +
+  theme(
+    legend.text = element_text(size = 16),
     legend.title = element_text(size = 16)
-  )  
+  )
 # ------------------------------------------------------------------------------
 # TCGA pan-cancer pos vs. neg
 # ------------------------------------------------------------------------------
@@ -674,51 +674,51 @@ WNT_Score_ssGSEA=pancancer_WNT_Score$final_activity_score[rownames(group),]
 WNT_Score_ssGSEA=WNT_Score_ssGSEA[,-1]
 wnt_group=merge(WNT_Score_ssGSEA,group,by="row.names")
 wnt_group=wnt_group[,-c(1,5)]
-wnt_group_avg = aggregate(cbind(pos_score, neg_score) ~ Project, data = wnt_group, FUN = mean)  
-colnames(wnt_group_avg)[2:3] = c("avg_pos_score", "avg_neg_score")  
+wnt_group_avg = aggregate(cbind(pos_score, neg_score) ~ Project, data = wnt_group, FUN = mean)
+colnames(wnt_group_avg)[2:3] = c("avg_pos_score", "avg_neg_score")
 library(ggplot2)
 library(ggpubr)
 library(ggrepel)
-ggplot(wnt_group_avg, aes(x = avg_pos_score, y = avg_neg_score)) +  
-  geom_point(size = 2.8, shape = 21, alpha = 1, color = "#90d7d8", fill = "#90d7d8") +  
-  geom_text_repel(data = wnt_group_avg, aes(label = Project), size = 3.8,  
-                  box.padding = unit(0.8, 'lines'), show.legend = FALSE, max.overlaps = 500) +  
-  geom_abline(slope = -1, intercept = 0, color = "#bed742", linewidth = 2, alpha = 0.5) +  
-  geom_abline(slope = 1, intercept = 0, color = "#f58f98", linewidth = 2, alpha = 0.5) +  
-  geom_vline(xintercept = 0, color = "#d3d7d4", linewidth = 0.5, alpha = 0.3) +  
-  geom_hline(yintercept = 0, color = "#d3d7d4", linewidth = 0.5, alpha = 0.3) +  
-  labs(x = 'Wnt/β-catenin pathway activation score (Mean)',   
-       y = 'Wnt/β-catenin pathway inhibition score (Mean)') +  
-  theme_bw() +  
-  theme(  
+ggplot(wnt_group_avg, aes(x = avg_pos_score, y = avg_neg_score)) +
+  geom_point(size = 2.8, shape = 21, alpha = 1, color = "#90d7d8", fill = "#90d7d8") +
+  geom_text_repel(data = wnt_group_avg, aes(label = Project), size = 3.8,
+                  box.padding = unit(0.8, 'lines'), show.legend = FALSE, max.overlaps = 500) +
+  geom_abline(slope = -1, intercept = 0, color = "#bed742", linewidth = 2, alpha = 0.5) +
+  geom_abline(slope = 1, intercept = 0, color = "#f58f98", linewidth = 2, alpha = 0.5) +
+  geom_vline(xintercept = 0, color = "#d3d7d4", linewidth = 0.5, alpha = 0.3) +
+  geom_hline(yintercept = 0, color = "#d3d7d4", linewidth = 0.5, alpha = 0.3) +
+  labs(x = 'Wnt/β-catenin pathway activation score (Mean)',
+       y = 'Wnt/β-catenin pathway inhibition score (Mean)') +
+  theme_bw() +
+  theme(
     text = element_text(color = "black", size = 16),
     axis.title = element_text(size = 16),
     axis.text = element_text(size = 16),
     plot.title = element_text(size = 16)
-  )  
+  )
 library(reshape2)
 wnt_group=melt(wnt_group)
 wnt_group$variable=ifelse(wnt_group$variable=="pos_score","Activation","Inhibition")
 colnames(wnt_group)=c("Project","Group","value")
-p = ggplot(wnt_group, aes(Project, value, fill = Group, color = Group)) +  
-  geom_boxplot(outlier.shape = 21, outlier.fill = 'black', outlier.size = 0.25, color = "black") +  
-  labs(x = " ", y = "Wnt/β-catenin pathway activation/inhibition score") +  
-  theme_bw() +  
-  theme(  
-    legend.position = "right",  
-    panel.grid.major.x = element_line(linewidth = 1),  
-    panel.grid.major.y = element_line(linewidth = 1),  
-    panel.grid.minor.x = element_line(linewidth = 0.8),  
-    panel.grid.minor.y = element_line(linewidth = 0.8),  
-    axis.line.x = element_line(colour = 'black', linewidth = 1.5),  
-    axis.line.y = element_line(colour = 'black', linewidth = 1),  
+p = ggplot(wnt_group, aes(Project, value, fill = Group, color = Group)) +
+  geom_boxplot(outlier.shape = 21, outlier.fill = 'black', outlier.size = 0.25, color = "black") +
+  labs(x = " ", y = "Wnt/β-catenin pathway activation/inhibition score") +
+  theme_bw() +
+  theme(
+    legend.position = "right",
+    panel.grid.major.x = element_line(linewidth = 1),
+    panel.grid.major.y = element_line(linewidth = 1),
+    panel.grid.minor.x = element_line(linewidth = 0.8),
+    panel.grid.minor.y = element_line(linewidth = 0.8),
+    axis.line.x = element_line(colour = 'black', linewidth = 1.5),
+    axis.line.y = element_line(colour = 'black', linewidth = 1),
     axis.text.x = element_text(angle = 80, hjust = 1, vjust = 1, colour = "black", size = 16),
     axis.text.y = element_text(colour = "black", size = 16),
     axis.title.y = element_text(angle = 90, colour = "black", size = 16),
     axis.title.x = element_text(colour = "black", size = 16)
-  ) +  
-  scale_fill_manual(values = c("#f58f98", "#90d7ec")) +  
-  stat_compare_means(aes(group = Group, label = ..p.signif..), method = "wilcox.test") 
+  ) +
+  scale_fill_manual(values = c("#f58f98", "#90d7ec")) +
+  stat_compare_means(aes(group = Group, label = ..p.signif..), method = "wilcox.test")
 p
 # ------------------------------------------------------------------------------
 # TARGET pan-cancer pos vs neg
@@ -733,51 +733,51 @@ WNT_Score_ssGSEA=TARGET_WNT_Score$final_activity_score[rownames(group),]
 WNT_Score_ssGSEA=WNT_Score_ssGSEA[,-1]
 wnt_group=merge(WNT_Score_ssGSEA,group,by="row.names")
 wnt_group=wnt_group[,-c(1,5)]
-wnt_group_avg = aggregate(cbind(pos_score, neg_score) ~ Project, data = wnt_group, FUN = mean)  
-colnames(wnt_group_avg)[2:3] = c("avg_pos_score", "avg_neg_score")  
+wnt_group_avg = aggregate(cbind(pos_score, neg_score) ~ Project, data = wnt_group, FUN = mean)
+colnames(wnt_group_avg)[2:3] = c("avg_pos_score", "avg_neg_score")
 library(ggplot2)
 library(ggpubr)
 library(ggrepel)
-ggplot(wnt_group_avg, aes(x = avg_pos_score, y = avg_neg_score)) +  
-  geom_point(size = 2.8, shape = 21, alpha = 1, color = "#90d7d8", fill = "#90d7d8") +  
-  geom_text_repel(data = wnt_group_avg, aes(label = Project), size = 3.8,  
-                  box.padding = unit(0.8, 'lines'), show.legend = FALSE, max.overlaps = 500) +  
-  geom_abline(slope = -1, intercept = 0, color = "#bed742", linewidth = 2, alpha = 0.5) +  
-  geom_abline(slope = 1, intercept = 0, color = "#f58f98", linewidth = 2, alpha = 0.5) +  
-  geom_vline(xintercept = 0, color = "#d3d7d4", linewidth = 0.5, alpha = 0.3) +  
-  geom_hline(yintercept = 0, color = "#d3d7d4", linewidth = 0.5, alpha = 0.3) +  
-  labs(x = 'Wnt/β-catenin pathway activation score (Mean)',   
-       y = 'Wnt/β-catenin pathway inhibition score (Mean)') +  
-  theme_bw() +  
-  theme(  
+ggplot(wnt_group_avg, aes(x = avg_pos_score, y = avg_neg_score)) +
+  geom_point(size = 2.8, shape = 21, alpha = 1, color = "#90d7d8", fill = "#90d7d8") +
+  geom_text_repel(data = wnt_group_avg, aes(label = Project), size = 3.8,
+                  box.padding = unit(0.8, 'lines'), show.legend = FALSE, max.overlaps = 500) +
+  geom_abline(slope = -1, intercept = 0, color = "#bed742", linewidth = 2, alpha = 0.5) +
+  geom_abline(slope = 1, intercept = 0, color = "#f58f98", linewidth = 2, alpha = 0.5) +
+  geom_vline(xintercept = 0, color = "#d3d7d4", linewidth = 0.5, alpha = 0.3) +
+  geom_hline(yintercept = 0, color = "#d3d7d4", linewidth = 0.5, alpha = 0.3) +
+  labs(x = 'Wnt/β-catenin pathway activation score (Mean)',
+       y = 'Wnt/β-catenin pathway inhibition score (Mean)') +
+  theme_bw() +
+  theme(
     text = element_text(color = "black", size = 16),
     axis.title = element_text(size = 16),
     axis.text = element_text(size = 16),
     plot.title = element_text(size = 16)
-  )  
+  )
 library(reshape2)
 wnt_group=melt(wnt_group)
 wnt_group$variable=ifelse(wnt_group$variable=="pos_score","Activation","Inhibition")
 colnames(wnt_group)=c("Project","Group","value")
-p = ggplot(wnt_group, aes(Project, value, fill = Group, color = Group)) +  
-  geom_boxplot(outlier.shape = 21, outlier.fill = 'black', outlier.size = 0.25, color = "black") +  
-  labs(x = " ", y = "Wnt/β-catenin pathway activation/inhibition score") +  
-  theme_bw() +  
-  theme(  
-    legend.position = "right",  
-    panel.grid.major.x = element_line(linewidth = 1),  
-    panel.grid.major.y = element_line(linewidth = 1),  
-    panel.grid.minor.x = element_line(linewidth = 0.8),  
-    panel.grid.minor.y = element_line(linewidth = 0.8),  
-    axis.line.x = element_line(colour = 'black', linewidth = 1.5),  
-    axis.line.y = element_line(colour = 'black', linewidth = 1),  
+p = ggplot(wnt_group, aes(Project, value, fill = Group, color = Group)) +
+  geom_boxplot(outlier.shape = 21, outlier.fill = 'black', outlier.size = 0.25, color = "black") +
+  labs(x = " ", y = "Wnt/β-catenin pathway activation/inhibition score") +
+  theme_bw() +
+  theme(
+    legend.position = "right",
+    panel.grid.major.x = element_line(linewidth = 1),
+    panel.grid.major.y = element_line(linewidth = 1),
+    panel.grid.minor.x = element_line(linewidth = 0.8),
+    panel.grid.minor.y = element_line(linewidth = 0.8),
+    axis.line.x = element_line(colour = 'black', linewidth = 1.5),
+    axis.line.y = element_line(colour = 'black', linewidth = 1),
     axis.text.x = element_text(angle = 80, hjust = 1, vjust = 1, colour = "black", size = 16),
     axis.text.y = element_text(colour = "black", size = 16),
     axis.title.y = element_text(angle = 90, colour = "black", size = 16),
     axis.title.x = element_text(colour = "black", size = 16)
-  ) +  
-  scale_fill_manual(values = c("#f58f98", "#90d7ec")) +  
-  stat_compare_means(aes(group = Group, label = ..p.signif..), method = "wilcox.test") 
+  ) +
+  scale_fill_manual(values = c("#f58f98", "#90d7ec")) +
+  stat_compare_means(aes(group = Group, label = ..p.signif..), method = "wilcox.test")
 p
 # ------------------------------------------------------------------------------
 # Calculation of WNT scores for GTEx
@@ -814,22 +814,22 @@ median_scores=aggregate(activity_score ~ primary_site, data = WNT_Score_tissue, 
 sorted_sites=median_scores$primary_site[order(median_scores$activity_score, decreasing = TRUE)]
 colors=colorRampPalette(c("#f58f98", "#90d7ec"))(length(sorted_sites))
 WNT_Score_tissue$primary_site=factor(WNT_Score_tissue$primary_site, levels = sorted_sites)
-p = ggplot(WNT_Score_tissue, aes(x = primary_site, y = activity_score, fill = primary_site)) +  
-  geom_boxplot(color = "black") +  
-  theme_bw() +  
-  theme(  
-    axis.text.x = element_text(angle = 80, hjust = 1, color = "black", size = 16),  
-    axis.text.y = element_text(color = "black", size = 16),  
-    axis.title = element_text(color = "black", size = 16),  
-    plot.title = element_text(color = "black", size = 16),  
-    legend.position = 'none'  
-  ) +  
-  scale_fill_manual(values = colors) +  
-  labs(  
-    y = "Wnt/β-catenin pathway activity score", #activation/inhibition 
-    x = ""  
-  ) +   
-  ggtitle("GTEx")  
+p = ggplot(WNT_Score_tissue, aes(x = primary_site, y = activity_score, fill = primary_site)) +
+  geom_boxplot(color = "black") +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 80, hjust = 1, color = "black", size = 16),
+    axis.text.y = element_text(color = "black", size = 16),
+    axis.title = element_text(color = "black", size = 16),
+    plot.title = element_text(color = "black", size = 16),
+    legend.position = 'none'
+  ) +
+  scale_fill_manual(values = colors) +
+  labs(
+    y = "Wnt/β-catenin pathway activity score", #activation/inhibition
+    x = ""
+  ) +
+  ggtitle("GTEx")
 p
 # ------------------------------------------------------------------------------
 # Validation of gene sets in GTEx
@@ -896,7 +896,7 @@ for (i in 1:length(vector)){
   exp=exp[rowSums(exp)>0,]
   group=pancancer_group_fs
   library(dplyr)
-  group = group %>%  
+  group = group %>%
     mutate(group = ntile(activity_score,2))
   group$group <- factor(group$group, levels =1:2, labels = c("L","H"))
   group$Tag=rownames(group)
@@ -914,8 +914,8 @@ for (i in 1:length(vector)){
   alldiff=alldiff[order(alldiff$logFC,decreasing = T),]
   id=alldiff$logFC
   names(id)=alldiff$gene_id
-  canonical_pathways=do.call(rbind, lapply(geneSets, function(gs) {  
-    data.frame(term = gs@setName, gene = gs@geneIds, stringsAsFactors = FALSE)  
+  canonical_pathways=do.call(rbind, lapply(geneSets, function(gs) {
+    data.frame(term = gs@setName, gene = gs@geneIds, stringsAsFactors = FALSE)
   }))
   canonical_pathways=canonical_pathways[canonical_pathways$gene != "", ]
   canonical_pathways$term=as.character(canonical_pathways$term)
@@ -939,29 +939,29 @@ fgsea_all=fgsea_all[,-1]
 fgsea_all=as.data.frame(t(fgsea_all))
 library(ComplexHeatmap)
 library(circlize)
-ha = rowAnnotation(Group = factor(c(rep("WPAGSs", 36), rep("WPIGSs", 27))),  
-                   col = list(Group = c(WPAGSs = "#f15b6c", WPIGSs = "#009ad6")),  
-                   show_annotation_name = FALSE)  
-fgsea_all_transposed = t(as.matrix(fgsea_all))  
+ha = rowAnnotation(Group = factor(c(rep("WPAGSs", 36), rep("WPIGSs", 27))),
+                   col = list(Group = c(WPAGSs = "#f15b6c", WPIGSs = "#009ad6")),
+                   show_annotation_name = FALSE)
+fgsea_all_transposed = t(as.matrix(fgsea_all))
 Heatmap(fgsea_all_transposed,
         name = "NES",
-        col = colorRamp2(c(min(fgsea_all), 0, max(fgsea_all)),   
-                         c("#90d7ec", "white", "#f58f98")),  
+        col = colorRamp2(c(min(fgsea_all), 0, max(fgsea_all)),
+                         c("#90d7ec", "white", "#f58f98")),
         left_annotation = ha,
         show_row_names = F,
         show_column_names = T,
-        cluster_rows = TRUE,   
-        cluster_columns = TRUE,  
-        row_names_gp = gpar(fontsize = 10),  
-        column_names_gp = gpar(fontsize = 10),  
+        cluster_rows = TRUE,
+        cluster_columns = TRUE,
+        row_names_gp = gpar(fontsize = 10),
+        column_names_gp = gpar(fontsize = 10),
         column_names_rot = 60,
-        heatmap_legend_param = list(title = "NES",   
-                                    title_gp = gpar(fontsize = 12),   
-                                    labels_gp = gpar(fontsize = 12),  
-                                    annotation_name_gp = gpar(fontsize = 16)),  
+        heatmap_legend_param = list(title = "NES",
+                                    title_gp = gpar(fontsize = 12),
+                                    labels_gp = gpar(fontsize = 12),
+                                    annotation_name_gp = gpar(fontsize = 16)),
         rect_gp = gpar(col = "#77787b", lwd = 1)
 )
-grid.text(" ", x = 0.3, y = unit(1, "npc"), gp = gpar(fontsize = 12, fontface = "bold")) 
+grid.text(" ", x = 0.3, y = unit(1, "npc"), gp = gpar(fontsize = 12, fontface = "bold"))
 # ------------------------------------------------------------------------------
 # Calculation of WNT scores for the CCLE
 # ------------------------------------------------------------------------------
@@ -1000,22 +1000,22 @@ median_scores=aggregate(neg_score ~ tissue, data = CCLE_WNT_score, FUN = median)
 sorted_sites=median_scores$tissue[order(median_scores$neg_score, decreasing = TRUE)]
 colors=colorRampPalette(c("#f58f98", "#90d7ec"))(length(sorted_sites))
 CCLE_WNT_score$tissue=factor(CCLE_WNT_score$tissue, levels = sorted_sites)
-p = ggplot(CCLE_WNT_score, aes(x = tissue, y = neg_score, fill = tissue)) +  
-  geom_boxplot(color = "black") +  
-  theme_bw() +  
-  theme(  
-    axis.text.x = element_text(angle = 80, hjust = 1, color = "black", size = 16),  
-    axis.text.y = element_text(color = "black", size = 16),  
-    axis.title = element_text(color = "black", size = 16),  
-    plot.title = element_text(color = "black", size = 16),  
-    legend.position = 'none'  
-  ) +  
-  scale_fill_manual(values = colors) +  
-  labs(  
-    y = "Wnt/β-catenin pathway inhibition score", #activation/inhibition 
-    x = ""  
-  ) +   
-  ggtitle("CCLE")  
+p = ggplot(CCLE_WNT_score, aes(x = tissue, y = neg_score, fill = tissue)) +
+  geom_boxplot(color = "black") +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 80, hjust = 1, color = "black", size = 16),
+    axis.text.y = element_text(color = "black", size = 16),
+    axis.title = element_text(color = "black", size = 16),
+    plot.title = element_text(color = "black", size = 16),
+    legend.position = 'none'
+  ) +
+  scale_fill_manual(values = colors) +
+  labs(
+    y = "Wnt/β-catenin pathway inhibition score", #activation/inhibition
+    x = ""
+  ) +
+  ggtitle("CCLE")
 p
 # ------------------------------------------------------------------------------
 # Validation of gene sets in CCLE
@@ -1039,7 +1039,7 @@ CCLE_WNT_score$tissue <- sapply(strsplit(CCLE_WNT_score$tissue, " "), function(x
 })
 ccle_g=as.data.frame(table(CCLE_WNT_score$tissue))
 vector=unique(CCLE_WNT_score$tissue)
-vector=vector[!vector %in% c("Small Intestine", "Salivary Gland", "Cervix")] 
+vector=vector[!vector %in% c("Small Intestine", "Salivary Gland", "Cervix")]
 limma.one.sided = function(fit, lower = FALSE){
   se.coef=sqrt(fit$s2.post) * fit$stdev.unscaled
   df.total=fit$df.prior + fit$df.residual
@@ -1087,7 +1087,7 @@ for (i in 1:length(vector)){
   exp=exp[rowSums(exp)>0,]
   group=pancancer_group_fs
   library(dplyr)
-  group = group %>%  
+  group = group %>%
     mutate(group = ntile(activity_score,2))
   group$group <- factor(group$group, levels =1:2, labels = c("L","H"))
   group$Tag=rownames(group)
@@ -1104,8 +1104,8 @@ for (i in 1:length(vector)){
   alldiff=alldiff[order(alldiff$logFC,decreasing = T),]
   id=alldiff$logFC
   names(id)=alldiff$gene_id
-  canonical_pathways=do.call(rbind, lapply(geneSets, function(gs) {  
-    data.frame(term = gs@setName, gene = gs@geneIds, stringsAsFactors = FALSE)  
+  canonical_pathways=do.call(rbind, lapply(geneSets, function(gs) {
+    data.frame(term = gs@setName, gene = gs@geneIds, stringsAsFactors = FALSE)
   }))
   canonical_pathways=canonical_pathways[canonical_pathways$gene != "", ]
   canonical_pathways$term=as.character(canonical_pathways$term)
@@ -1129,26 +1129,26 @@ fgsea_all=fgsea_all[,-1]
 fgsea_all=as.data.frame(t(fgsea_all))
 library(ComplexHeatmap)
 library(circlize)
-ha = rowAnnotation(Group = factor(c(rep("WPAGSs", 36), rep("WPIGSs", 27))),  
-                   col = list(Group = c(WPAGSs = "#f15b6c", WPIGSs = "#009ad6")),  
-                   show_annotation_name = FALSE)  
-fgsea_all_transposed = t(as.matrix(fgsea_all))  
+ha = rowAnnotation(Group = factor(c(rep("WPAGSs", 36), rep("WPIGSs", 27))),
+                   col = list(Group = c(WPAGSs = "#f15b6c", WPIGSs = "#009ad6")),
+                   show_annotation_name = FALSE)
+fgsea_all_transposed = t(as.matrix(fgsea_all))
 Heatmap(fgsea_all_transposed,
         name = "NES",
-        col = colorRamp2(c(min(fgsea_all), 0, max(fgsea_all)),   
-                         c("#90d7ec", "white", "#f58f98")),  
+        col = colorRamp2(c(min(fgsea_all), 0, max(fgsea_all)),
+                         c("#90d7ec", "white", "#f58f98")),
         left_annotation = ha,
         show_row_names = F,
         show_column_names = T,
-        cluster_rows = TRUE,   
-        cluster_columns = TRUE,  
-        row_names_gp = gpar(fontsize = 10),  
-        column_names_gp = gpar(fontsize = 10),  
+        cluster_rows = TRUE,
+        cluster_columns = TRUE,
+        row_names_gp = gpar(fontsize = 10),
+        column_names_gp = gpar(fontsize = 10),
         column_names_rot = 60,
-        heatmap_legend_param = list(title = "NES",   
-                                    title_gp = gpar(fontsize = 12),   
-                                    labels_gp = gpar(fontsize = 12),  
-                                    annotation_name_gp = gpar(fontsize = 16)),  
+        heatmap_legend_param = list(title = "NES",
+                                    title_gp = gpar(fontsize = 12),
+                                    labels_gp = gpar(fontsize = 12),
+                                    annotation_name_gp = gpar(fontsize = 16)),
         rect_gp = gpar(col = "#77787b", lwd = 1)
 )
 grid.text(" ", x = 0.3, y = unit(1, "npc"), gp = gpar(fontsize = 12, fontface = "bold"))
@@ -1188,7 +1188,7 @@ process_text=function(x) {
   x = gsub(" ", "_", x)
   x = sapply(x, function(s) {
     if (nchar(s) > 0) {
-      paste0(toupper(substring(s, 1, 1)), 
+      paste0(toupper(substring(s, 1, 1)),
              substring(s, 2))
     } else {
       s
@@ -1205,22 +1205,22 @@ median_scores=aggregate(neg_score ~ tissue, data = GDSC1_WNT_score, FUN = median
 sorted_sites=median_scores$tissue[order(median_scores$neg_score, decreasing = TRUE)]
 colors=colorRampPalette(c("#f58f98", "#90d7ec"))(length(sorted_sites))
 GDSC1_WNT_score$tissue=factor(GDSC1_WNT_score$tissue, levels = sorted_sites)
-p = ggplot(GDSC1_WNT_score, aes(x = tissue, y = neg_score, fill = tissue)) +  
-  geom_boxplot(color = "black") +  
-  theme_bw() +  
-  theme(  
-    axis.text.x = element_text(angle = 80, hjust = 1, color = "black", size = 16),  
-    axis.text.y = element_text(color = "black", size = 16),  
-    axis.title = element_text(color = "black", size = 16),  
-    plot.title = element_text(color = "black", size = 16),  
-    legend.position = 'none'  
-  ) +  
-  scale_fill_manual(values = colors) +  
-  labs(  
-    y = "Wnt/β-catenin pathway inhibition score", #activation/inhibition 
-    x = ""  
-  ) +   
-  ggtitle("GDSC Version1")  
+p = ggplot(GDSC1_WNT_score, aes(x = tissue, y = neg_score, fill = tissue)) +
+  geom_boxplot(color = "black") +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 80, hjust = 1, color = "black", size = 16),
+    axis.text.y = element_text(color = "black", size = 16),
+    axis.title = element_text(color = "black", size = 16),
+    plot.title = element_text(color = "black", size = 16),
+    legend.position = 'none'
+  ) +
+  scale_fill_manual(values = colors) +
+  labs(
+    y = "Wnt/β-catenin pathway inhibition score", #activation/inhibition
+    x = ""
+  ) +
+  ggtitle("GDSC Version1")
 p
 # ------------------------------------------------------------------------------
 # Validation of gene sets in GDSC version1
@@ -1241,7 +1241,7 @@ process_text=function(x) {
   x = gsub(" ", "_", x)
   x = sapply(x, function(s) {
     if (nchar(s) > 0) {
-      paste0(toupper(substring(s, 1, 1)), 
+      paste0(toupper(substring(s, 1, 1)),
              substring(s, 2))
     } else {
       s
@@ -1306,7 +1306,7 @@ for (i in 1:length(vector)){
   exp=exp[rowSums(exp)>0,]
   group=pancancer_group_fs
   library(dplyr)
-  group = group %>%  
+  group = group %>%
     mutate(group = ntile(activity_score,2))
   group$group = factor(group$group, levels =1:2, labels = c("L","H"))
   group$Tag=rownames(group)
@@ -1324,8 +1324,8 @@ for (i in 1:length(vector)){
   alldiff=alldiff[order(alldiff$logFC,decreasing = T),]
   id=alldiff$logFC
   names(id)=alldiff$gene_id
-  canonical_pathways=do.call(rbind, lapply(geneSets, function(gs) {  
-    data.frame(term = gs@setName, gene = gs@geneIds, stringsAsFactors = FALSE)  
+  canonical_pathways=do.call(rbind, lapply(geneSets, function(gs) {
+    data.frame(term = gs@setName, gene = gs@geneIds, stringsAsFactors = FALSE)
   }))
   canonical_pathways=canonical_pathways[canonical_pathways$gene != "", ]
   canonical_pathways$term=as.character(canonical_pathways$term)
@@ -1349,26 +1349,26 @@ fgsea_all=fgsea_all[,-1]
 fgsea_all=as.data.frame(t(fgsea_all))
 library(ComplexHeatmap)
 library(circlize)
-ha = rowAnnotation(Group = factor(c(rep("WPAGSs", 36), rep("WPIGSs", 27))),  
-                   col = list(Group = c(WPAGSs = "#f15b6c", WPIGSs = "#009ad6")),  
-                   show_annotation_name = FALSE)  
-fgsea_all_transposed = t(as.matrix(fgsea_all))  
+ha = rowAnnotation(Group = factor(c(rep("WPAGSs", 36), rep("WPIGSs", 27))),
+                   col = list(Group = c(WPAGSs = "#f15b6c", WPIGSs = "#009ad6")),
+                   show_annotation_name = FALSE)
+fgsea_all_transposed = t(as.matrix(fgsea_all))
 Heatmap(fgsea_all_transposed,
         name = "NES",
-        col = colorRamp2(c(min(fgsea_all), 0, max(fgsea_all)),   
-                         c("#90d7ec", "white", "#f58f98")),  
+        col = colorRamp2(c(min(fgsea_all), 0, max(fgsea_all)),
+                         c("#90d7ec", "white", "#f58f98")),
         left_annotation = ha,
         show_row_names = F,
         show_column_names = T,
-        cluster_rows = TRUE,   
-        cluster_columns = TRUE,  
-        row_names_gp = gpar(fontsize = 10),  
-        column_names_gp = gpar(fontsize = 10),  
+        cluster_rows = TRUE,
+        cluster_columns = TRUE,
+        row_names_gp = gpar(fontsize = 10),
+        column_names_gp = gpar(fontsize = 10),
         column_names_rot = 60,
-        heatmap_legend_param = list(title = "NES",   
-                                    title_gp = gpar(fontsize = 12),   
-                                    labels_gp = gpar(fontsize = 12),  
-                                    annotation_name_gp = gpar(fontsize = 16)),  
+        heatmap_legend_param = list(title = "NES",
+                                    title_gp = gpar(fontsize = 12),
+                                    labels_gp = gpar(fontsize = 12),
+                                    annotation_name_gp = gpar(fontsize = 16)),
         rect_gp = gpar(col = "#77787b", lwd = 1)
 )
 grid.text(" ", x = 0.3, y = unit(1, "npc"), gp = gpar(fontsize = 12, fontface = "bold"))
@@ -1407,7 +1407,7 @@ process_text=function(x) {
   x <- gsub(" ", "_", x)
   x <- sapply(x, function(s) {
     if (nchar(s) > 0) {
-      paste0(toupper(substring(s, 1, 1)), 
+      paste0(toupper(substring(s, 1, 1)),
              substring(s, 2))
     } else {
       s
@@ -1424,22 +1424,22 @@ median_scores=aggregate(neg_score ~ tissue, data = GDSC2_WNT_score, FUN = median
 sorted_sites=median_scores$tissue[order(median_scores$neg_score, decreasing = TRUE)]
 colors=colorRampPalette(c("#f58f98", "#90d7ec"))(length(sorted_sites))
 GDSC2_WNT_score$tissue=factor(GDSC2_WNT_score$tissue, levels = sorted_sites)
-p = ggplot(GDSC2_WNT_score, aes(x = tissue, y = neg_score, fill = tissue)) +  
-  geom_boxplot(color = "black") +  
-  theme_bw() +  
-  theme(  
-    axis.text.x = element_text(angle = 80, hjust = 1, color = "black", size = 16),  
-    axis.text.y = element_text(color = "black", size = 16),  
-    axis.title = element_text(color = "black", size = 16),  
-    plot.title = element_text(color = "black", size = 16),  
-    legend.position = 'none'  
-  ) +  
-  scale_fill_manual(values = colors) +  
-  labs(  
-    y = "Wnt/β-catenin pathway inhibition score", #activation/inhibition 
-    x = ""  
-  ) +   
-  ggtitle("GDSC Version2")  
+p = ggplot(GDSC2_WNT_score, aes(x = tissue, y = neg_score, fill = tissue)) +
+  geom_boxplot(color = "black") +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 80, hjust = 1, color = "black", size = 16),
+    axis.text.y = element_text(color = "black", size = 16),
+    axis.title = element_text(color = "black", size = 16),
+    plot.title = element_text(color = "black", size = 16),
+    legend.position = 'none'
+  ) +
+  scale_fill_manual(values = colors) +
+  labs(
+    y = "Wnt/β-catenin pathway inhibition score", #activation/inhibition
+    x = ""
+  ) +
+  ggtitle("GDSC Version2")
 p
 # ------------------------------------------------------------------------------
 # Validation of gene sets in GDSC version2
@@ -1460,7 +1460,7 @@ process_text=function(x) {
   x = gsub(" ", "_", x)
   x = sapply(x, function(s) {
     if (nchar(s) > 0) {
-      paste0(toupper(substring(s, 1, 1)), 
+      paste0(toupper(substring(s, 1, 1)),
              substring(s, 2))
     } else {
       s
@@ -1525,7 +1525,7 @@ for (i in 1:length(vector)){
   exp=exp[rowSums(exp)>0,]
   group=pancancer_group_fs
   library(dplyr)
-  group = group %>%  
+  group = group %>%
     mutate(group = ntile(activity_score,2))
   group$group = factor(group$group, levels =1:2, labels = c("L","H"))
   group$Tag=rownames(group)
@@ -1543,8 +1543,8 @@ for (i in 1:length(vector)){
   alldiff=alldiff[order(alldiff$logFC,decreasing = T),]
   id=alldiff$logFC
   names(id)=alldiff$gene_id
-  canonical_pathways=do.call(rbind, lapply(geneSets, function(gs) {  
-    data.frame(term = gs@setName, gene = gs@geneIds, stringsAsFactors = FALSE)  
+  canonical_pathways=do.call(rbind, lapply(geneSets, function(gs) {
+    data.frame(term = gs@setName, gene = gs@geneIds, stringsAsFactors = FALSE)
   }))
   canonical_pathways=canonical_pathways[canonical_pathways$gene != "", ]
   canonical_pathways$term=as.character(canonical_pathways$term)
@@ -1568,26 +1568,26 @@ fgsea_all=fgsea_all[,-1]
 fgsea_all=as.data.frame(t(fgsea_all))
 library(ComplexHeatmap)
 library(circlize)
-ha = rowAnnotation(Group = factor(c(rep("WPAGSs", 36), rep("WPIGSs", 27))),  
-                   col = list(Group = c(WPAGSs = "#f15b6c", WPIGSs = "#009ad6")),  
-                   show_annotation_name = FALSE)  
-fgsea_all_transposed = t(as.matrix(fgsea_all))  
+ha = rowAnnotation(Group = factor(c(rep("WPAGSs", 36), rep("WPIGSs", 27))),
+                   col = list(Group = c(WPAGSs = "#f15b6c", WPIGSs = "#009ad6")),
+                   show_annotation_name = FALSE)
+fgsea_all_transposed = t(as.matrix(fgsea_all))
 Heatmap(fgsea_all_transposed,
         name = "NES",
-        col = colorRamp2(c(min(fgsea_all), 0, max(fgsea_all)),   
-                         c("#90d7ec", "white", "#f58f98")),  
+        col = colorRamp2(c(min(fgsea_all), 0, max(fgsea_all)),
+                         c("#90d7ec", "white", "#f58f98")),
         left_annotation = ha,
         show_row_names = F,
         show_column_names = T,
-        cluster_rows = TRUE,   
-        cluster_columns = TRUE,  
-        row_names_gp = gpar(fontsize = 10),  
-        column_names_gp = gpar(fontsize = 10),  
+        cluster_rows = TRUE,
+        cluster_columns = TRUE,
+        row_names_gp = gpar(fontsize = 10),
+        column_names_gp = gpar(fontsize = 10),
         column_names_rot = 60,
-        heatmap_legend_param = list(title = "NES",   
-                                    title_gp = gpar(fontsize = 12),   
-                                    labels_gp = gpar(fontsize = 12),  
-                                    annotation_name_gp = gpar(fontsize = 16)),  
+        heatmap_legend_param = list(title = "NES",
+                                    title_gp = gpar(fontsize = 12),
+                                    labels_gp = gpar(fontsize = 12),
+                                    annotation_name_gp = gpar(fontsize = 16)),
         rect_gp = gpar(col = "#77787b", lwd = 1)
 )
 grid.text(" ", x = 0.3, y = unit(1, "npc"), gp = gpar(fontsize = 12, fontface = "bold"))
@@ -1628,22 +1628,22 @@ median_scores=aggregate(neg_score ~ tissue, data = CTRP_WNT_score, FUN = median)
 sorted_sites=median_scores$tissue[order(median_scores$neg_score, decreasing = TRUE)]
 colors=colorRampPalette(c("#f58f98", "#90d7ec"))(length(sorted_sites))
 CTRP_WNT_score$tissue=factor(CTRP_WNT_score$tissue, levels = sorted_sites)
-p = ggplot(CTRP_WNT_score, aes(x = tissue, y = neg_score, fill = tissue)) +  
-  geom_boxplot(color = "black") +  
-  theme_bw() +  
-  theme(  
-    axis.text.x = element_text(angle = 80, hjust = 1, color = "black", size = 16),  
-    axis.text.y = element_text(color = "black", size = 16),  
-    axis.title = element_text(color = "black", size = 16),  
-    plot.title = element_text(color = "black", size = 16),  
-    legend.position = 'none'  
-  ) +  
-  scale_fill_manual(values = colors) +  
-  labs(  
-    y = "Wnt/β-catenin pathway inhibition score", #activation/inhibition 
-    x = ""  
-  ) +   
-  ggtitle("CTRP")  
+p = ggplot(CTRP_WNT_score, aes(x = tissue, y = neg_score, fill = tissue)) +
+  geom_boxplot(color = "black") +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 80, hjust = 1, color = "black", size = 16),
+    axis.text.y = element_text(color = "black", size = 16),
+    axis.title = element_text(color = "black", size = 16),
+    plot.title = element_text(color = "black", size = 16),
+    legend.position = 'none'
+  ) +
+  scale_fill_manual(values = colors) +
+  labs(
+    y = "Wnt/β-catenin pathway inhibition score", #activation/inhibition
+    x = ""
+  ) +
+  ggtitle("CTRP")
 p
 # ------------------------------------------------------------------------------
 # Validation of gene sets in CTRP
@@ -1660,8 +1660,8 @@ group=na.omit(group[,c(1,4)])
 CTRP_WNT_score=merge(CTRP_WNT_score,group,by.x="row.names",by.y="cvcl cell line name")
 colnames(CTRP_WNT_score)[5]="tissue"
 CTRP_WNT_score=CTRP_WNT_score[CTRP_WNT_score$tissue!="NA",]
-tissue_df=CTRP_WNT_score[, c("Row.names", "tissue")]  
-agg_df=aggregate(. ~ Row.names, data = CTRP_WNT_score[, !(names(CTRP_WNT_score) %in% "tissue")], FUN = mean)  
+tissue_df=CTRP_WNT_score[, c("Row.names", "tissue")]
+agg_df=aggregate(. ~ Row.names, data = CTRP_WNT_score[, !(names(CTRP_WNT_score) %in% "tissue")], FUN = mean)
 tissue_unique=unique(tissue_df)
 CTRP_WNT_score=merge(agg_df, tissue_unique, by = "Row.names", all.x = TRUE)
 number=as.data.frame(table(CTRP_WNT_score$tissue))
@@ -1717,7 +1717,7 @@ for (i in 1:length(vector)){
   exp=exp[rowSums(exp)>0,]
   group=pancancer_group_fs
   library(dplyr)
-  group = group %>%  
+  group = group %>%
     mutate(group = ntile(activity_score,2))
   group$group <- factor(group$group, levels =1:2, labels = c("L","H"))
   group$Tag=rownames(group)
@@ -1735,8 +1735,8 @@ for (i in 1:length(vector)){
   alldiff=alldiff[order(alldiff$logFC,decreasing = T),]
   id=alldiff$logFC
   names(id)=alldiff$gene_id
-  canonical_pathways=do.call(rbind, lapply(geneSets, function(gs) {  
-    data.frame(term = gs@setName, gene = gs@geneIds, stringsAsFactors = FALSE)  
+  canonical_pathways=do.call(rbind, lapply(geneSets, function(gs) {
+    data.frame(term = gs@setName, gene = gs@geneIds, stringsAsFactors = FALSE)
   }))
   canonical_pathways=canonical_pathways[canonical_pathways$gene != "", ]
   canonical_pathways$term=as.character(canonical_pathways$term)
@@ -1760,26 +1760,26 @@ fgsea_all=fgsea_all[,-1]
 fgsea_all=as.data.frame(t(fgsea_all))
 library(ComplexHeatmap)
 library(circlize)
-ha = rowAnnotation(Group = factor(c(rep("WPAGSs", 36), rep("WPIGSs", 27))),  
-                   col = list(Group = c(WPAGSs = "#f15b6c", WPIGSs = "#009ad6")),  
-                   show_annotation_name = FALSE)  
-fgsea_all_transposed = t(as.matrix(fgsea_all))  
+ha = rowAnnotation(Group = factor(c(rep("WPAGSs", 36), rep("WPIGSs", 27))),
+                   col = list(Group = c(WPAGSs = "#f15b6c", WPIGSs = "#009ad6")),
+                   show_annotation_name = FALSE)
+fgsea_all_transposed = t(as.matrix(fgsea_all))
 Heatmap(fgsea_all_transposed,
         name = "NES",
-        col = colorRamp2(c(min(fgsea_all), 0, max(fgsea_all)),   
-                         c("#90d7ec", "white", "#f58f98")),  
+        col = colorRamp2(c(min(fgsea_all), 0, max(fgsea_all)),
+                         c("#90d7ec", "white", "#f58f98")),
         left_annotation = ha,
         show_row_names = F,
         show_column_names = T,
-        cluster_rows = TRUE,   
-        cluster_columns = TRUE,  
-        row_names_gp = gpar(fontsize = 10),  
-        column_names_gp = gpar(fontsize = 10),  
+        cluster_rows = TRUE,
+        cluster_columns = TRUE,
+        row_names_gp = gpar(fontsize = 10),
+        column_names_gp = gpar(fontsize = 10),
         column_names_rot = 60,
-        heatmap_legend_param = list(title = "NES",   
-                                    title_gp = gpar(fontsize = 12),   
-                                    labels_gp = gpar(fontsize = 12),  
-                                    annotation_name_gp = gpar(fontsize = 16)),  
+        heatmap_legend_param = list(title = "NES",
+                                    title_gp = gpar(fontsize = 12),
+                                    labels_gp = gpar(fontsize = 12),
+                                    annotation_name_gp = gpar(fontsize = 16)),
         rect_gp = gpar(col = "#77787b", lwd = 1)
 )
 grid.text(" ", x = 0.3, y = unit(1, "npc"), gp = gpar(fontsize = 12, fontface = "bold"))

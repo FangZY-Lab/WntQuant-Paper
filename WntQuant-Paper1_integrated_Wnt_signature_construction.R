@@ -38,22 +38,22 @@ for (i in 1:length(list)) {
   colnames(Group) = c("samples","group")
   df = merge(PC12,Group,by="samples")
   color=c("#f58f98","#90d7ec")
-  p1 = ggplot(data = df, aes(x = PC1, y = PC2, color = group, shape = group)) +  
-    ggtitle(paste0(list[i])) +  
-    theme_bw() +  
-    geom_point(size = 3) +  
-    theme(panel.grid = element_blank()) +  
-    geom_vline(xintercept = 0, linetype = 'dotdash', size = 1, color = 'grey') +  
-    geom_hline(yintercept = 0, linetype = 'dotdash', size = 1, color = 'grey') +  
-    labs(x = paste0("PC1 (", pc[1], "%)"), y = paste0("PC2 (", pc[2], "%)")) +  
-    scale_color_manual(values = color) +  
-    theme(axis.title.x = element_text(size = 16,color = "black"),  
-          axis.title.y = element_text(size = 16, angle = 90,color = "black"),  
-          axis.text.y = element_text(size = 16,color = "black"),  
-          axis.text.x = element_text(size = 16,color = "black"),  
-          plot.title = element_text(size = 20,color = "black"),  
-          legend.title = element_text(size = 14,color = "black"),  
-          legend.text = element_text(size = 12,color = "black")) 
+  p1 = ggplot(data = df, aes(x = PC1, y = PC2, color = group, shape = group)) +
+    ggtitle(paste0(list[i])) +
+    theme_bw() +
+    geom_point(size = 3) +
+    theme(panel.grid = element_blank()) +
+    geom_vline(xintercept = 0, linetype = 'dotdash', size = 1, color = 'grey') +
+    geom_hline(yintercept = 0, linetype = 'dotdash', size = 1, color = 'grey') +
+    labs(x = paste0("PC1 (", pc[1], "%)"), y = paste0("PC2 (", pc[2], "%)")) +
+    scale_color_manual(values = color) +
+    theme(axis.title.x = element_text(size = 16,color = "black"),
+          axis.title.y = element_text(size = 16, angle = 90,color = "black"),
+          axis.text.y = element_text(size = 16,color = "black"),
+          axis.text.x = element_text(size = 16,color = "black"),
+          plot.title = element_text(size = 20,color = "black"),
+          legend.title = element_text(size = 14,color = "black"),
+          legend.text = element_text(size = 12,color = "black"))
   library(plyr)
   cluster_border = ddply(df, 'group', function(df) df[chull(df[[2]], df[[3]]), ])
   p=p1 + geom_polygon(data = cluster_border, aes(fill = group), alpha = 0.2, show.legend = FALSE) +
@@ -102,7 +102,7 @@ dn.denovo_genesets=Get_denovo_genesets(file_paths="input",
                                        export_file=F)
 WNT_denovo=cbind(up.denovo_genesets,dn.denovo_genesets)
 WNT_denovo = rbind(colnames(WNT_denovo), WNT_denovo)
-colnames(WNT_denovo) = paste0("WPRGS", 1:ncol(WNT_denovo), "_denovo")  
+colnames(WNT_denovo) = paste0("WPRGS", 1:ncol(WNT_denovo), "_denovo")
 WNT_knowledge = read.delim("WNT_knowledge.txt",header=TRUE,sep='\t',check.names=F)
 if(length(rownames(WNT_knowledge))>=length(rownames(WNT_denovo))){
   empty = data.frame(matrix("", nrow = (length(rownames(WNT_knowledge))-length(rownames(WNT_denovo))), ncol = length(unique(gsub("_.*", "",vector)))*2))
@@ -120,7 +120,7 @@ if(length(rownames(WNT_knowledge))>=length(rownames(WNT_denovo))){
 # ------------------------------------------------------------------------------
 files=c("WNT_enrichr1.gmt","WNT_enrichr2.gmt","WNT_enrichr3.gmt","WNT_enrichr4.gmt")
 combined_list=list()
-for (file in files) {  
+for (file in files) {
   gmt_lines=readLines(file)
   gene_sets=strsplit(gmt_lines, "\t")
   names(gene_sets)=sapply(gene_sets, function(x) paste0(x[1],"(",x[2],")","_enrichr"))
@@ -129,12 +129,12 @@ for (file in files) {
     gene_sets[[i]]=gene_sets[[i]][-2]
   }
   combined_list=append(combined_list, gene_sets)
-}  
+}
 combined_list_names=as.data.frame(table(names(combined_list)))
 combined_list=combined_list[combined_list_names$Var1]
-for (i in 1:length(combined_list_names$Var1)) {  
-  var_name=paste("WPRGS", i+152, "_knowledge", sep = "")  
-  names(combined_list)[i]=var_name  
+for (i in 1:length(combined_list_names$Var1)) {
+  var_name=paste("WPRGS", i+152, "_knowledge", sep = "")
+  names(combined_list)[i]=var_name
 }
 all_genesets=apply(all_genesets,2,function(x) x[nchar(x)>=1])
 all_genesets=append(all_genesets, combined_list)
@@ -149,7 +149,7 @@ all_wnt_genesets=lapply(all_genesets, function(x) {
 all_wnt_genesets=as.data.frame(all_wnt_genesets)
 save(all_wnt_genesets,file="all_wnt_genesets.Rdata")
 write.gmt=function (gs.list, file) {
-  if (length(grep(".gmt$", file)) == 0) 
+  if (length(grep(".gmt$", file)) == 0)
     stop("write.gmt(): file should be .gmt")
   gs.names=names(gs.list)
   gs.desc=sapply(gs.list, function(x) x[1])
@@ -256,11 +256,11 @@ if(nrow(activation_geneset)>nrow(inhibition_geneset)){
 }
 wpags_wpigs=cbind(activation_geneset,inhibition_geneset)
 wpags_wpigs=rbind(colnames(wpags_wpigs),wpags_wpigs)
-colnames(wpags_wpigs)=c(paste0("WPAGS", 1:length(colnames(activation_geneset))), 
+colnames(wpags_wpigs)=c(paste0("WPAGS", 1:length(colnames(activation_geneset))),
                         paste0("WPIGS", 1:length(colnames(inhibition_geneset))))
 wpags_wpigs=apply(wpags_wpigs,2,function(x) x[nchar(x)>=1])
 write.gmt=function (gs.list, file) {
-  if (length(grep(".gmt$", file)) == 0) 
+  if (length(grep(".gmt$", file)) == 0)
     stop("write.gmt(): file should be .gmt")
   gs.names=names(gs.list)
   gs.desc=sapply(gs.list, function(x) x[1])
@@ -286,46 +286,46 @@ up.p.matrix$gene=rownames(up.p.matrix)
 dn.p.matrix=dn.p.matrix[1:150,length(colnames(dn.p.matrix)),drop=F]
 dn.p.matrix$gene=rownames(dn.p.matrix)
 library(ggplot2)
-ggplot(up.p.matrix, aes(x = reorder(gene, -p_score), y = p_score, fill = p_score)) +  
-  geom_bar(stat = "identity", color = "black", width = 0.7) + 
+ggplot(up.p.matrix, aes(x = reorder(gene, -p_score), y = p_score, fill = p_score)) +
+  geom_bar(stat = "identity", color = "black", width = 0.7) +
   labs(
     title = "",
     subtitle = "",
-    x = "Activation genes (top 150)",  
+    x = "Activation genes (top 150)",
     y = expression(-log[10](italic(p)[UP]) * "-combined")
   ) +
-  theme_minimal(base_size = 16) +  
+  theme_minimal(base_size = 16) +
   theme(
-    plot.title = element_text(hjust = 0.5, size = 16, color = "black"), 
-    axis.text = element_text(size = 16, color = "black"),  
-    axis.title = element_text(size = 30, color = "black"),  
-    panel.grid.major = element_line(size = 0.5, linetype = 'dotted', colour = "grey"),  
+    plot.title = element_text(hjust = 0.5, size = 16, color = "black"),
+    axis.text = element_text(size = 16, color = "black"),
+    axis.title = element_text(size = 30, color = "black"),
+    panel.grid.major = element_line(size = 0.5, linetype = 'dotted', colour = "grey"),
     panel.grid.minor = element_blank(),
     legend.title = element_blank(),
     legend.position = "none",
     axis.text.x = element_text(face = "italic", size = 16, angle = 0, hjust = 1, color = "black")
-  ) +  
+  ) +
   scale_fill_gradient(low = "#fffffb", high = "#f58f98") +
   coord_flip()
-ggplot(dn.p.matrix, aes(x = reorder(gene, -p_score), y = p_score, fill = p_score)) +  
-  geom_bar(stat = "identity", color = "black", width = 0.7) + 
+ggplot(dn.p.matrix, aes(x = reorder(gene, -p_score), y = p_score, fill = p_score)) +
+  geom_bar(stat = "identity", color = "black", width = 0.7) +
   labs(
     title = "",
     subtitle = "",
-    x = "Inhibition genes (top 150)",  
+    x = "Inhibition genes (top 150)",
     y = expression(-log[10](italic(p)[DN]) * "-combined")
   ) +
-  theme_minimal(base_size = 16) +  
+  theme_minimal(base_size = 16) +
   theme(
-    plot.title = element_text(hjust = 0.5, size = 16, color = "black"), 
-    axis.text = element_text(size = 16, color = "black"),  
-    axis.title = element_text(size = 30, color = "black"),  
-    panel.grid.major = element_line(size = 0.5, linetype = 'dotted', colour = "grey"),  
+    plot.title = element_text(hjust = 0.5, size = 16, color = "black"),
+    axis.text = element_text(size = 16, color = "black"),
+    axis.title = element_text(size = 30, color = "black"),
+    panel.grid.major = element_line(size = 0.5, linetype = 'dotted', colour = "grey"),
     panel.grid.minor = element_blank(),
     legend.title = element_blank(),
     legend.position = "none",
     axis.text.x = element_text(face = "italic", size = 16, angle = 0, hjust = 1, color = "black")
-  ) +  
+  ) +
   scale_fill_gradient(low = "#fffffb", high = "#90d7ec") +
   coord_flip()
 # ------------------------------------------------------------------------------
@@ -410,8 +410,8 @@ for (i in 1:length(vector)){
   alldiff=alldiff[order(alldiff$logFC,decreasing = T),]
   id=alldiff$logFC
   names(id)=alldiff$gene_id
-  canonical_pathways=do.call(rbind, lapply(geneSets, function(gs) {  
-    data.frame(term = gs@setName, gene = gs@geneIds, stringsAsFactors = FALSE)  
+  canonical_pathways=do.call(rbind, lapply(geneSets, function(gs) {
+    data.frame(term = gs@setName, gene = gs@geneIds, stringsAsFactors = FALSE)
   }))
   canonical_pathways=canonical_pathways[canonical_pathways$gene != "", ]
   canonical_pathways$term=as.character(canonical_pathways$term)
@@ -435,28 +435,28 @@ fgsea_all=fgsea_all[,-1]
 fgsea_all=as.data.frame(t(fgsea_all))
 library(ComplexHeatmap)
 library(circlize)
-ha = rowAnnotation(Group = factor(c(rep("WPAGSs", 36), rep("WPIGSs", 27))),  
-                   col = list(Group = c(WPAGSs = "#f15b6c", WPIGSs = "#009ad6")),  
-                   show_annotation_name = FALSE)  
-fgsea_all_transposed = t(as.matrix(fgsea_all))  
-Heatmap(fgsea_all_transposed, 
-        name = "NES",   
-        col = colorRamp2(c(min(fgsea_all), 0, max(fgsea_all)),   
-                         c("#90d7ec", "white", "#f58f98")),  
-        left_annotation = ha,  
+ha = rowAnnotation(Group = factor(c(rep("WPAGSs", 36), rep("WPIGSs", 27))),
+                   col = list(Group = c(WPAGSs = "#f15b6c", WPIGSs = "#009ad6")),
+                   show_annotation_name = FALSE)
+fgsea_all_transposed = t(as.matrix(fgsea_all))
+Heatmap(fgsea_all_transposed,
+        name = "NES",
+        col = colorRamp2(c(min(fgsea_all), 0, max(fgsea_all)),
+                         c("#90d7ec", "white", "#f58f98")),
+        left_annotation = ha,
         show_row_names = F,
-        show_column_names = T,  
-        cluster_rows = TRUE,   
-        cluster_columns = TRUE,  
-        row_names_gp = gpar(fontsize = 10),  
-        column_names_gp = gpar(fontsize = 10),  
+        show_column_names = T,
+        cluster_rows = TRUE,
+        cluster_columns = TRUE,
+        row_names_gp = gpar(fontsize = 10),
+        column_names_gp = gpar(fontsize = 10),
         column_names_rot = 60,
-        heatmap_legend_param = list(title = "NES",   
-                                    title_gp = gpar(fontsize = 12),   
-                                    labels_gp = gpar(fontsize = 12),  
-                                    annotation_name_gp = gpar(fontsize = 16)),  
-        rect_gp = gpar(col = "#77787b", lwd = 1) 
-) 
+        heatmap_legend_param = list(title = "NES",
+                                    title_gp = gpar(fontsize = 12),
+                                    labels_gp = gpar(fontsize = 12),
+                                    annotation_name_gp = gpar(fontsize = 16)),
+        rect_gp = gpar(col = "#77787b", lwd = 1)
+)
 # ------------------------------------------------------------------------------
 # fGSEA validation data
 # ------------------------------------------------------------------------------
@@ -554,8 +554,8 @@ for (i in 1:length(vector)){
   alldiff=alldiff[order(alldiff$logFC,decreasing = T),]
   id=alldiff$logFC
   names(id)=alldiff$gene_id
-  canonical_pathways=do.call(rbind, lapply(geneSets, function(gs) {  
-    data.frame(term = gs@setName, gene = gs@geneIds, stringsAsFactors = FALSE)  
+  canonical_pathways=do.call(rbind, lapply(geneSets, function(gs) {
+    data.frame(term = gs@setName, gene = gs@geneIds, stringsAsFactors = FALSE)
   }))
   canonical_pathways=canonical_pathways[canonical_pathways$gene != "", ]
   canonical_pathways$term=as.character(canonical_pathways$term)
@@ -579,28 +579,28 @@ fgsea_all=fgsea_all[,-1]
 fgsea_all=as.data.frame(t(fgsea_all))
 library(ComplexHeatmap)
 library(circlize)
-ha = rowAnnotation(Group = factor(c(rep("WPAGSs", 36), rep("WPIGSs", 27))),  
-                   col = list(Group = c(WPAGSs = "#f15b6c", WPIGSs = "#009ad6")),  
-                   show_annotation_name = FALSE)  
-fgsea_all_transposed = t(as.matrix(fgsea_all))  
-Heatmap(fgsea_all_transposed, 
-        name = "NES",   
-        col = colorRamp2(c(min(fgsea_all), 0, max(fgsea_all)),   
-                         c("#90d7ec", "white", "#f58f98")),  
-        left_annotation = ha, 
-        show_row_names = F,  
+ha = rowAnnotation(Group = factor(c(rep("WPAGSs", 36), rep("WPIGSs", 27))),
+                   col = list(Group = c(WPAGSs = "#f15b6c", WPIGSs = "#009ad6")),
+                   show_annotation_name = FALSE)
+fgsea_all_transposed = t(as.matrix(fgsea_all))
+Heatmap(fgsea_all_transposed,
+        name = "NES",
+        col = colorRamp2(c(min(fgsea_all), 0, max(fgsea_all)),
+                         c("#90d7ec", "white", "#f58f98")),
+        left_annotation = ha,
+        show_row_names = F,
         show_column_names = T,
-        cluster_rows = TRUE,   
-        cluster_columns = TRUE,  
-        row_names_gp = gpar(fontsize = 10),  
-        column_names_gp = gpar(fontsize = 10),  
-        column_names_rot = 60, 
-        heatmap_legend_param = list(title = "NES",   
-                                    title_gp = gpar(fontsize = 12),   
-                                    labels_gp = gpar(fontsize = 12),  
-                                    annotation_name_gp = gpar(fontsize = 16)),  
-        rect_gp = gpar(col = "#77787b", lwd = 1) 
-) 
+        cluster_rows = TRUE,
+        cluster_columns = TRUE,
+        row_names_gp = gpar(fontsize = 10),
+        column_names_gp = gpar(fontsize = 10),
+        column_names_rot = 60,
+        heatmap_legend_param = list(title = "NES",
+                                    title_gp = gpar(fontsize = 12),
+                                    labels_gp = gpar(fontsize = 12),
+                                    annotation_name_gp = gpar(fontsize = 16)),
+        rect_gp = gpar(col = "#77787b", lwd = 1)
+)
 # ------------------------------------------------------------------------------
 # Training dataset validation
 # ------------------------------------------------------------------------------
@@ -680,8 +680,8 @@ p <- ggplot(drawed_data, aes(fill=Group, y=activity_score, x=ID)) +
         legend.text = element_text(colour = "black", size = 16),
         legend.title = element_text(colour = "black", size = 16),
         plot.title = element_text(colour = "black", size = 16)) +
-  stat_summary(fun.data = 'mean_se', 
-               geom = "errorbar", 
+  stat_summary(fun.data = 'mean_se',
+               geom = "errorbar",
                colour = "black",
                width = 0.3,
                position=position_dodge(0.7)) +
@@ -784,8 +784,8 @@ p <- ggplot(drawed_data, aes(fill=Group, y=activity_score, x=ID)) +
         legend.text = element_text(colour = "black", size = 16),
         legend.title = element_text(colour = "black", size = 16),
         plot.title = element_text(colour = "black", size = 16)) +
-  stat_summary(fun.data = 'mean_se', 
-               geom = "errorbar", 
+  stat_summary(fun.data = 'mean_se',
+               geom = "errorbar",
                colour = "black",
                width = 0.3,
                position=position_dodge(0.7)) +
@@ -793,7 +793,7 @@ p <- ggplot(drawed_data, aes(fill=Group, y=activity_score, x=ID)) +
   theme(axis.text.x = element_text(angle = 0, hjust = 1)) +
   stat_compare_means(aes(group = Group, label = ..p.signif..), method="t.test") +
   ggtitle("Testing datasets")+
-  coord_flip() 
+  coord_flip()
 p
 # ------------------------------------------------------------------------------
 # PPI network
@@ -805,7 +805,7 @@ library(clusterProfiler)
 activation_inhibition_geneset=read.gmt("wpags_wpigs.gmt")
 colnames(activation_inhibition_geneset)=c("group","gene")
 activation_inhibition_geneset=activation_inhibition_geneset[,c("gene","group")]
-activation_inhibition_geneset$group = substr(activation_inhibition_geneset$group, 1, 5)  
+activation_inhibition_geneset$group = substr(activation_inhibition_geneset$group, 1, 5)
 activation_inhibition_geneset = unique(activation_inhibition_geneset)
 library(tidyverse)
 library(STRINGdb)
@@ -814,13 +814,13 @@ string_db=STRINGdb$new( version="12.0",
                         score_threshold=600,
                         input_directory="input")
 data_frame=data.frame(gene = activation_inhibition_geneset$gene)
-dat_map=string_db$map(my_data_frame=data_frame, 
+dat_map=string_db$map(my_data_frame=data_frame,
                       my_data_frame_id_col_names="gene",
                       removeUnmappedRows=TRUE)
-hits=dat_map$STRING_id 
+hits=dat_map$STRING_id
 dat_link=string_db$get_interactions(hits)
 dat_link$from=dat_map[match(dat_link$from,dat_map$STRING_id),'gene']
-dat_link$to=dat_map[match(dat_link$to,dat_map$STRING_id),'gene'] 
+dat_link$to=dat_map[match(dat_link$to,dat_map$STRING_id),'gene']
 colnames(dat_link)=c('node1','node2','combined_score')
 dat_link=dat_link %>% distinct(node1, node2, .keep_all = T)
 dat_link=dat_link[dat_link$node1%in%activation_inhibition_geneset$gene,]
@@ -908,8 +908,8 @@ for(i in 1:length(fs)){
     p_data_all=rbind(p_data_all,p_data)
   }
 }
-p_data_all$pstar=ifelse(p_data_all$p > 0.05, "", 
-                        ifelse(p_data_all$p <= 0.05 & p_data_all$p > 0.01, "*", 
+p_data_all$pstar=ifelse(p_data_all$p > 0.05, "",
+                        ifelse(p_data_all$p <= 0.05 & p_data_all$p > 0.01, "*",
                                ifelse(p_data_all$p <= 0.01 & p_data_all$p > 0.001, "**", "***")))
 
 library(ggplot2)
@@ -921,7 +921,7 @@ p_data_all$geneset=sub("activity_score", "Wnt/β-catenin pathway activity score"
 p_data_all$geneset=sub("pos_score", "Wnt/β-catenin pathway activation score", p_data_all$geneset)
 p_data_all$geneset=sub("neg_score", "Wnt/β-catenin pathway inhibition score", p_data_all$geneset)
 p_data_all$geneset=factor(p_data_all$geneset, levels = gene_set)
-ggplot(p_data_all, aes(dataset, geneset)) + 
+ggplot(p_data_all, aes(dataset, geneset)) +
   geom_tile(aes(fill = FC), color = "black") +
   scale_fill_gradient2(high = "#f58f98", mid = "white", low = "#90d7ec") +
   geom_text(aes(label = pstar), col = "black", size = 6) +
@@ -1033,8 +1033,8 @@ for(i in 1:length(fs)){
     p_data_all=rbind(p_data_all,p_data)
   }
 }
-p_data_all$pstar=ifelse(p_data_all$p > 0.05, "", 
-                        ifelse(p_data_all$p <= 0.05 & p_data_all$p > 0.01, "*", 
+p_data_all$pstar=ifelse(p_data_all$p > 0.05, "",
+                        ifelse(p_data_all$p <= 0.05 & p_data_all$p > 0.01, "*",
                                ifelse(p_data_all$p <= 0.01 & p_data_all$p > 0.001, "**", "***")))
 
 library(ggplot2)
@@ -1046,7 +1046,7 @@ p_data_all$geneset=sub("activity_score", "Wnt/β-catenin pathway activity score"
 p_data_all$geneset=sub("pos_score", "Wnt/β-catenin pathway activation score", p_data_all$geneset)
 p_data_all$geneset=sub("neg_score", "Wnt/β-catenin pathway inhibition score", p_data_all$geneset)
 p_data_all$geneset=factor(p_data_all$geneset, levels = gene_set)
-ggplot(p_data_all, aes(dataset, geneset)) + 
+ggplot(p_data_all, aes(dataset, geneset)) +
   geom_tile(aes(fill = FC), color = "black") +
   scale_fill_gradient2(high = "#f58f98", mid = "white", low = "#90d7ec") +
   geom_text(aes(label = pstar), col = "black", size = 6) +
