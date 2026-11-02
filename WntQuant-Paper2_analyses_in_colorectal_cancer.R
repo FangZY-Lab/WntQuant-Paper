@@ -890,7 +890,7 @@ if(group$group[1]%in%c("CMS1","CMS2","CMS3","CMS4","NOLBL")){
   library(RColorBrewer)
   combinations=combn(c("CMS1","CMS2","CMS3","CMS4","NOLBL"), 2)
   my.comparisons=split(combinations, rep(1:ncol(combinations), each = nrow(combinations)))
-  p <- ggplot(WNT, aes(x = group, y = WNT_FLIER, fill = group)) +
+  p = ggplot(WNT, aes(x = group, y = WNT_FLIER, fill = group)) +
     geom_violin(width = 0.5, scale = "area", trim = FALSE, position = position_dodge(0.9), show.legend = FALSE) +
     geom_boxplot(width = 0.2, position = position_dodge(0.9), show.legend = FALSE) +
     xlab("") +
@@ -923,7 +923,7 @@ if(group$group[1]%in%c("CMS1","CMS2","CMS3","CMS4","NOLBL")){
   library(RColorBrewer)
   combinations=combn(c("iCMS2","iCMS3","indeterminate"), 2)
   my.comparisons=split(combinations, rep(1:ncol(combinations), each = nrow(combinations)))
-  p <- ggplot(WNT, aes(x = group, y = WNT_FLIER, fill = group)) +
+  p = ggplot(WNT, aes(x = group, y = WNT_FLIER, fill = group)) +
     geom_violin(width = 0.5, scale = "area", trim = FALSE, position = position_dodge(0.9), show.legend = FALSE) +
     geom_boxplot(width = 0.2, position = position_dodge(0.9), show.legend = FALSE) +
     xlab("") +
@@ -1021,7 +1021,7 @@ library(ggpubr)
 library(RColorBrewer)
 combinations=combn(c("WSS1","WSS2","WSS3","WSS4"), 2)
 my.comparisons=split(combinations, rep(1:ncol(combinations), each = nrow(combinations)))
-p <- ggplot(WNT, aes(x = cluster, y = activity_score, fill = cluster)) +
+p = ggplot(WNT, aes(x = cluster, y = activity_score, fill = cluster)) +
   geom_violin(width = 0.5, scale = "area", trim = FALSE, position = position_dodge(0.9), show.legend = FALSE) +
   geom_boxplot(width = 0.2, position = position_dodge(0.9), show.legend = FALSE) +
   xlab("") +
@@ -1556,7 +1556,7 @@ library(ggpubr)
 library(RColorBrewer)
 combinations=combn(c("WSS1","WSS2","WSS3","WSS4"), 2)
 my.comparisons=split(combinations, rep(1:ncol(combinations), each = nrow(combinations)))
-p <- ggplot(WNT, aes(x = cluster, y = log2(MUTATION_COUNT), fill = cluster)) +
+p = ggplot(WNT, aes(x = cluster, y = log2(MUTATION_COUNT), fill = cluster)) +
   geom_violin(width = 0.5, scale = "area", trim = FALSE, position = position_dodge(0.9), show.legend = FALSE) +
   geom_boxplot(width = 0.2, position = position_dodge(0.9), show.legend = FALSE) +
   xlab("") +
@@ -1623,7 +1623,7 @@ library(ggpubr)
 library(RColorBrewer)
 combinations=combn(c("WSS1","WSS2","WSS3","WSS4"), 2)
 my.comparisons=split(combinations, rep(1:ncol(combinations), each = nrow(combinations)))
-p <- ggplot(WNT, aes(x = cluster, y = log2(total_perMB), fill = cluster)) +
+p = ggplot(WNT, aes(x = cluster, y = log2(total_perMB), fill = cluster)) +
   geom_violin(width = 0.5, scale = "area", trim = FALSE, position = position_dodge(0.9), show.legend = FALSE) +
   geom_boxplot(width = 0.2, position = position_dodge(0.9), show.legend = FALSE) +
   xlab("") +
@@ -2839,7 +2839,7 @@ gse2109_annoatation=gse2109_annoatation[,c(1,28)]
 gse2109_annoatation=na.omit(gse2109_annoatation)
 gse2109_annoatation=gse2109_annoatation[gse2109_annoatation$`Pathological Stage`!=c("Unknown"),]
 table(gse2109_annoatation$`Pathological Stage`)
-gse2109_annoatation$`Pathological Stage` <- gsub("[A-Z]", "", gse2109_annoatation$`Pathological Stage`)
+gse2109_annoatation$`Pathological Stage` = gsub("[A-Z]", "", gse2109_annoatation$`Pathological Stage`)
 colnames(gse2109_annoatation)=c("sample","stage")
 gse2109_annoatation$stage=paste0("Stage",gse2109_annoatation$stage)
 
@@ -4220,9 +4220,9 @@ cancer_cor$pstar=ifelse(cancer_cor$p.value > 0.05, "   ",
                         ifelse(cancer_cor$p.value <= 0.05 & cancer_cor$p.value > 0.01, "*  ",
                                ifelse(cancer_cor$p.value <= 0.01 & cancer_cor$p.value > 0.001, "** ", "***")))
 cancer_cor$cancer=paste0(cancer_cor$pstar,cancer_cor$cancer)
-cancer_cor$cancer <- factor(cancer_cor$cancer,levels = rev(cancer_cor$cancer))
+cancer_cor$cancer = factor(cancer_cor$cancer,levels = rev(cancer_cor$cancer))
 library(ggplot2)
-cancer_cor$relation <- ifelse(cancer_cor$cor > 0&cancer_cor$p.value<0.05,'pos',ifelse(cancer_cor$cor < 0&cancer_cor$p.value<0.05,"neg","none"))
+cancer_cor$relation = ifelse(cancer_cor$cor > 0&cancer_cor$p.value<0.05,'pos',ifelse(cancer_cor$cor < 0&cancer_cor$p.value<0.05,"neg","none"))
 ggplot(cancer_cor, aes(x=reorder(cancer, cor), y=cor, fill=relation)) +
   geom_bar(stat='identity') +
   xlab('Correlation coefficient') +

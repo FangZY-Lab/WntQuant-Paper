@@ -227,7 +227,7 @@ pancancer_group=rbind(pancancer_group,TARGET_G)
 pancancer_cluster=rbind(pancancer_cluster,TARGET_cluster)
 WNT=merge(pancancer_cluster,pancancer_group,by.x="Tag",by.y="row.names")
 df_counts = as.data.frame(table(WNT$Project, WNT$cluster))
-colnames(df_counts) <- c("project", "cluster", "count")
+colnames(df_counts) = c("project", "cluster", "count")
 df_percent = df_counts %>%
   group_by(project) %>%
   mutate(percent = count / sum(count) * 100)
@@ -1970,7 +1970,7 @@ library(ggplot2)
 library(ggsignif)
 library(ggpubr)
 library(RColorBrewer)
-tme_all$cluster <- factor(tme_all$cluster, levels = c("panWSS4", "panWSS3", "panWSS2", "panWSS1"))
+tme_all$cluster = factor(tme_all$cluster, levels = c("panWSS4", "panWSS3", "panWSS2", "panWSS1"))
 p = ggplot(tme_all, aes(x = variable, y = value, fill = cluster)) +
   geom_boxplot(
     outlier.shape = NA,

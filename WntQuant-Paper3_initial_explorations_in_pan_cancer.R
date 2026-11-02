@@ -161,12 +161,12 @@ WNT_Score_group_tumor$type="Tumor"
 WNT_Score_group_normal$type="Normal"
 pairs_data=rbind(WNT_Score_group_tumor,WNT_Score_group_normal)
 library(dplyr)
-pairs_data <- pairs_data %>%
+pairs_data = pairs_data %>%
   group_by(ID) %>%
   filter(n() > 1)
 pairs_data$activity_score=as.numeric(pairs_data$activity_score)
 pairs_data=pairs_data[!pairs_data$Project%in%c("TCGA_SARC","TCGA_SKCM","TCGA_THYM"),]
-mytheme <- theme(plot.margin=unit(c(0.5,0.5,0.5,0.5), "cm"),
+mytheme = theme(plot.margin=unit(c(0.5,0.5,0.5,0.5), "cm"),
                  axis.line = element_line(color = "black", linewidth = 0.4),
                  panel.grid.minor = element_blank(),
                  panel.grid.major = element_line(size = 0.1, color = "#e5e5e5"),
@@ -343,7 +343,7 @@ for (i in 1:length(vector)){
   library(dplyr)
   group = group %>%
     mutate(group = ntile(AXIN2,2))#Location of replacement genes
-  group$group <- factor(group$group, levels =1:2, labels = c("L","H"))
+  group$group = factor(group$group, levels =1:2, labels = c("L","H"))
   group$Tag=rownames(group)
   group=group[,c("Tag","group")]
   identical(group$Tag,colnames(exp))
@@ -483,7 +483,7 @@ for (i in 1:length(vector)){
   library(dplyr)
   group = group %>%
     mutate(group = ntile(activity_score,2))
-  group$group <- factor(group$group, levels =1:2, labels = c("L","H"))
+  group$group = factor(group$group, levels =1:2, labels = c("L","H"))
   group$Tag=rownames(group)
   group=group[,c("Tag","group")]
   result=Get_limma(gene=exp,
@@ -898,7 +898,7 @@ for (i in 1:length(vector)){
   library(dplyr)
   group = group %>%
     mutate(group = ntile(activity_score,2))
-  group$group <- factor(group$group, levels =1:2, labels = c("L","H"))
+  group$group = factor(group$group, levels =1:2, labels = c("L","H"))
   group$Tag=rownames(group)
   group=group[,c("Tag","group")]
   identical(group$Tag,colnames(exp))
@@ -990,7 +990,7 @@ CCLE_WNT_score$tissue=rownames(CCLE_WNT_score)
 CCLE_WNT_score$tissue=gsub("^[^_]*_", "", CCLE_WNT_score$tissue)
 CCLE_WNT_score$tissue=tolower(CCLE_WNT_score$tissue)
 CCLE_WNT_score$tissue=gsub("_", " ", CCLE_WNT_score$tissue)
-CCLE_WNT_score$tissue <- sapply(strsplit(CCLE_WNT_score$tissue, " "), function(x) {
+CCLE_WNT_score$tissue = sapply(strsplit(CCLE_WNT_score$tissue, " "), function(x) {
   sapply(x, function(y) {
     paste(toupper(substring(y, 1, 1)), substring(y, 2), sep = "")
   }) %>%
@@ -1031,7 +1031,7 @@ CCLE_WNT_score$tissue=rownames(CCLE_WNT_score)
 CCLE_WNT_score$tissue=gsub("^[^_]*_", "", CCLE_WNT_score$tissue)
 CCLE_WNT_score$tissue=tolower(CCLE_WNT_score$tissue)
 CCLE_WNT_score$tissue=gsub("_", " ", CCLE_WNT_score$tissue)
-CCLE_WNT_score$tissue <- sapply(strsplit(CCLE_WNT_score$tissue, " "), function(x) {
+CCLE_WNT_score$tissue = sapply(strsplit(CCLE_WNT_score$tissue, " "), function(x) {
   sapply(x, function(y) {
     paste(toupper(substring(y, 1, 1)), substring(y, 2), sep = "")
   }) %>%
@@ -1089,7 +1089,7 @@ for (i in 1:length(vector)){
   library(dplyr)
   group = group %>%
     mutate(group = ntile(activity_score,2))
-  group$group <- factor(group$group, levels =1:2, labels = c("L","H"))
+  group$group = factor(group$group, levels =1:2, labels = c("L","H"))
   group$Tag=rownames(group)
   group=group[,c("Tag","group")]
   result=Get_limma(gene=exp,
@@ -1404,8 +1404,8 @@ group$`COSMIC identifier`=paste0("COSMIC_",group$`COSMIC identifier`)
 GDSC2_WNT_score=merge(GDSC2_WNT_score,group,by.x="row.names",by.y="COSMIC identifier")
 colnames(GDSC2_WNT_score)[5]="tissue"
 process_text=function(x) {
-  x <- gsub(" ", "_", x)
-  x <- sapply(x, function(s) {
+  x = gsub(" ", "_", x)
+  x = sapply(x, function(s) {
     if (nchar(s) > 0) {
       paste0(toupper(substring(s, 1, 1)),
              substring(s, 2))
@@ -1719,7 +1719,7 @@ for (i in 1:length(vector)){
   library(dplyr)
   group = group %>%
     mutate(group = ntile(activity_score,2))
-  group$group <- factor(group$group, levels =1:2, labels = c("L","H"))
+  group$group = factor(group$group, levels =1:2, labels = c("L","H"))
   group$Tag=rownames(group)
   group=group[,c("Tag","group")]
   result=Get_limma(gene=exp,

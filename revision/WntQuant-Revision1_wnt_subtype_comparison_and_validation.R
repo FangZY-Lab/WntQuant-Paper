@@ -30,11 +30,11 @@ library(ggalluvial)
 sanky_alluvial = sanky %>%
   count(GEO_Accession, type, sample_number, data_separation, genetics, test_cell, data_type)
 
-nature_base_colors <- c("#8FC1E3", "#FFC8A2", "#96D496", "#F4A6A6", "#CAB3E6",
+nature_base_colors = c("#8FC1E3", "#FFC8A2", "#96D496", "#F4A6A6", "#CAB3E6",
                               "#C8A89B", "#F1C6DE", "#BFBFBF", "#DEDE8D", "#8ED8E8",
                               "#D6E6F5", "#FFE0C2", "#CDF0C6", "#FFD4D3", "#E2D8EB",
                               "#D8C6BD", "#FADBEC", "#E3E3E3", "#EDEDC6", "#C7ECF2")
-color_palette <- colorRampPalette(nature_base_colors)(length(unique(sanky_alluvial$GEO_Accession)))
+color_palette = colorRampPalette(nature_base_colors)(length(unique(sanky_alluvial$GEO_Accession)))
 p_alluvial = ggplot(sanky_alluvial,
                     aes(axis1 = type,
                         axis2 = GEO_Accession,
@@ -92,7 +92,7 @@ for(i in 1:length(vector)){
   WNT_HL=WNT_HL[,-1]
   WNT_HL_selected=WNT_HL[vector[i],,drop=F]
   group$group=ifelse(group$group==WNT_HL_selected$Group1,WNT_HL_selected$Group1_Status,WNT_HL_selected$Group2_Status)
-  group$Tag <- paste0(group$Tag,"_",vector[i])
+  group$Tag = paste0(group$Tag,"_",vector[i])
   if(i==1){
     all_group=group
   }else{
@@ -231,7 +231,7 @@ for(i in 1:length(vector)){
   WNT_HL=WNT_HL[,-1]
   WNT_HL_selected=WNT_HL[vector[i],,drop=F]
   group$group=ifelse(group$group==WNT_HL_selected$Group1,WNT_HL_selected$Group1_Status,WNT_HL_selected$Group2_Status)
-  group$Tag <- paste0(group$Tag,"_",vector[i])
+  group$Tag = paste0(group$Tag,"_",vector[i])
   if(i==1){
     all_group=group
   }else{
@@ -1634,7 +1634,7 @@ geneSets_gmt=geneSets_gmt_self[c("IMMUNE_ESTIMATE","STROMAL_ESTIMATE",
                                  "PENTOSE_GLUC_METAB_KEGG","STARCH_SUCROSE_METAB_KEGG","TYROSINE_METAB_KEGG",
                                  "AMINO_SUGAR_NUCLEO_METAB_KEGG","ALANINE_ASPARTATE_GLUTAMATE_KEGG")]
 for(i in 1:length(geneSets_gmt)) {
-  geneSets_gmt[[i]] <- c(names(geneSets_gmt)[i], geneSets_gmt[[i]])
+  geneSets_gmt[[i]] = c(names(geneSets_gmt)[i], geneSets_gmt[[i]])
 }
 names(geneSets_gmt) = c("Immune infiltration", "Stromal infiltration",
                         "Serrated lesion", "EMT activation", "MYC targets", "TGF-β activation", "Cancer stem cell",
@@ -1704,7 +1704,7 @@ for(i in 1:length(col)){
 library(ComplexHeatmap)
 library(circlize)
 
-categories <- list(
+categories = list(
   "Infiltration ESTIMATE" = c("Immune infiltration", "Stromal infiltration"),
   "Signatures" = c("Serrated lesion", "EMT activation", "MYC targets", "TGF-β activation",
                    "Cancer stem cell", "Matrix remodeling", "Wound response", "Crypt base",
@@ -1719,7 +1719,7 @@ categories <- list(
                    "Starch sucrose", "Tyrosine", "Sugar,AA,nucleotide", "Alanine,aspartate,glutamate")
 )
 
-category_colors <- c(
+category_colors = c(
   "Infiltration ESTIMATE" = "#6baed6",
   "Signatures" = "#fdae61",
   "Pathways" = "#7bc87c",
@@ -1727,7 +1727,7 @@ category_colors <- c(
   "Metabolism" = "#c5b0d5"
 )
 
-sig_order <- c("Immune infiltration", "Stromal infiltration",
+sig_order = c("Immune infiltration", "Stromal infiltration",
                "Serrated lesion", "EMT activation", "MYC targets", "TGF-β activation", "Cancer stem cell",
                "Matrix remodeling", "Wound response", "Crypt base", "Crypt top", "Epithelial", "Mesenchymal",
                "FGF", "NOTCH", "NF-κB", "MAPK", "PI3K", "SRC", "JAK-STAT", "Caspases", "Proteasome",
@@ -1738,18 +1738,18 @@ sig_order <- c("Immune infiltration", "Stromal infiltration",
                "Linoleic", "Lysophospholipid", "Nucleotide", "Pentose", "Starch sucrose", "Tyrosine",
                "Sugar,AA,nucleotide", "Alanine,aspartate,glutamate")
 
-data_p_all_ordered <- data_p_all[match(sig_order, data_p_all$sig), ]
-heatmap_data <- as.matrix(data_p_all_ordered[, c("WSS1", "WSS2", "WSS3", "WSS4")])
-heatmap_data_t <- t(heatmap_data)
-colnames(heatmap_data_t) <- data_p_all_ordered$sig
-p_value_data <- -log10(data_p_all_ordered$p.value)
+data_p_all_ordered = data_p_all[match(sig_order, data_p_all$sig), ]
+heatmap_data = as.matrix(data_p_all_ordered[, c("WSS1", "WSS2", "WSS3", "WSS4")])
+heatmap_data_t = t(heatmap_data)
+colnames(heatmap_data_t) = data_p_all_ordered$sig
+p_value_data = -log10(data_p_all_ordered$p.value)
 
-category_vec <- character(ncol(heatmap_data_t))
+category_vec = character(ncol(heatmap_data_t))
 for(cat_name in names(categories)) {
-  category_vec[colnames(heatmap_data_t) %in% categories[[cat_name]]] <- cat_name
+  category_vec[colnames(heatmap_data_t) %in% categories[[cat_name]]] = cat_name
 }
 
-col_ha <- HeatmapAnnotation(
+col_ha = HeatmapAnnotation(
   Category = category_vec,
   col = list(Category = category_colors),
   show_legend = TRUE,
@@ -1762,7 +1762,7 @@ col_ha <- HeatmapAnnotation(
   )
 )
 
-pval_ha <- HeatmapAnnotation(
+pval_ha = HeatmapAnnotation(
   `-log[10](italic(p))` = anno_barplot(
     p_value_data,
     gp = gpar(fill = "#7d5886", col = NA),
@@ -1775,7 +1775,7 @@ pval_ha <- HeatmapAnnotation(
   annotation_name_gp = gpar(fontsize = 16, col = "black")  # Size 16, black
 )
 
-ht <- Heatmap(heatmap_data_t,
+ht = Heatmap(heatmap_data_t,
               name = "Median",
               col = colorRamp2(c(-1, 0, 1), c("#90d7ec", "white", "#f58f98")),
               top_annotation = col_ha,
@@ -2183,7 +2183,7 @@ data_p_all$p.value[data_p_all$p.value == 0] = 1e-323
 library(ComplexHeatmap)
 library(circlize)
 
-category_vec <- c(
+category_vec = c(
   "Adipogenesis" = "Development",
   "Allograft rejection" = "Immune",
   "Androgen response" = "Signaling",
@@ -2235,7 +2235,7 @@ category_vec <- c(
   "Xenobiotic metabolism" = "Metabolic"
 )
 
-category_colors <- c(
+category_colors = c(
   "Cellular component" = "#66c2a5",
   "Development" = "#fc8d62",
   "DNA damage" = "#8da0cb",
@@ -2247,19 +2247,19 @@ category_colors <- c(
 )
 
 # Add a category column
-data_p_all$category <- category_vec[data_p_all$sig]
+data_p_all$category = category_vec[data_p_all$sig]
 
 # Sort by category and p-value
-data_p_all_ordered <- data_p_all[order(data_p_all$category, -log10(data_p_all$p.value)), ]
+data_p_all_ordered = data_p_all[order(data_p_all$category, -log10(data_p_all$p.value)), ]
 
 # Prepare the heatmap data, laid out horizontally (columns are gene sets, rows are samples)
-heatmap_data <- as.matrix(data_p_all_ordered[, c("panWSS1", "panWSS2", "panWSS3", "panWSS4")])
-heatmap_data_t <- t(heatmap_data)
-colnames(heatmap_data_t) <- data_p_all_ordered$sig
-p_value_data <- -log10(data_p_all_ordered$p.value)
+heatmap_data = as.matrix(data_p_all_ordered[, c("panWSS1", "panWSS2", "panWSS3", "panWSS4")])
+heatmap_data_t = t(heatmap_data)
+colnames(heatmap_data_t) = data_p_all_ordered$sig
+p_value_data = -log10(data_p_all_ordered$p.value)
 
 # Build the column annotation (categories)
-col_ha <- HeatmapAnnotation(
+col_ha = HeatmapAnnotation(
   Category = data_p_all_ordered$category,
   col = list(Category = category_colors),
   show_legend = TRUE,
@@ -2273,7 +2273,7 @@ col_ha <- HeatmapAnnotation(
 )
 
 # Build the column annotation (p-values)
-pval_ha <- HeatmapAnnotation(
+pval_ha = HeatmapAnnotation(
   `-log[10](p)` = anno_barplot(
     p_value_data,
     gp = gpar(fill = "#7d5886", col = NA),
@@ -2287,7 +2287,7 @@ pval_ha <- HeatmapAnnotation(
 )
 
 # Create the heatmap, laid out horizontally
-ht <- Heatmap(heatmap_data_t,
+ht = Heatmap(heatmap_data_t,
               name = "Median",
               col = colorRamp2(c(-1, 0, 1), c("#90d7ec", "white", "#f58f98")),
               top_annotation = col_ha,
@@ -2345,7 +2345,7 @@ colnames(group)=c("Tag","group")
 load("C:/Users/user/Desktop/input/tme_all_estimate.Rdata")
 tme_all=as.data.frame(tme_all_estimate)
 library(ggplot2)
-cor_test <- cor.test(tme_all$StromalScore_estimate,
+cor_test = cor.test(tme_all$StromalScore_estimate,
                      tme_all$ImmuneScore_estimate)
 ggplot(tme_all, aes(x = StromalScore_estimate, y = ImmuneScore_estimate)) +
   geom_point(alpha = 0.6, color = "steelblue", size = 2) +
@@ -2416,7 +2416,7 @@ colnames(group)=c("Tag","group")
 load("C:/Users/user/Desktop/input/tme_all_estimate.Rdata")
 tme_all=as.data.frame(tme_all_estimate)
 library(ggplot2)
-cor_test <- cor.test(tme_all$StromalScore_estimate,
+cor_test = cor.test(tme_all$StromalScore_estimate,
                      tme_all$ImmuneScore_estimate)
 ggplot(tme_all, aes(x = StromalScore_estimate, y = ImmuneScore_estimate)) +
   geom_point(alpha = 0.6, color = "steelblue", size = 2) +
@@ -2487,7 +2487,7 @@ colnames(group)=c("Tag","group")
 load("C:/Users/user/Desktop/input/tme_all_estimate.Rdata")
 tme_all=as.data.frame(tme_all_estimate)
 library(ggplot2)
-cor_test <- cor.test(tme_all$StromalScore_estimate,
+cor_test = cor.test(tme_all$StromalScore_estimate,
                      tme_all$ImmuneScore_estimate)
 ggplot(tme_all, aes(x = StromalScore_estimate, y = ImmuneScore_estimate)) +
   geom_point(alpha = 0.6, color = "steelblue", size = 2) +
@@ -2558,7 +2558,7 @@ colnames(group)=c("Tag","group")
 load("C:/Users/user/Desktop/input/tme_all_estimate.Rdata")
 tme_all=as.data.frame(tme_all_estimate)
 library(ggplot2)
-cor_test <- cor.test(tme_all$StromalScore_estimate,
+cor_test = cor.test(tme_all$StromalScore_estimate,
                      tme_all$ImmuneScore_estimate)
 ggplot(tme_all, aes(x = StromalScore_estimate, y = ImmuneScore_estimate)) +
   geom_point(alpha = 0.6, color = "steelblue", size = 2) +
@@ -2624,7 +2624,7 @@ gc()
 setwd("C:/Users/user/Desktop/input")
 
 # Read the data
-Immune_subtype <- read.table(
+Immune_subtype = read.table(
   "Subtype_Immune_Model_Based.txt",
   header = TRUE,
   sep = "\t",
@@ -2634,18 +2634,18 @@ Immune_subtype <- read.table(
 load("C:/Users/user/Desktop/input/pancancer_WNT_Score.Rdata")
 
 # Data merging and processing
-immune_exp <- merge(
+immune_exp = merge(
   pancancer_WNT_Score$final_activity_score,
   Immune_subtype,
   by.x = "row.names",
   by.y = "sample"
 )
 
-immune_exp <- immune_exp[, c("activity_score", "Subtype_Immune_Model_Based")]
+immune_exp = immune_exp[, c("activity_score", "Subtype_Immune_Model_Based")]
 
 table(immune_exp$Subtype_Immune_Model_Based)
 
-immune_exp$Subtype_Immune_Model_Based <- factor(
+immune_exp$Subtype_Immune_Model_Based = factor(
   immune_exp$Subtype_Immune_Model_Based,
   levels = c(
     "Wound Healing (Immune C1)",
@@ -2664,7 +2664,7 @@ library(ggpubr)
 library(RColorBrewer)
 
 # Build the comparison pairs
-combinations <- combn(
+combinations = combn(
   c(
     "Wound Healing (Immune C1)",
     "IFN-gamma Dominant (Immune C2)",
@@ -2676,13 +2676,13 @@ combinations <- combn(
   2
 )
 
-my.comparisons <- split(
+my.comparisons = split(
   combinations,
   rep(1:ncol(combinations), each = nrow(combinations))
 )
 
 # Method 1: vertical layout with coord_flip()
-p <- ggboxplot(
+p = ggboxplot(
   immune_exp,
   x = "Subtype_Immune_Model_Based",
   y = "activity_score",
@@ -2762,10 +2762,10 @@ cancer_all = cancer_all[order(cancer_all$cor),]
 cancer_all$Signature = ifelse(cancer_all$p.value < 0.05,
                               ifelse(cancer_all$p.value < 0.01,
                                      ifelse(cancer_all$p.value < 0.001,'***','**'),'*'),'')
-cancer_all$relation <- ifelse(cancer_all$cor > 0 & cancer_all$p.value < 0.05, 'pos',
+cancer_all$relation = ifelse(cancer_all$cor > 0 & cancer_all$p.value < 0.05, 'pos',
                               ifelse(cancer_all$cor < 0 & cancer_all$p.value < 0.05, "neg", "none"))
-cancer_all$cancer_clean <- gsub("\\*", "", cancer_all$cancer)
-cancer_all$cancer_clean <- factor(cancer_all$cancer_clean, levels = rev(cancer_all$cancer_clean))
+cancer_all$cancer_clean = gsub("\\*", "", cancer_all$cancer)
+cancer_all$cancer_clean = factor(cancer_all$cancer_clean, levels = rev(cancer_all$cancer_clean))
 p=ggplot(cancer_all, aes(x = cor, y = reorder(cancer_clean, cor))) +
   ylab('') +
   xlab('Correlation coefficient') +
@@ -2802,32 +2802,32 @@ library(TCGAmutations)
 tcga_available()
 rm(list=ls())
 setwd("C:/Users/user/Desktop/input/TMB")
-fs <- c("ACC","BLCA","BRCA","CESC","CHOL","COAD","DLBC","ESCA","GBM","HNSC",
+fs = c("ACC","BLCA","BRCA","CESC","CHOL","COAD","DLBC","ESCA","GBM","HNSC",
         "KICH","KIRC","KIRP","LAML","LGG","LIHC","LUAD","LUSC","MESO","OV",
         "PAAD","PCPG","PRAD","READ","SARC","SKCM","STAD","TGCT","THCA","THYM",
         "UCEC","UCS","UVM")
 lapply(fs,function(x){
   library(TCGAmutations)
   print(x)
-  maf <- TCGAmutations::tcga_load(study = x)
+  maf = TCGAmutations::tcga_load(study = x)
   save(maf, file = paste0("C:/Users/user/Desktop/input/TMB/TCGA_",x,"_MC3_maf.Rdata"))
 })
 rm(list=ls())
 setwd("C:/Users/user/Desktop/input/TMB")
-fs <- c("ACC","BLCA","BRCA","CESC","CHOL","COAD","DLBC","ESCA","GBM","HNSC",
+fs = c("ACC","BLCA","BRCA","CESC","CHOL","COAD","DLBC","ESCA","GBM","HNSC",
         "KICH","KIRC","KIRP","LAML","LGG","LIHC","LUAD","LUSC","MESO","OV",
         "PAAD","PCPG","PRAD","READ","SARC","SKCM","STAD","TGCT","THCA","THYM",
         "UCEC","UCS","UVM")
-TCGAtmb <- lapply(fs,function(x){
+TCGAtmb = lapply(fs,function(x){
   library(maftools)
   load(paste0("C:/Users/user/Desktop/input/TMB/TCGA_",x,"_MC3_maf.Rdata"))
   TMB = data.frame(tmb(maf = maf))
-  TMB$Tumor_Sample_Barcode <- as.character(TMB$Tumor_Sample_Barcode)
+  TMB$Tumor_Sample_Barcode = as.character(TMB$Tumor_Sample_Barcode)
   TMB$Group = x
   print(x)
   return(TMB)
 })
-TCGAtmb <- do.call(rbind,TCGAtmb)
+TCGAtmb = do.call(rbind,TCGAtmb)
 head(TCGAtmb)
 TCGAtmb$Tumor_Sample_Barcode=substr(TCGAtmb$Tumor_Sample_Barcode, 1, 15)
 TMB=TCGAtmb[,c(1,3,5)]
@@ -2856,10 +2856,10 @@ cancer_all = cancer_all[order(cancer_all$cor),]
 cancer_all$Signature = ifelse(cancer_all$p.value < 0.05,
                               ifelse(cancer_all$p.value < 0.01,
                                      ifelse(cancer_all$p.value < 0.001,'***','**'),'*'),'')
-cancer_all$relation <- ifelse(cancer_all$cor > 0 & cancer_all$p.value < 0.05, 'pos',
+cancer_all$relation = ifelse(cancer_all$cor > 0 & cancer_all$p.value < 0.05, 'pos',
                               ifelse(cancer_all$cor < 0 & cancer_all$p.value < 0.05, "neg", "none"))
-cancer_all$cancer_clean <- gsub("\\*", "", cancer_all$cancer)
-cancer_all$cancer_clean <- factor(cancer_all$cancer_clean, levels = rev(cancer_all$cancer_clean))
+cancer_all$cancer_clean = gsub("\\*", "", cancer_all$cancer)
+cancer_all$cancer_clean = factor(cancer_all$cancer_clean, levels = rev(cancer_all$cancer_clean))
 p=ggplot(cancer_all, aes(x = cor, y = reorder(cancer_clean, cor))) +
   ylab('') +
   xlab('Correlation coefficient') +
@@ -2938,10 +2938,10 @@ cancer_all = cancer_all[order(cancer_all$cor),]
 cancer_all$Signature = ifelse(cancer_all$p.value < 0.05,
                               ifelse(cancer_all$p.value < 0.01,
                                      ifelse(cancer_all$p.value < 0.001,'***','**'),'*'),'')
-cancer_all$relation <- ifelse(cancer_all$cor > 0 & cancer_all$p.value < 0.05, 'pos',
+cancer_all$relation = ifelse(cancer_all$cor > 0 & cancer_all$p.value < 0.05, 'pos',
                               ifelse(cancer_all$cor < 0 & cancer_all$p.value < 0.05, "neg", "none"))
-cancer_all$cancer_clean <- gsub("\\*", "", cancer_all$cancer)
-cancer_all$cancer_clean <- factor(cancer_all$cancer_clean, levels = rev(cancer_all$cancer_clean))
+cancer_all$cancer_clean = gsub("\\*", "", cancer_all$cancer)
+cancer_all$cancer_clean = factor(cancer_all$cancer_clean, levels = rev(cancer_all$cancer_clean))
 p=ggplot(cancer_all, aes(x = cor, y = reorder(cancer_clean, cor))) +
   ylab('') +
   xlab('Correlation coefficient') +
@@ -3016,10 +3016,10 @@ cancer_all = cancer_all[order(cancer_all$cor),]
 cancer_all$Signature = ifelse(cancer_all$p.value < 0.05,
                               ifelse(cancer_all$p.value < 0.01,
                                      ifelse(cancer_all$p.value < 0.001,'***','**'),'*'),'')
-cancer_all$relation <- ifelse(cancer_all$cor > 0 & cancer_all$p.value < 0.05, 'pos',
+cancer_all$relation = ifelse(cancer_all$cor > 0 & cancer_all$p.value < 0.05, 'pos',
                               ifelse(cancer_all$cor < 0 & cancer_all$p.value < 0.05, "neg", "none"))
-cancer_all$cancer_clean <- gsub("\\*", "", cancer_all$cancer)
-cancer_all$cancer_clean <- factor(cancer_all$cancer_clean, levels = rev(cancer_all$cancer_clean))
+cancer_all$cancer_clean = gsub("\\*", "", cancer_all$cancer)
+cancer_all$cancer_clean = factor(cancer_all$cancer_clean, levels = rev(cancer_all$cancer_clean))
 p=ggplot(cancer_all, aes(x = cor, y = reorder(cancer_clean, cor))) +
   ylab('') +
   xlab('Correlation coefficient') +
@@ -3145,23 +3145,23 @@ load("C:/Users/user/Desktop/input/pancancer_WNT_score.Rdata")
 load("C:/Users/user/Desktop/input/pancancer_group.Rdata")
 
 # Data preprocessing
-T_status <- tme_all_TCSS
-pancancer_wnt <- pancancer_WNT_Score$final_activity_score
-pancancer_group <- pancancer_group[pancancer_group$Group == "Tumor",]
+T_status = tme_all_TCSS
+pancancer_wnt = pancancer_WNT_Score$final_activity_score
+pancancer_group = pancancer_group[pancancer_group$Group == "Tumor",]
 
 # Compute the correlation
-cancer_cor <- data.frame()
+cancer_cor = data.frame()
 for(i in unique(pancancer_group$Project)) {
-  samples <- rownames(pancancer_group[pancancer_group$Project == i,])
-  common_samples <- intersect(samples, rownames(T_status))
+  samples = rownames(pancancer_group[pancancer_group$Project == i,])
+  common_samples = intersect(samples, rownames(T_status))
 
   if(length(common_samples) > 0) {
-    tide_fs <- T_status[common_samples, ]
-    wnt_fs <- pancancer_wnt[common_samples, "activity_score", drop = FALSE]
+    tide_fs = T_status[common_samples, ]
+    wnt_fs = pancancer_wnt[common_samples, "activity_score", drop = FALSE]
 
     for(j in colnames(tide_fs)) {
-      cor_test <- cor.test(wnt_fs$activity_score, tide_fs[, j], method = "pearson")
-      cancer_cor <- rbind(cancer_cor, data.frame(
+      cor_test = cor.test(wnt_fs$activity_score, tide_fs[, j], method = "pearson")
+      cancer_cor = rbind(cancer_cor, data.frame(
         cancer = i, tme = j,
         cor = cor_test$estimate,
         p.value = cor_test$p.value
@@ -3171,11 +3171,11 @@ for(i in unique(pancancer_group$Project)) {
 }
 
 # Handle missing values
-cancer_cor$cor[is.na(cancer_cor$cor)] <- 0
-cancer_cor$p.value[is.na(cancer_cor$p.value)] <- 1
+cancer_cor$cor[is.na(cancer_cor$cor)] = 0
+cancer_cor$p.value[is.na(cancer_cor$p.value)] = 1
 
 # Add the significance marks
-cancer_cor$pstar <- ifelse(cancer_cor$p.value > 0.05, "",
+cancer_cor$pstar = ifelse(cancer_cor$p.value > 0.05, "",
                            ifelse(cancer_cor$p.value > 0.01, "*",
                                   ifelse(cancer_cor$p.value > 0.001, "**", "***")))
 
@@ -3183,23 +3183,23 @@ cancer_cor$pstar <- ifelse(cancer_cor$p.value > 0.05, "",
 library(reshape2)
 
 # Load reshape2 explicitly
-m <- reshape2::dcast(cancer_cor, cancer ~ tme, value.var = "cor")
-tmp <- reshape2::dcast(cancer_cor, cancer ~ tme, value.var = "pstar")
-p <- reshape2::dcast(cancer_cor, cancer ~ tme, value.var = "p.value")
+m = reshape2::dcast(cancer_cor, cancer ~ tme, value.var = "cor")
+tmp = reshape2::dcast(cancer_cor, cancer ~ tme, value.var = "pstar")
+p = reshape2::dcast(cancer_cor, cancer ~ tme, value.var = "p.value")
 
-rownames(m) <- m[,1]; m <- m[,-1]
-rownames(tmp) <- tmp[,1]; tmp <- tmp[,-1]
-rownames(p) <- p[,1]; p <- p[,-1]
+rownames(m) = m[,1]; m = m[,-1]
+rownames(tmp) = tmp[,1]; tmp = tmp[,-1]
+rownames(p) = p[,1]; p = p[,-1]
 
 # Prepare the plotting data
 library(tidyverse)
 
-Plotdata <- data.frame(t(m)) %>%
+Plotdata = data.frame(t(m)) %>%
   mutate(Term = rownames(.)) %>%
   pivot_longer(-Term, names_to = "name", values_to = "Correlation") %>%
   mutate(
     Pvalue = map2_dbl(Term, name, ~ {
-      p_val <- t(p)[.x, .y]
+      p_val = t(p)[.x, .y]
       if(is.na(p_val)) 1 else p_val
     }),
     Pvalue = -log10(Pvalue),
@@ -3209,7 +3209,7 @@ Plotdata <- data.frame(t(m)) %>%
   )
 Plotdata$Term = gsub("_", " ", Plotdata$Term)
 # Plot
-Dotplot2 <- ggplot(Plotdata, aes(x = name, y = Term, size = Pvalue)) +
+Dotplot2 = ggplot(Plotdata, aes(x = name, y = Term, size = Pvalue)) +
   geom_point(shape = 21, aes(fill = Correlation)) +
   scale_size_continuous(range = c(0, 6), name = expression(-log[10](p)),
                         limits = c(0, 10), breaks = seq(0, 10, 2)) +
@@ -3268,9 +3268,9 @@ cancer_cor$pstar=ifelse(cancer_cor$p.value > 0.05, "   ",
                                ifelse(cancer_cor$p.value <= 0.01 & cancer_cor$p.value > 0.001, "** ", "***")))
 #####################################Stromal
 cancer_all=cancer_cor[cancer_cor$tme=="StromalScore_estimate",]
-cancer_all$cancer <- factor(cancer_all$cancer,levels = rev(cancer_all$cancer))
+cancer_all$cancer = factor(cancer_all$cancer,levels = rev(cancer_all$cancer))
 library(ggplot2)
-cancer_all$relation <- ifelse(cancer_all$cor > 0&cancer_all$p.value<0.05,'pos',ifelse(cancer_all$cor < 0&cancer_all$p.value<0.05,"neg","none"))
+cancer_all$relation = ifelse(cancer_all$cor > 0&cancer_all$p.value<0.05,'pos',ifelse(cancer_all$cor < 0&cancer_all$p.value<0.05,"neg","none"))
 p=ggplot(cancer_all, aes(x = cor, y = reorder(cancer, cor), fill = relation)) +
   geom_bar(stat = 'identity') +
   ylab('') +
@@ -3304,9 +3304,9 @@ ggsave("cor_SS.pdf",
        device = "pdf")
 #####################################Immune
 cancer_all=cancer_cor[cancer_cor$tme=="ImmuneScore_estimate",]
-cancer_all$cancer <- factor(cancer_all$cancer,levels = rev(cancer_all$cancer))
+cancer_all$cancer = factor(cancer_all$cancer,levels = rev(cancer_all$cancer))
 library(ggplot2)
-cancer_all$relation <- ifelse(cancer_all$cor > 0&cancer_all$p.value<0.05,'pos',ifelse(cancer_all$cor < 0&cancer_all$p.value<0.05,"neg","none"))
+cancer_all$relation = ifelse(cancer_all$cor > 0&cancer_all$p.value<0.05,'pos',ifelse(cancer_all$cor < 0&cancer_all$p.value<0.05,"neg","none"))
 p=ggplot(cancer_all, aes(x = cor, y = reorder(cancer, cor), fill = relation)) +
   geom_bar(stat = 'identity') +
   ylab('') +
@@ -3340,8 +3340,8 @@ ggsave("cor_IS.pdf",
        device = "pdf")
 #####################################Tumor purity
 cancer_all=cancer_cor[cancer_cor$tme=="TumorPurity_estimate",]
-cancer_all$cancer <- factor(cancer_all$cancer,levels = rev(cancer_all$cancer))
-cancer_all$relation <- factor(ifelse(cancer_all$cor > 0 & cancer_all$p.value < 0.05, 'pos',
+cancer_all$cancer = factor(cancer_all$cancer,levels = rev(cancer_all$cancer))
+cancer_all$relation = factor(ifelse(cancer_all$cor > 0 & cancer_all$p.value < 0.05, 'pos',
                                      ifelse(cancer_all$cor < 0 & cancer_all$p.value < 0.05, "neg", "none")),
                               levels = c("pos", "none", "neg"))  # Specify the level order explicitly
 
@@ -3379,8 +3379,8 @@ ggsave("cor_TP.pdf",
        device = "pdf")
 #####################################ESTIMATE score
 cancer_all=cancer_cor[cancer_cor$tme=="ESTIMATEScore_estimate",]
-cancer_all$cancer <- factor(cancer_all$cancer,levels = rev(cancer_all$cancer))
-cancer_all$relation <- factor(ifelse(cancer_all$cor > 0 & cancer_all$p.value < 0.05, 'pos',
+cancer_all$cancer = factor(cancer_all$cancer,levels = rev(cancer_all$cancer))
+cancer_all$relation = factor(ifelse(cancer_all$cor > 0 & cancer_all$p.value < 0.05, 'pos',
                                      ifelse(cancer_all$cor < 0 & cancer_all$p.value < 0.05, "neg", "none")),
                               levels = c("pos", "none", "neg"))
 
@@ -3439,7 +3439,7 @@ for(i in 1:length(vector)){
   WNT_HL=WNT_HL[,-1]
   WNT_HL_selected=WNT_HL[vector[i],,drop=F]
   group$group=ifelse(group$group==WNT_HL_selected$Group1,WNT_HL_selected$Group1_Status,WNT_HL_selected$Group2_Status)
-  group$Tag <- paste0(group$Tag,"_",vector[i])
+  group$Tag = paste0(group$Tag,"_",vector[i])
   if(i==1){
     all_group=group
   }else{
@@ -3520,18 +3520,18 @@ p_data_all$geneset=sub("pos_score", "WntQuant_activation", p_data_all$geneset)
 p_data_all$geneset=sub("neg_score", "WntQuant_inhibition", p_data_all$geneset)
 
 # 1. Compute the accuracy of each signature (gene set)
-p_data_all <- p_data_all %>%
+p_data_all = p_data_all %>%
   mutate(is_correct = case_when(
     geneset %in% c("FEVR_Wnt_Down", "WntQuant_inhibition") ~ (FC < 0 & p < 0.05),
     TRUE ~ (FC > 0 & p < 0.05)
   ))
 
-accuracy_df <- p_data_all %>%
+accuracy_df = p_data_all %>%
   group_by(geneset) %>%
   summarise(accuracy = mean(is_correct) * 100) # Compute the percentage accuracy
 
 # 2. Sort the signatures by accuracy, high to low
-geneset_order <- accuracy_df %>%
+geneset_order = accuracy_df %>%
   arrange(accuracy) %>%
   pull(geneset)
 
@@ -3539,7 +3539,7 @@ p_data_all$geneset = factor(p_data_all$geneset, levels = geneset_order)
 accuracy_df$geneset = factor(accuracy_df$geneset, levels = geneset_order)
 
 # 3. Sort datasets alphabetically by name
-sorted_datasets <- sort(unique(p_data_all$dataset))
+sorted_datasets = sort(unique(p_data_all$dataset))
 p_data_all$dataset = factor(p_data_all$dataset, levels = sorted_datasets)
 
 # 4. Draw the heatmap (datasets alphabetically on x, gene sets on y)
@@ -3627,7 +3627,7 @@ for(i in 1:length(vector)){
   WNT_HL=WNT_HL[,-1]
   WNT_HL_selected=WNT_HL[vector[i],,drop=F]
   group$group=ifelse(group$group==WNT_HL_selected$Group1,WNT_HL_selected$Group1_Status,WNT_HL_selected$Group2_Status)
-  group$Tag <- paste0(group$Tag,"_",vector[i])
+  group$Tag = paste0(group$Tag,"_",vector[i])
   if(i==1){
     all_group=group
   }else{
@@ -3708,18 +3708,18 @@ p_data_all$geneset=sub("pos_score", "WntQuant_activation", p_data_all$geneset)
 p_data_all$geneset=sub("neg_score", "WntQuant_inhibition", p_data_all$geneset)
 
 # 1. Compute the accuracy of each signature (gene set)
-p_data_all <- p_data_all %>%
+p_data_all = p_data_all %>%
   mutate(is_correct = case_when(
     geneset %in% c("FEVR_Wnt_Down", "WntQuant_inhibition") ~ (FC < 0 & p < 0.05),
     TRUE ~ (FC > 0 & p < 0.05)
   ))
 
-accuracy_df <- p_data_all %>%
+accuracy_df = p_data_all %>%
   group_by(geneset) %>%
   summarise(accuracy = mean(is_correct) * 100)
 
 # 2. Sort the signatures by accuracy, high to low (y axis)
-geneset_order <- accuracy_df %>%
+geneset_order = accuracy_df %>%
   arrange(accuracy) %>%
   pull(geneset)
 
@@ -3727,7 +3727,7 @@ p_data_all$geneset = factor(p_data_all$geneset, levels = geneset_order)
 accuracy_df$geneset = factor(accuracy_df$geneset, levels = geneset_order)
 
 # 3. Sort datasets alphabetically by name
-sorted_datasets <- sort(unique(p_data_all$dataset))
+sorted_datasets = sort(unique(p_data_all$dataset))
 p_data_all$dataset = factor(p_data_all$dataset, levels = sorted_datasets)
 
 # 4. Draw the heatmap (datasets alphabetically on x, gene sets by accuracy on y)
@@ -3943,7 +3943,7 @@ library(patchwork)
 # 1. Updated correctness logic:
 # - FEVR_Wnt_Down and WntQuant_inhibition: FC < 0 & p < 0.05 in CMS2, or FC > 0 & p < 0.05 in CMS1
 # - Other signatures: FC > 0 & p < 0.05 in CMS2, or FC < 0 & p < 0.05 in CMS1
-p_data_all <- p_data_all %>%
+p_data_all = p_data_all %>%
   mutate(is_correct = case_when(
     geneset %in% c("FEVR_Wnt_Down", "WntQuant_inhibition") ~ (
       (contrast == "CMS2" & FC < 0 & p < 0.05) |
@@ -3956,17 +3956,17 @@ p_data_all <- p_data_all %>%
   ))
 
 # 2. Count the correct calls per signature and sort from most to fewest
-correct_summary <- p_data_all %>%
+correct_summary = p_data_all %>%
   group_by(geneset, contrast) %>%
   summarise(correct_count = sum(is_correct), .groups = "drop")
 
-total_correct <- correct_summary %>%
+total_correct = correct_summary %>%
   group_by(geneset) %>%
   summarise(total = sum(correct_count), .groups = "drop") %>%
   arrange(total) # Sort by total ascending (ggplot2 draws bottom-up, so ascending puts the largest totals on top)
 
 # Convert geneset to a factor ordered by the total number of correct calls
-ordered_genesets <- total_correct$geneset
+ordered_genesets = total_correct$geneset
 p_data_all$geneset = factor(p_data_all$geneset, levels = ordered_genesets)
 correct_summary$geneset = factor(correct_summary$geneset, levels = ordered_genesets)
 
@@ -4162,7 +4162,7 @@ library(patchwork)
 # - Other conventional signatures:
 #   positively correlated with iCMS2_Up / iCMS3_Down (r > 0 & p < 0.05)
 #   negatively correlated with iCMS2_Down / iCMS3_Up (r < 0 & p < 0.05)
-p_data_all <- p_data_all %>%
+p_data_all = p_data_all %>%
   mutate(is_correct = case_when(
     geneset %in% c("FEVR_Wnt_Down", "WntQuant_inhibition") ~ (
       (contrast %in% c("iCMS2_Up", "iCMS3_Down") & Correlation < 0 & p < 0.05) |
@@ -4175,16 +4175,16 @@ p_data_all <- p_data_all %>%
   ))
 
 # 2. Count the correct calls per signature and sort from most to fewest
-correct_summary <- p_data_all %>%
+correct_summary = p_data_all %>%
   group_by(geneset, contrast) %>%
   summarise(correct_count = sum(is_correct), .groups = "drop")
 
-total_correct <- correct_summary %>%
+total_correct = correct_summary %>%
   group_by(geneset) %>%
   summarise(total = sum(correct_count), .groups = "drop") %>%
   arrange(total) # Sort ascending so the largest totals end up on top
 
-ordered_genesets <- total_correct$geneset
+ordered_genesets = total_correct$geneset
 p_data_all$geneset = factor(p_data_all$geneset, levels = ordered_genesets)
 correct_summary$geneset = factor(correct_summary$geneset, levels = ordered_genesets)
 
@@ -4384,7 +4384,7 @@ library(patchwork)
 # - Other conventional signatures:
 #   positively correlated with iCMS2_Up / iCMS3_Down (r > 0 & p < 0.05)
 #   negatively correlated with iCMS2_Down / iCMS3_Up (r < 0 & p < 0.05)
-p_data_all <- p_data_all %>%
+p_data_all = p_data_all %>%
   mutate(is_correct = case_when(
     geneset %in% c("FEVR_Wnt_Down", "WntQuant_inhibition") ~ (
       (contrast %in% c("iCMS2_Up", "iCMS3_Down") & Correlation < 0 & p < 0.05) |
@@ -4397,16 +4397,16 @@ p_data_all <- p_data_all %>%
   ))
 
 # 2. Count the correct calls per signature and sort from most to fewest
-correct_summary <- p_data_all %>%
+correct_summary = p_data_all %>%
   group_by(geneset, contrast) %>%
   summarise(correct_count = sum(is_correct), .groups = "drop")
 
-total_correct <- correct_summary %>%
+total_correct = correct_summary %>%
   group_by(geneset) %>%
   summarise(total = sum(correct_count), .groups = "drop") %>%
   arrange(total) # Sort ascending so the largest totals end up on top
 
-ordered_genesets <- total_correct$geneset
+ordered_genesets = total_correct$geneset
 p_data_all$geneset = factor(p_data_all$geneset, levels = ordered_genesets)
 correct_summary$geneset = factor(correct_summary$geneset, levels = ordered_genesets)
 
@@ -4490,7 +4490,7 @@ for(i in 1:length(vector)){
   WNT_HL=WNT_HL[,-1]
   WNT_HL_selected=WNT_HL[vector[i],,drop=F]
   group$group=ifelse(group$group==WNT_HL_selected$Group1,WNT_HL_selected$Group1_Status,WNT_HL_selected$Group2_Status)
-  group$Tag <- paste0(group$Tag,"_",vector[i])
+  group$Tag = paste0(group$Tag,"_",vector[i])
   if(i==1){
     all_group=group
   }else{
@@ -4629,7 +4629,7 @@ for(i in 1:length(vector)){
   WNT_HL=WNT_HL[,-1]
   WNT_HL_selected=WNT_HL[vector[i],,drop=F]
   group$group=ifelse(group$group==WNT_HL_selected$Group1,WNT_HL_selected$Group1_Status,WNT_HL_selected$Group2_Status)
-  group$Tag <- paste0(group$Tag,"_",vector[i])
+  group$Tag = paste0(group$Tag,"_",vector[i])
   if(i==1){
     all_group=group
   }else{
@@ -4742,19 +4742,19 @@ library(forestploter)
 setwd("C:/Users/user/Desktop/input")
 load("C:/Users/user/Desktop/input/cluster.Rdata")
 
-clinical_molecular_public_all <- read.table(
+clinical_molecular_public_all = read.table(
   file = "clinical_molecular_public_all.txt",
   header = TRUE, sep = "\t", check.names = FALSE
 )
 
-data <- merge(cluster, clinical_molecular_public_all,
+data = merge(cluster, clinical_molecular_public_all,
               by.x = "Tag", by.y = "sample")
 
-data_analysis <- data[, c("Tag","cluster","dataset","age","gender","stage",
+data_analysis = data[, c("Tag","cluster","dataset","age","gender","stage",
                           "pt","pn","pm","tnm","msi","cimp","kras_mut",
                           "braf_mut","cms_label","osMo","osStat")]
 
-data_analysis <- data_analysis %>%
+data_analysis = data_analysis %>%
   mutate(
     # Reclassify tnm
     tnm = case_when(
@@ -4796,12 +4796,12 @@ data_analysis <- data_analysis %>%
   )
 
 # Lock the survival data (no extra n_missing row filtering)
-dat_os_filtered <- data_analysis %>%
+dat_os_filtered = data_analysis %>%
   filter(!is.na(osMo), !is.na(osStat), osMo > 0)
 
 cat("\nSamples analysed:", nrow(dat_os_filtered), "\n")
 
-dat_os_filtered <- dat_os_filtered %>%
+dat_os_filtered = dat_os_filtered %>%
   mutate(
     gender    = factor(gender),
     msi       = factor(msi),
@@ -4817,20 +4817,20 @@ dat_os_filtered <- dat_os_filtered %>%
     cimp      = relevel(cimp, ref = "CIMP.Neg")
   )
 
-formula_full <- Surv(osMo, osStat) ~ cluster + age + gender +
+formula_full = Surv(osMo, osStat) ~ cluster + age + gender +
   tnm + msi + cimp + kras_mut + braf_mut + cms_label
 
-fit_full <- coxph(formula_full, data = dat_os_filtered)
+fit_full = coxph(formula_full, data = dat_os_filtered)
 cat("\n===== Main model summary =====\n")
 print(summary(fit_full))
 
-res_tidy <- tidy(fit_full, exponentiate = TRUE, conf.int = TRUE)
+res_tidy = tidy(fit_full, exponentiate = TRUE, conf.int = TRUE)
 
-factors_in_model <- c("cluster", "gender", "tnm", "msi", "cimp", "kras_mut", "braf_mut", "cms_label")
-factors_in_model <- intersect(factors_in_model, names(dat_os_filtered))
+factors_in_model = c("cluster", "gender", "tnm", "msi", "cimp", "kras_mut", "braf_mut", "cms_label")
+factors_in_model = intersect(factors_in_model, names(dat_os_filtered))
 
 # Display-name dictionary for the SCI subtypes
-var_labels <- c(
+var_labels = c(
   cluster   = "WSS labels",
   gender    = "Gender",
   tnm       = "TNM stages",
@@ -4841,14 +4841,14 @@ var_labels <- c(
   cms_label = "CMS labels"
 )
 
-plot_rows <- list()
+plot_rows = list()
 
 for (v in factors_in_model) {
-  lvls <- levels(dat_os_filtered[[v]])
-  display_var_name <- ifelse(v %in% names(var_labels), var_labels[v], v)
+  lvls = levels(dat_os_filtered[[v]])
+  display_var_name = ifelse(v %in% names(var_labels), var_labels[v], v)
 
   # Main variable heading row
-  plot_rows[[paste0(v, "_header")]] <- data.frame(
+  plot_rows[[paste0(v, "_header")]] = data.frame(
     col1 = display_var_name,
     col2 = "",
     col3 = "",
@@ -4863,12 +4863,12 @@ for (v in factors_in_model) {
 
   # Rows for each subtype / level
   for (i in seq_along(lvls)) {
-    l <- lvls[i]
-    n_val <- sum(dat_os_filtered[[v]] == l, na.rm = TRUE)
+    l = lvls[i]
+    n_val = sum(dat_os_filtered[[v]] == l, na.rm = TRUE)
 
     if (i == 1) {
       # Reference group
-      plot_rows[[paste0(v, "_", l)]] <- data.frame(
+      plot_rows[[paste0(v, "_", l)]] = data.frame(
         col1 = "",
         col2 = paste0("   ", l),
         col3 = as.character(n_val),
@@ -4882,15 +4882,15 @@ for (v in factors_in_model) {
       )
     } else {
       # Non-reference group
-      term_name <- paste0(v, l)
-      sub_res <- res_tidy %>% filter(term == term_name)
+      term_name = paste0(v, l)
+      sub_res = res_tidy %>% filter(term == term_name)
 
-      hr_str <- if(nrow(sub_res) > 0) sprintf("%.2f (%.2f-%.2f)", sub_res$estimate, sub_res$conf.low, sub_res$conf.high) else ""
-      p_str  <- if(nrow(sub_res) > 0) {
+      hr_str = if(nrow(sub_res) > 0) sprintf("%.2f (%.2f-%.2f)", sub_res$estimate, sub_res$conf.low, sub_res$conf.high) else ""
+      p_str = if(nrow(sub_res) > 0) {
         if(sub_res$p.value < 0.001) "<0.001" else sprintf("%.3f", sub_res$p.value)
       } else ""
 
-      plot_rows[[paste0(v, "_", l)]] <- data.frame(
+      plot_rows[[paste0(v, "_", l)]] = data.frame(
         col1 = "",
         col2 = paste0("   ", l),
         col3 = as.character(n_val),
@@ -4907,25 +4907,25 @@ for (v in factors_in_model) {
 }
 
 # Handle the continuous variable (age)
-continuous_vars <- intersect(c("age"), names(dat_os_filtered))
+continuous_vars = intersect(c("age"), names(dat_os_filtered))
 for (cv in continuous_vars) {
-  sub_res <- res_tidy %>% filter(term == cv)
-  n_val <- sum(!is.na(dat_os_filtered[[cv]]))
-  display_cv_name <- ifelse(cv == "age", "Age", cv)
+  sub_res = res_tidy %>% filter(term == cv)
+  n_val = sum(!is.na(dat_os_filtered[[cv]]))
+  display_cv_name = ifelse(cv == "age", "Age", cv)
 
-  hr_str <- if(nrow(sub_res) > 0) {
+  hr_str = if(nrow(sub_res) > 0) {
     sprintf("%.2f (%.2f-%.2f)", sub_res$estimate, sub_res$conf.low, sub_res$conf.high)
   } else {
     ""
   }
 
-  p_str <- if(nrow(sub_res) > 0) {
+  p_str = if(nrow(sub_res) > 0) {
     if(sub_res$p.value < 0.001) "<0.001" else sprintf("%.3f", sub_res$p.value)
   } else {
     ""
   }
 
-  plot_rows[[cv]] <- data.frame(
+  plot_rows[[cv]] = data.frame(
     col1 = display_cv_name,
     col2 = "",
     col3 = as.character(n_val),
@@ -4940,10 +4940,10 @@ for (cv in continuous_vars) {
 }
 
 # Merge all rows
-df_forest_input <- bind_rows(plot_rows)
+df_forest_input = bind_rows(plot_rows)
 
 # Set the header
-colnames(df_forest_input)[1:6] <- c(
+colnames(df_forest_input)[1:6] = c(
   "Variable",
   "Subgroup",
   "N",
@@ -4954,7 +4954,7 @@ colnames(df_forest_input)[1:6] <- c(
 
 pdf("C:/Users/user/Desktop/Multivariable_Cox_Forestplot.pdf", width = 11, height = 7.5)
 
-p_final <- forest(
+p_final = forest(
   df_forest_input[, 1:6],
   est = df_forest_input$HR,
   lower = df_forest_input$lower,
@@ -4986,20 +4986,20 @@ library(forestploter)
 setwd("C:/Users/user/Desktop/input")
 load("C:/Users/user/Desktop/input/cluster.Rdata")
 
-clinical_molecular_public_all <- read.table(
+clinical_molecular_public_all = read.table(
   file = "clinical_molecular_public_all.txt",
   header = TRUE, sep = "\t", check.names = FALSE
 )
 
-data <- merge(cluster, clinical_molecular_public_all,
+data = merge(cluster, clinical_molecular_public_all,
               by.x = "Tag", by.y = "sample")
 
 # Set the survival endpoint to the RFS fields (rfsMo, rfsStat)
-data_analysis <- data[, c("Tag","cluster","dataset","age","gender","stage",
+data_analysis = data[, c("Tag","cluster","dataset","age","gender","stage",
                           "pt","pn","pm","tnm","msi","cimp","kras_mut",
                           "braf_mut","cms_label","rfsMo","rfsStat")]
 
-data_analysis <- data_analysis %>%
+data_analysis = data_analysis %>%
   mutate(
     # Reclassify tnm
     tnm = case_when(
@@ -5041,12 +5041,12 @@ data_analysis <- data_analysis %>%
   )
 
 # Lock the RFS survival data (no extra n_missing row filtering)
-dat_rfs_filtered <- data_analysis %>%
+dat_rfs_filtered = data_analysis %>%
   filter(!is.na(rfsMo), !is.na(rfsStat), rfsMo > 0)
 
 cat("\nRFS samples analysed:", nrow(dat_rfs_filtered), "\n")
 
-dat_rfs_filtered <- dat_rfs_filtered %>%
+dat_rfs_filtered = dat_rfs_filtered %>%
   mutate(
     gender    = factor(gender),
     msi       = factor(msi),
@@ -5062,20 +5062,20 @@ dat_rfs_filtered <- dat_rfs_filtered %>%
     cimp      = relevel(cimp, ref = "CIMP.Neg")     # cimp uses CIMP.Neg as reference
   )
 
-formula_full <- Surv(rfsMo, rfsStat) ~ cluster + age + gender +
+formula_full = Surv(rfsMo, rfsStat) ~ cluster + age + gender +
   tnm + msi + cimp + kras_mut + braf_mut + cms_label
 
-fit_full <- coxph(formula_full, data = dat_rfs_filtered)
+fit_full = coxph(formula_full, data = dat_rfs_filtered)
 cat("\n===== Main model summary (RFS) =====\n")
 print(summary(fit_full))
 
-res_tidy <- tidy(fit_full, exponentiate = TRUE, conf.int = TRUE)
+res_tidy = tidy(fit_full, exponentiate = TRUE, conf.int = TRUE)
 
-factors_in_model <- c("cluster", "gender", "tnm", "msi", "cimp", "kras_mut", "braf_mut", "cms_label")
-factors_in_model <- intersect(factors_in_model, names(dat_rfs_filtered))
+factors_in_model = c("cluster", "gender", "tnm", "msi", "cimp", "kras_mut", "braf_mut", "cms_label")
+factors_in_model = intersect(factors_in_model, names(dat_rfs_filtered))
 
 # Display-name dictionary for the SCI subtypes
-var_labels <- c(
+var_labels = c(
   cluster   = "WSS labels",
   gender    = "Gender",
   tnm       = "TNM stages",
@@ -5086,14 +5086,14 @@ var_labels <- c(
   cms_label = "CMS labels"
 )
 
-plot_rows <- list()
+plot_rows = list()
 
 for (v in factors_in_model) {
-  lvls <- levels(dat_rfs_filtered[[v]])
-  display_var_name <- ifelse(v %in% names(var_labels), var_labels[v], v)
+  lvls = levels(dat_rfs_filtered[[v]])
+  display_var_name = ifelse(v %in% names(var_labels), var_labels[v], v)
 
   # Main variable heading row
-  plot_rows[[paste0(v, "_header")]] <- data.frame(
+  plot_rows[[paste0(v, "_header")]] = data.frame(
     col1 = display_var_name,
     col2 = "",
     col3 = "",
@@ -5108,12 +5108,12 @@ for (v in factors_in_model) {
 
   # Rows for each subtype / level
   for (i in seq_along(lvls)) {
-    l <- lvls[i]
-    n_val <- sum(dat_rfs_filtered[[v]] == l, na.rm = TRUE)
+    l = lvls[i]
+    n_val = sum(dat_rfs_filtered[[v]] == l, na.rm = TRUE)
 
     if (i == 1) {
       # Reference group
-      plot_rows[[paste0(v, "_", l)]] <- data.frame(
+      plot_rows[[paste0(v, "_", l)]] = data.frame(
         col1 = "",
         col2 = paste0("   ", l),
         col3 = as.character(n_val),
@@ -5127,15 +5127,15 @@ for (v in factors_in_model) {
       )
     } else {
       # Non-reference group
-      term_name <- paste0(v, l)
-      sub_res <- res_tidy %>% filter(term == term_name)
+      term_name = paste0(v, l)
+      sub_res = res_tidy %>% filter(term == term_name)
 
-      hr_str <- if(nrow(sub_res) > 0) sprintf("%.2f (%.2f-%.2f)", sub_res$estimate, sub_res$conf.low, sub_res$conf.high) else ""
-      p_str  <- if(nrow(sub_res) > 0) {
+      hr_str = if(nrow(sub_res) > 0) sprintf("%.2f (%.2f-%.2f)", sub_res$estimate, sub_res$conf.low, sub_res$conf.high) else ""
+      p_str = if(nrow(sub_res) > 0) {
         if(sub_res$p.value < 0.001) "<0.001" else sprintf("%.3f", sub_res$p.value)
       } else ""
 
-      plot_rows[[paste0(v, "_", l)]] <- data.frame(
+      plot_rows[[paste0(v, "_", l)]] = data.frame(
         col1 = "",
         col2 = paste0("   ", l),
         col3 = as.character(n_val),
@@ -5152,25 +5152,25 @@ for (v in factors_in_model) {
 }
 
 # Handle the continuous variable (age)
-continuous_vars <- intersect(c("age"), names(dat_rfs_filtered))
+continuous_vars = intersect(c("age"), names(dat_rfs_filtered))
 for (cv in continuous_vars) {
-  sub_res <- res_tidy %>% filter(term == cv)
-  n_val <- sum(!is.na(dat_rfs_filtered[[cv]]))
-  display_cv_name <- ifelse(cv == "age", "Age", cv)
+  sub_res = res_tidy %>% filter(term == cv)
+  n_val = sum(!is.na(dat_rfs_filtered[[cv]]))
+  display_cv_name = ifelse(cv == "age", "Age", cv)
 
-  hr_str <- if(nrow(sub_res) > 0) {
+  hr_str = if(nrow(sub_res) > 0) {
     sprintf("%.2f (%.2f-%.2f)", sub_res$estimate, sub_res$conf.low, sub_res$conf.high)
   } else {
     ""
   }
 
-  p_str <- if(nrow(sub_res) > 0) {
+  p_str = if(nrow(sub_res) > 0) {
     if(sub_res$p.value < 0.001) "<0.001" else sprintf("%.3f", sub_res$p.value)
   } else {
     ""
   }
 
-  plot_rows[[cv]] <- data.frame(
+  plot_rows[[cv]] = data.frame(
     col1 = display_cv_name,
     col2 = "",
     col3 = as.character(n_val),
@@ -5185,10 +5185,10 @@ for (cv in continuous_vars) {
 }
 
 # Merge all rows
-df_forest_input <- bind_rows(plot_rows)
+df_forest_input = bind_rows(plot_rows)
 
 # Set the header
-colnames(df_forest_input)[1:6] <- c(
+colnames(df_forest_input)[1:6] = c(
   "Variable",
   "Subgroup",
   "N",
@@ -5199,7 +5199,7 @@ colnames(df_forest_input)[1:6] <- c(
 
 pdf("C:/Users/user/Desktop/Multivariable_Cox_Forestplot_RFS.pdf", width = 11, height = 7.5)
 
-p_final <- forest(
+p_final = forest(
   df_forest_input[, 1:6],
   est = df_forest_input$HR,
   lower = df_forest_input$lower,

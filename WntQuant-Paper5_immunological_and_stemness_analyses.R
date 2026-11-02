@@ -141,7 +141,7 @@ TCGAtmb = lapply(fs,function(x){
   library(maftools)
   load(paste0("input/TMB/TCGA_",x,"_MC3_maf.Rdata"))
   TMB = data.frame(tmb(maf = maf))
-  TMB$Tumor_Sample_Barcode <- as.character(TMB$Tumor_Sample_Barcode)
+  TMB$Tumor_Sample_Barcode = as.character(TMB$Tumor_Sample_Barcode)
   TMB$Group = x
   print(x)
   return(TMB)
@@ -353,11 +353,11 @@ tme_all=tme_all[,intersect(sig$Signatures,colnames(tme_all))]
 sig=sig[sig$Signatures%in%colnames(tme_all),]
 signature_tme_literatures=signature_tme_literatures[sig$Signatures]
 for(i in 1:length(signature_tme_literatures)) {
-  signature_tme_literatures[[i]] <- c(paste0("PMID:",sig$PMID[i]), signature_tme_literatures[[i]])
+  signature_tme_literatures[[i]] = c(paste0("PMID:",sig$PMID[i]), signature_tme_literatures[[i]])
 }
 load("input/ssGSEA28.Rdata")
 for(i in 1:length(cellMarker)) {
-  cellMarker[[i]] <- c(paste0("PMID:28052254"), cellMarker[[i]])
+  cellMarker[[i]] = c(paste0("PMID:28052254"), cellMarker[[i]])
 }
 write.gmt=function (gs.list, file) {
   if (length(grep(".gmt$", file)) == 0)
@@ -1238,7 +1238,7 @@ for(i in 1:length(gene)){
   wnt_IMvigor_prognosis=wnt_IMvigor[,c(gene[i],"os","censOS")]
   colnames(wnt_IMvigor_prognosis)=c("gene","os","censOS")
   wnt_IMvigor_prognosis=na.omit(wnt_IMvigor_prognosis)
-  quartiles <- quantile(wnt_IMvigor_prognosis$gene, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+  quartiles = quantile(wnt_IMvigor_prognosis$gene, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
   wnt_IMvigor_prognosis$level = cut(wnt_IMvigor_prognosis$gene, breaks = quartiles, include.lowest = TRUE,
                                     labels = c("Low","Medium","High"))
   wnt_IMvigor_prognosis$level=factor(wnt_IMvigor_prognosis$level,levels=c("Low","Medium","High"))
@@ -1860,7 +1860,7 @@ rm(list=ls())
 gc()
 library(readxl)
 setwd("input")
-RNA <- read_excel("1-s2.0-S0092867418303581-mmc1.xlsx", sheet = "StemnessScores_RNAexp")[,-c(2,3)]
+RNA = read_excel("1-s2.0-S0092867418303581-mmc1.xlsx", sheet = "StemnessScores_RNAexp")[,-c(2,3)]
 load("input/pancancer_cluster.Rdata")
 RNA$TCGAlong.id=substr(RNA$TCGAlong.id,1,15)
 colnames(RNA)

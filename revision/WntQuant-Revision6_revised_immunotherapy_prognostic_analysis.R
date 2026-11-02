@@ -54,15 +54,15 @@ res_all[pred_cols] = lapply(res_all[pred_cols], function(x) {
 })
 head(res_all)
 library(ggplot2)
-pred_cols <- c("Ensemble", "SVM", "RF", "NNET", "KNN", "DT", "XGBoost")
-acc_df <- data.frame(
+pred_cols = c("Ensemble", "SVM", "RF", "NNET", "KNN", "DT", "XGBoost")
+acc_df = data.frame(
   Method = pred_cols,
   Accuracy = sapply(pred_cols, function(m) {
     mean(res_all[[m]] == res_all$GT, na.rm = TRUE)
   })
 )
-acc_df <- acc_df[order(acc_df$Accuracy), ]
-acc_df$Method <- factor(acc_df$Method, levels = acc_df$Method)
+acc_df = acc_df[order(acc_df$Accuracy), ]
+acc_df$Method = factor(acc_df$Method, levels = acc_df$Method)
 
 ggplot(acc_df, aes(x = Method, y = Accuracy, fill = Accuracy)) +
   geom_col(width = 0.7, color = "black") +
@@ -87,27 +87,27 @@ ggplot(acc_df, aes(x = Method, y = Accuracy, fill = Accuracy)) +
 library(ggplot2)
 
 # Desktop path (Windows)
-out_dir <- "C:/Users/user/Desktop"
+out_dir = "C:/Users/user/Desktop"
 
 # 7 methods
-pred_cols <- c("Ensemble", "SVM", "RF", "NNET", "KNN", "DT", "XGBoost")
+pred_cols = c("Ensemble", "SVM", "RF", "NNET", "KNN", "DT", "XGBoost")
 
 # Keep the factor order consistent
-res_all$GT <- factor(res_all$GT, levels = c("Cold", "Hot"))
+res_all$GT = factor(res_all$GT, levels = c("Cold", "Hot"))
 for (m in pred_cols) {
-  res_all[[m]] <- factor(res_all[[m]], levels = c("Cold", "Hot"))
+  res_all[[m]] = factor(res_all[[m]], levels = c("Cold", "Hot"))
 }
 
 # Generate seven PDFs in turn
 for (m in pred_cols) {
 
   # Confusion matrix of the current method
-  cm_df <- as.data.frame(table(Predicted = res_all[[m]], Actual = res_all$GT))
-  cm_df$Predicted <- factor(cm_df$Predicted, levels = c("Cold", "Hot"))
-  cm_df$Actual    <- factor(cm_df$Actual,    levels = c("Cold", "Hot"))
+  cm_df = as.data.frame(table(Predicted = res_all[[m]], Actual = res_all$GT))
+  cm_df$Predicted = factor(cm_df$Predicted, levels = c("Cold", "Hot"))
+  cm_df$Actual    = factor(cm_df$Actual,    levels = c("Cold", "Hot"))
 
   # Plot
-  p <- ggplot(cm_df, aes(x = Actual, y = Predicted, fill = Freq)) +
+  p = ggplot(cm_df, aes(x = Actual, y = Predicted, fill = Freq)) +
     geom_tile(color = "black") +
     geom_text(aes(label = Freq), color = "black", size = 5) +
     scale_fill_gradient2(low = "#A6CEE3", mid = "white", high = "#FB9A99",
@@ -145,18 +145,18 @@ library(ggpp)
 load("C:/Users/user/Desktop/input/IMvigor_WNT_score.Rdata")
 load("C:/Users/user/Desktop/input/IMvigor210CoreBiologies.Rdata")
 
-wnt_IMvigor <- merge(IMvigor_WNT_score$final_activity_score, phenoData, by = "row.names")
-wnt_IMvigor <- wnt_IMvigor[!is.na(wnt_IMvigor$`Immune phenotype`), ]
+wnt_IMvigor = merge(IMvigor_WNT_score$final_activity_score, phenoData, by = "row.names")
+wnt_IMvigor = wnt_IMvigor[!is.na(wnt_IMvigor$`Immune phenotype`), ]
 
 # ========== 2. Split into Hot / Cold
-wnt_IMvigor_hot  <- wnt_IMvigor[wnt_IMvigor$`Immune phenotype` %in% c("inflamed"), ]
-wnt_IMvigor_cold <- wnt_IMvigor[wnt_IMvigor$`Immune phenotype` %in% c("desert", "excluded"), ]
+wnt_IMvigor_hot = wnt_IMvigor[wnt_IMvigor$`Immune phenotype` %in% c("inflamed"), ]
+wnt_IMvigor_cold = wnt_IMvigor[wnt_IMvigor$`Immune phenotype` %in% c("desert", "excluded"), ]
 
-wnt_IMvigor_hot_prognosis  <- wnt_IMvigor_hot[,  c("activity_score", "os", "censOS")]
-wnt_IMvigor_cold_prognosis <- wnt_IMvigor_cold[, c("activity_score", "os", "censOS")]
+wnt_IMvigor_hot_prognosis = wnt_IMvigor_hot[,  c("activity_score", "os", "censOS")]
+wnt_IMvigor_cold_prognosis = wnt_IMvigor_cold[, c("activity_score", "os", "censOS")]
 
 # ========== 3. Find the optimal cut point in the Cold group with surv_cutpoint
-res.cut <- surv_cutpoint(
+res.cut = surv_cutpoint(
   wnt_IMvigor_cold_prognosis,
   time      = "os",
   event     = "censOS",
@@ -166,31 +166,31 @@ res.cut <- surv_cutpoint(
 summary(res.cut)
 print(res.cut$activity_score$cutpoint)
 
-res.cat <- surv_categorize(res.cut)
+res.cat = surv_categorize(res.cut)
 table(res.cat$activity_score)
 
-wnt_IMvigor_cold_prognosis$level <- ifelse(
+wnt_IMvigor_cold_prognosis$level = ifelse(
   res.cat$activity_score == "low",  "Cold_low",  "Cold_high"
 )
 
 # ========== 4. Label the Hot group
-wnt_IMvigor_hot_prognosis$level <- "Hot"
+wnt_IMvigor_hot_prognosis$level = "Hot"
 
 # ========== 5. Merge
-wnt_IMvigor_prognosis <- rbind(wnt_IMvigor_hot_prognosis, wnt_IMvigor_cold_prognosis)
-wnt_IMvigor_prognosis$level <- factor(
+wnt_IMvigor_prognosis = rbind(wnt_IMvigor_hot_prognosis, wnt_IMvigor_cold_prognosis)
+wnt_IMvigor_prognosis$level = factor(
   wnt_IMvigor_prognosis$level,
   levels = c("Hot", "Cold_low", "Cold_high")
 )
 
-wnt_IMvigor_prognosis <- na.omit(wnt_IMvigor_prognosis)
+wnt_IMvigor_prognosis = na.omit(wnt_IMvigor_prognosis)
 print(table(wnt_IMvigor_prognosis$level))
 
 # ========== 6. Survival analysis
-fitd  <- survdiff(Surv(os, censOS) ~ level, data = wnt_IMvigor_prognosis)
-p.val <- 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
+fitd = survdiff(Surv(os, censOS) ~ level, data = wnt_IMvigor_prognosis)
+p.val = 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
 
-fit <- survfit(
+fit = survfit(
   Surv(os, censOS) ~ level,
   data = wnt_IMvigor_prognosis,
   type = "kaplan-meier",
@@ -198,20 +198,20 @@ fit <- survfit(
   conf.type = "plain"
 )
 
-ps <- pairwise_survdiff(
+ps = pairwise_survdiff(
   Surv(os, censOS) ~ level,
   data = wnt_IMvigor_prognosis,
   p.adjust.method = "none"
 )
 
 # ========== 7. Hot vs Cold_high computed manually
-temp_data <- wnt_IMvigor_prognosis[wnt_IMvigor_prognosis$level %in% c("Hot", "Cold_high"), ]
-temp_data$level <- droplevels(temp_data$level)
+temp_data = wnt_IMvigor_prognosis[wnt_IMvigor_prognosis$level %in% c("Hot", "Cold_high"), ]
+temp_data$level = droplevels(temp_data$level)
 
-temp_fit <- survdiff(Surv(os, censOS) ~ level, data = temp_data)
-hot_vs_cold_high_p <- 1 - pchisq(temp_fit$chisq, length(temp_fit$n) - 1)
+temp_fit = survdiff(Surv(os, censOS) ~ level, data = temp_data)
+hot_vs_cold_high_p = 1 - pchisq(temp_fit$chisq, length(temp_fit$n) - 1)
 
-hot_vs_cold_high_label <- ifelse(
+hot_vs_cold_high_label = ifelse(
   is.na(hot_vs_cold_high_p), "NA",
   ifelse(hot_vs_cold_high_p < 0.001, "p < 0.001",
          ifelse(hot_vs_cold_high_p < 0.05,
@@ -219,13 +219,13 @@ hot_vs_cold_high_label <- ifelse(
 )
 
 # ========== 8. Cold_low vs Cold_high computed manually
-temp_data2 <- wnt_IMvigor_prognosis[wnt_IMvigor_prognosis$level %in% c("Cold_low", "Cold_high"), ]
-temp_data2$level <- droplevels(temp_data2$level)
+temp_data2 = wnt_IMvigor_prognosis[wnt_IMvigor_prognosis$level %in% c("Cold_low", "Cold_high"), ]
+temp_data2$level = droplevels(temp_data2$level)
 
-temp_fit2 <- survdiff(Surv(os, censOS) ~ level, data = temp_data2)
-cold_low_vs_cold_high_p <- 1 - pchisq(temp_fit2$chisq, length(temp_fit2$n) - 1)
+temp_fit2 = survdiff(Surv(os, censOS) ~ level, data = temp_data2)
+cold_low_vs_cold_high_p = 1 - pchisq(temp_fit2$chisq, length(temp_fit2$n) - 1)
 
-cold_low_vs_cold_high_label <- ifelse(
+cold_low_vs_cold_high_label = ifelse(
   is.na(cold_low_vs_cold_high_p), "NA",
   ifelse(cold_low_vs_cold_high_p < 0.001, "p < 0.001",
          ifelse(cold_low_vs_cold_high_p < 0.05,
@@ -233,10 +233,10 @@ cold_low_vs_cold_high_label <- ifelse(
 )
 
 # ========== 9. Plot
-mycol <- c('#ffd400', '#009ad6', '#d71345')
-names(fit$strata) <- gsub("level=", "", names(fit$strata))
+mycol = c('#ffd400', '#009ad6', '#d71345')
+names(fit$strata) = gsub("level=", "", names(fit$strata))
 
-p <- ggsurvplot(
+p = ggsurvplot(
   fit = fit,
   data = wnt_IMvigor_prognosis,
   conf.int = FALSE,
@@ -262,11 +262,11 @@ p <- ggsurvplot(
   censor.size = 3
 )
 
-p.lab <- paste0("log-rank test p",
+p.lab = paste0("log-rank test p",
                 ifelse(p.val < 0.001, " < 0.001",
                        paste0(" = ", round(p.val, 3))))
 
-p$plot <- p$plot +
+p$plot = p$plot +
   annotate("text", x = 0, y = -0.08,
            label = p.lab, size = 6, hjust = 0, fontface = "italic") +
   annotate("text", x = 0, y = 0.00,
@@ -291,18 +291,18 @@ library(ggpp)
 load("C:/Users/user/Desktop/input/IMvigor_WNT_score.Rdata")
 load("C:/Users/user/Desktop/input/IMvigor210CoreBiologies.Rdata")
 
-wnt_IMvigor <- merge(IMvigor_WNT_score$final_activity_score, phenoData, by = "row.names")
-wnt_IMvigor <- wnt_IMvigor[!is.na(wnt_IMvigor$`Immune phenotype`), ]
+wnt_IMvigor = merge(IMvigor_WNT_score$final_activity_score, phenoData, by = "row.names")
+wnt_IMvigor = wnt_IMvigor[!is.na(wnt_IMvigor$`Immune phenotype`), ]
 
 # ========== 2. Keep only the desert group
-wnt_IMvigor_desert <- wnt_IMvigor[wnt_IMvigor$`Immune phenotype` %in% c("desert"), ]
+wnt_IMvigor_desert = wnt_IMvigor[wnt_IMvigor$`Immune phenotype` %in% c("desert"), ]
 
-wnt_IMvigor_desert_prognosis <- wnt_IMvigor_desert[, c("activity_score", "os", "censOS")]
+wnt_IMvigor_desert_prognosis = wnt_IMvigor_desert[, c("activity_score", "os", "censOS")]
 
 cat("Desert group n = ", nrow(wnt_IMvigor_desert_prognosis), "\n")
 
 # ========== 3. Find the optimal cut point with surv_cutpoint
-res.cut <- surv_cutpoint(
+res.cut = surv_cutpoint(
   wnt_IMvigor_desert_prognosis,
   time      = "os",
   event     = "censOS",
@@ -312,28 +312,28 @@ res.cut <- surv_cutpoint(
 summary(res.cut)
 cat("Optimal cut point: ", res.cut$activity_score$cutpoint, "\n")
 
-res.cat <- surv_categorize(res.cut)
+res.cat = surv_categorize(res.cut)
 table(res.cat$activity_score)
 
-wnt_IMvigor_desert_prognosis$level <- ifelse(
+wnt_IMvigor_desert_prognosis$level = ifelse(
   res.cat$activity_score == "low", "Desert_low", "Desert_high"
 )
 
-wnt_IMvigor_desert_prognosis$level <- factor(
+wnt_IMvigor_desert_prognosis$level = factor(
   wnt_IMvigor_desert_prognosis$level,
   levels = c("Desert_low", "Desert_high")
 )
 
-wnt_IMvigor_desert_prognosis <- na.omit(wnt_IMvigor_desert_prognosis)
+wnt_IMvigor_desert_prognosis = na.omit(wnt_IMvigor_desert_prognosis)
 
 # Show the number of samples per group
 print(table(wnt_IMvigor_desert_prognosis$level))
 
 # ========== 4. Survival analysis
-fitd  <- survdiff(Surv(os, censOS) ~ level, data = wnt_IMvigor_desert_prognosis)
-p.val <- 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
+fitd = survdiff(Surv(os, censOS) ~ level, data = wnt_IMvigor_desert_prognosis)
+p.val = 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
 
-fit <- survfit(
+fit = survfit(
   Surv(os, censOS) ~ level,
   data = wnt_IMvigor_desert_prognosis,
   type = "kaplan-meier",
@@ -341,26 +341,26 @@ fit <- survfit(
   conf.type = "plain"
 )
 
-ps <- pairwise_survdiff(
+ps = pairwise_survdiff(
   Surv(os, censOS) ~ level,
   data = wnt_IMvigor_desert_prognosis,
   p.adjust.method = "none"
 )
 
 # ========== 5. Extract the p-value of the two-group comparison
-desert_low_vs_high_p <- NA
+desert_low_vs_high_p = NA
 
 if ("Desert_low" %in% rownames(ps$p.value) && "Desert_high" %in% colnames(ps$p.value)) {
-  desert_low_vs_high_p <- ps$p.value["Desert_low", "Desert_high"]
+  desert_low_vs_high_p = ps$p.value["Desert_low", "Desert_high"]
 } else if ("Desert_high" %in% rownames(ps$p.value) && "Desert_low" %in% colnames(ps$p.value)) {
-  desert_low_vs_high_p <- ps$p.value["Desert_high", "Desert_low"]
+  desert_low_vs_high_p = ps$p.value["Desert_high", "Desert_low"]
 } else {
-  temp_data <- wnt_IMvigor_desert_prognosis
-  temp_fit <- survdiff(Surv(os, censOS) ~ level, data = temp_data)
-  desert_low_vs_high_p <- 1 - pchisq(temp_fit$chisq, length(temp_fit$n) - 1)
+  temp_data = wnt_IMvigor_desert_prognosis
+  temp_fit = survdiff(Surv(os, censOS) ~ level, data = temp_data)
+  desert_low_vs_high_p = 1 - pchisq(temp_fit$chisq, length(temp_fit$n) - 1)
 }
 
-desert_low_vs_high_label <- ifelse(
+desert_low_vs_high_label = ifelse(
   is.na(desert_low_vs_high_p), "NA",
   ifelse(desert_low_vs_high_p < 0.001, "p < 0.001",
          ifelse(desert_low_vs_high_p < 0.05,
@@ -368,11 +368,11 @@ desert_low_vs_high_label <- ifelse(
 )
 
 # ========== 6. Plot (same style as above)
-mycol <- c('#009ad6', '#d71345')   # Desert_low blue, Desert_high red
+mycol = c('#009ad6', '#d71345')   # Desert_low blue, Desert_high red
 
-names(fit$strata) <- gsub("level=", "", names(fit$strata))
+names(fit$strata) = gsub("level=", "", names(fit$strata))
 
-p <- ggsurvplot(
+p = ggsurvplot(
   fit = fit,
   data = wnt_IMvigor_desert_prognosis,
   conf.int = FALSE,
@@ -399,11 +399,11 @@ p <- ggsurvplot(
   censor.size = 3
 )
 
-p.lab <- paste0("log-rank test p",
+p.lab = paste0("log-rank test p",
                 ifelse(p.val < 0.001, " < 0.001",
                        paste0(" = ", round(p.val, 3))))
 
-p$plot <- p$plot +
+p$plot = p$plot +
   annotate("text", x = 0, y = 0,
            label = p.lab, size = 6, hjust = 0, fontface = "italic")
 
@@ -422,18 +422,18 @@ library(ggpp)
 load("C:/Users/user/Desktop/input/IMvigor_WNT_score.Rdata")
 load("C:/Users/user/Desktop/input/IMvigor210CoreBiologies.Rdata")
 
-wnt_IMvigor <- merge(IMvigor_WNT_score$final_activity_score, phenoData, by = "row.names")
-wnt_IMvigor <- wnt_IMvigor[!is.na(wnt_IMvigor$`Immune phenotype`), ]
+wnt_IMvigor = merge(IMvigor_WNT_score$final_activity_score, phenoData, by = "row.names")
+wnt_IMvigor = wnt_IMvigor[!is.na(wnt_IMvigor$`Immune phenotype`), ]
 
 # ========== 2. Keep only the excluded group
-wnt_IMvigor_excluded <- wnt_IMvigor[wnt_IMvigor$`Immune phenotype` %in% c("excluded"), ]
+wnt_IMvigor_excluded = wnt_IMvigor[wnt_IMvigor$`Immune phenotype` %in% c("excluded"), ]
 
-wnt_IMvigor_excluded_prognosis <- wnt_IMvigor_excluded[, c("activity_score", "os", "censOS")]
+wnt_IMvigor_excluded_prognosis = wnt_IMvigor_excluded[, c("activity_score", "os", "censOS")]
 
 cat("Excluded group n = ", nrow(wnt_IMvigor_excluded_prognosis), "\n")
 
 # ========== 3. Find the optimal cut point with surv_cutpoint
-res.cut <- surv_cutpoint(
+res.cut = surv_cutpoint(
   wnt_IMvigor_excluded_prognosis,
   time      = "os",
   event     = "censOS",
@@ -443,28 +443,28 @@ res.cut <- surv_cutpoint(
 summary(res.cut)
 cat("Optimal cut point: ", res.cut$activity_score$cutpoint, "\n")
 
-res.cat <- surv_categorize(res.cut)
+res.cat = surv_categorize(res.cut)
 table(res.cat$activity_score)
 
-wnt_IMvigor_excluded_prognosis$level <- ifelse(
+wnt_IMvigor_excluded_prognosis$level = ifelse(
   res.cat$activity_score == "low", "Excluded_low", "Excluded_high"
 )
 
-wnt_IMvigor_excluded_prognosis$level <- factor(
+wnt_IMvigor_excluded_prognosis$level = factor(
   wnt_IMvigor_excluded_prognosis$level,
   levels = c("Excluded_low", "Excluded_high")
 )
 
-wnt_IMvigor_excluded_prognosis <- na.omit(wnt_IMvigor_excluded_prognosis)
+wnt_IMvigor_excluded_prognosis = na.omit(wnt_IMvigor_excluded_prognosis)
 
 # Show the number of samples per group
 print(table(wnt_IMvigor_excluded_prognosis$level))
 
 # ========== 4. Survival analysis
-fitd  <- survdiff(Surv(os, censOS) ~ level, data = wnt_IMvigor_excluded_prognosis)
-p.val <- 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
+fitd = survdiff(Surv(os, censOS) ~ level, data = wnt_IMvigor_excluded_prognosis)
+p.val = 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
 
-fit <- survfit(
+fit = survfit(
   Surv(os, censOS) ~ level,
   data = wnt_IMvigor_excluded_prognosis,
   type = "kaplan-meier",
@@ -472,26 +472,26 @@ fit <- survfit(
   conf.type = "plain"
 )
 
-ps <- pairwise_survdiff(
+ps = pairwise_survdiff(
   Surv(os, censOS) ~ level,
   data = wnt_IMvigor_excluded_prognosis,
   p.adjust.method = "none"
 )
 
 # ========== 5. Extract the p-value of the two-group comparison
-excluded_low_vs_high_p <- NA
+excluded_low_vs_high_p = NA
 
 if ("Excluded_low" %in% rownames(ps$p.value) && "Excluded_high" %in% colnames(ps$p.value)) {
-  excluded_low_vs_high_p <- ps$p.value["Excluded_low", "Excluded_high"]
+  excluded_low_vs_high_p = ps$p.value["Excluded_low", "Excluded_high"]
 } else if ("Excluded_high" %in% rownames(ps$p.value) && "Excluded_low" %in% colnames(ps$p.value)) {
-  excluded_low_vs_high_p <- ps$p.value["Excluded_high", "Excluded_low"]
+  excluded_low_vs_high_p = ps$p.value["Excluded_high", "Excluded_low"]
 } else {
-  temp_data <- wnt_IMvigor_excluded_prognosis
-  temp_fit <- survdiff(Surv(os, censOS) ~ level, data = temp_data)
-  excluded_low_vs_high_p <- 1 - pchisq(temp_fit$chisq, length(temp_fit$n) - 1)
+  temp_data = wnt_IMvigor_excluded_prognosis
+  temp_fit = survdiff(Surv(os, censOS) ~ level, data = temp_data)
+  excluded_low_vs_high_p = 1 - pchisq(temp_fit$chisq, length(temp_fit$n) - 1)
 }
 
-excluded_low_vs_high_label <- ifelse(
+excluded_low_vs_high_label = ifelse(
   is.na(excluded_low_vs_high_p), "NA",
   ifelse(excluded_low_vs_high_p < 0.001, "p < 0.001",
          ifelse(excluded_low_vs_high_p < 0.05,
@@ -499,11 +499,11 @@ excluded_low_vs_high_label <- ifelse(
 )
 
 # ========== 6. Plot (same style as above)
-mycol <- c('#009ad6', '#d71345')   # Excluded_low blue, Excluded_high red
+mycol = c('#009ad6', '#d71345')   # Excluded_low blue, Excluded_high red
 
-names(fit$strata) <- gsub("level=", "", names(fit$strata))
+names(fit$strata) = gsub("level=", "", names(fit$strata))
 
-p <- ggsurvplot(
+p = ggsurvplot(
   fit = fit,
   data = wnt_IMvigor_excluded_prognosis,
   conf.int = FALSE,
@@ -530,11 +530,11 @@ p <- ggsurvplot(
   censor.size = 3
 )
 
-p.lab <- paste0("log-rank test p",
+p.lab = paste0("log-rank test p",
                 ifelse(p.val < 0.001, " < 0.001",
                        paste0(" = ", round(p.val, 3))))
 
-p$plot <- p$plot +
+p$plot = p$plot +
   annotate("text", x = 0, y = 0,
            label = p.lab, size = 6, hjust = 0, fontface = "italic")
 
@@ -553,18 +553,18 @@ library(ggpp)
 load("C:/Users/user/Desktop/input/IMvigor_WNT_score.Rdata")
 load("C:/Users/user/Desktop/input/IMvigor210CoreBiologies.Rdata")
 
-wnt_IMvigor <- merge(IMvigor_WNT_score$final_activity_score, phenoData, by = "row.names")
-wnt_IMvigor <- wnt_IMvigor[!is.na(wnt_IMvigor$`Immune phenotype`), ]
+wnt_IMvigor = merge(IMvigor_WNT_score$final_activity_score, phenoData, by = "row.names")
+wnt_IMvigor = wnt_IMvigor[!is.na(wnt_IMvigor$`Immune phenotype`), ]
 
 # ========== 2. Keep only the inflamed group
-wnt_IMvigor_inflamed <- wnt_IMvigor[wnt_IMvigor$`Immune phenotype` %in% c("inflamed"), ]
+wnt_IMvigor_inflamed = wnt_IMvigor[wnt_IMvigor$`Immune phenotype` %in% c("inflamed"), ]
 
-wnt_IMvigor_inflamed_prognosis <- wnt_IMvigor_inflamed[, c("activity_score", "os", "censOS")]
+wnt_IMvigor_inflamed_prognosis = wnt_IMvigor_inflamed[, c("activity_score", "os", "censOS")]
 
 cat("Inflamed group n = ", nrow(wnt_IMvigor_inflamed_prognosis), "\n")
 
 # ========== 3. Find the optimal cut point with surv_cutpoint
-res.cut <- surv_cutpoint(
+res.cut = surv_cutpoint(
   wnt_IMvigor_inflamed_prognosis,
   time      = "os",
   event     = "censOS",
@@ -574,28 +574,28 @@ res.cut <- surv_cutpoint(
 summary(res.cut)
 cat("Optimal cut point: ", res.cut$activity_score$cutpoint, "\n")
 
-res.cat <- surv_categorize(res.cut)
+res.cat = surv_categorize(res.cut)
 table(res.cat$activity_score)
 
-wnt_IMvigor_inflamed_prognosis$level <- ifelse(
+wnt_IMvigor_inflamed_prognosis$level = ifelse(
   res.cat$activity_score == "low", "Inflamed_low", "Inflamed_high"
 )
 
-wnt_IMvigor_inflamed_prognosis$level <- factor(
+wnt_IMvigor_inflamed_prognosis$level = factor(
   wnt_IMvigor_inflamed_prognosis$level,
   levels = c("Inflamed_low", "Inflamed_high")
 )
 
-wnt_IMvigor_inflamed_prognosis <- na.omit(wnt_IMvigor_inflamed_prognosis)
+wnt_IMvigor_inflamed_prognosis = na.omit(wnt_IMvigor_inflamed_prognosis)
 
 # Show the number of samples per group
 print(table(wnt_IMvigor_inflamed_prognosis$level))
 
 # ========== 4. Survival analysis
-fitd  <- survdiff(Surv(os, censOS) ~ level, data = wnt_IMvigor_inflamed_prognosis)
-p.val <- 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
+fitd = survdiff(Surv(os, censOS) ~ level, data = wnt_IMvigor_inflamed_prognosis)
+p.val = 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
 
-fit <- survfit(
+fit = survfit(
   Surv(os, censOS) ~ level,
   data = wnt_IMvigor_inflamed_prognosis,
   type = "kaplan-meier",
@@ -603,26 +603,26 @@ fit <- survfit(
   conf.type = "plain"
 )
 
-ps <- pairwise_survdiff(
+ps = pairwise_survdiff(
   Surv(os, censOS) ~ level,
   data = wnt_IMvigor_inflamed_prognosis,
   p.adjust.method = "none"
 )
 
 # ========== 5. Extract the p-value of the two-group comparison
-inflamed_low_vs_high_p <- NA
+inflamed_low_vs_high_p = NA
 
 if ("Inflamed_low" %in% rownames(ps$p.value) && "Inflamed_high" %in% colnames(ps$p.value)) {
-  inflamed_low_vs_high_p <- ps$p.value["Inflamed_low", "Inflamed_high"]
+  inflamed_low_vs_high_p = ps$p.value["Inflamed_low", "Inflamed_high"]
 } else if ("Inflamed_high" %in% rownames(ps$p.value) && "Inflamed_low" %in% colnames(ps$p.value)) {
-  inflamed_low_vs_high_p <- ps$p.value["Inflamed_high", "Inflamed_low"]
+  inflamed_low_vs_high_p = ps$p.value["Inflamed_high", "Inflamed_low"]
 } else {
-  temp_data <- wnt_IMvigor_inflamed_prognosis
-  temp_fit <- survdiff(Surv(os, censOS) ~ level, data = temp_data)
-  inflamed_low_vs_high_p <- 1 - pchisq(temp_fit$chisq, length(temp_fit$n) - 1)
+  temp_data = wnt_IMvigor_inflamed_prognosis
+  temp_fit = survdiff(Surv(os, censOS) ~ level, data = temp_data)
+  inflamed_low_vs_high_p = 1 - pchisq(temp_fit$chisq, length(temp_fit$n) - 1)
 }
 
-inflamed_low_vs_high_label <- ifelse(
+inflamed_low_vs_high_label = ifelse(
   is.na(inflamed_low_vs_high_p), "NA",
   ifelse(inflamed_low_vs_high_p < 0.001, "p < 0.001",
          ifelse(inflamed_low_vs_high_p < 0.05,
@@ -630,11 +630,11 @@ inflamed_low_vs_high_label <- ifelse(
 )
 
 # ========== 6. Plot (same style as above)
-mycol <- c('#009ad6', '#d71345')   # Inflamed_low blue, Inflamed_high red
+mycol = c('#009ad6', '#d71345')   # Inflamed_low blue, Inflamed_high red
 
-names(fit$strata) <- gsub("level=", "", names(fit$strata))
+names(fit$strata) = gsub("level=", "", names(fit$strata))
 
-p <- ggsurvplot(
+p = ggsurvplot(
   fit = fit,
   data = wnt_IMvigor_inflamed_prognosis,
   conf.int = FALSE,
@@ -661,11 +661,11 @@ p <- ggsurvplot(
   censor.size = 3
 )
 
-p.lab <- paste0("log-rank test p",
+p.lab = paste0("log-rank test p",
                 ifelse(p.val < 0.001, " < 0.001",
                        paste0(" = ", round(p.val, 3))))
 
-p$plot <- p$plot +
+p$plot = p$plot +
   annotate("text", x = 0, y = 0,
            label = p.lab, size = 6, hjust = 0, fontface = "italic")
 
@@ -684,18 +684,18 @@ library(ggpp)
 load("C:/Users/user/Desktop/input/IMvigor_WNT_score.Rdata")
 load("C:/Users/user/Desktop/input/IMvigor210CoreBiologies.Rdata")
 
-wnt_IMvigor <- merge(IMvigor_WNT_score$final_activity_score, phenoData, by = "row.names")
-wnt_IMvigor <- wnt_IMvigor[!is.na(wnt_IMvigor$`Immune phenotype`), ]
+wnt_IMvigor = merge(IMvigor_WNT_score$final_activity_score, phenoData, by = "row.names")
+wnt_IMvigor = wnt_IMvigor[!is.na(wnt_IMvigor$`Immune phenotype`), ]
 
 # ========== 2. All tumours (no immune-phenotype split)
-wnt_IMvigor_all <- wnt_IMvigor
+wnt_IMvigor_all = wnt_IMvigor
 
-wnt_IMvigor_all_prognosis <- wnt_IMvigor_all[, c("activity_score", "os", "censOS")]
+wnt_IMvigor_all_prognosis = wnt_IMvigor_all[, c("activity_score", "os", "censOS")]
 
 cat("All tumour samples n = ", nrow(wnt_IMvigor_all_prognosis), "\n")
 
 # ========== 3. Find the optimal cut point with surv_cutpoint
-res.cut <- surv_cutpoint(
+res.cut = surv_cutpoint(
   wnt_IMvigor_all_prognosis,
   time      = "os",
   event     = "censOS",
@@ -705,28 +705,28 @@ res.cut <- surv_cutpoint(
 summary(res.cut)
 cat("Optimal cut point: ", res.cut$activity_score$cutpoint, "\n")
 
-res.cat <- surv_categorize(res.cut)
+res.cat = surv_categorize(res.cut)
 table(res.cat$activity_score)
 
-wnt_IMvigor_all_prognosis$level <- ifelse(
+wnt_IMvigor_all_prognosis$level = ifelse(
   res.cat$activity_score == "low", "All_low", "All_high"
 )
 
-wnt_IMvigor_all_prognosis$level <- factor(
+wnt_IMvigor_all_prognosis$level = factor(
   wnt_IMvigor_all_prognosis$level,
   levels = c("All_low", "All_high")
 )
 
-wnt_IMvigor_all_prognosis <- na.omit(wnt_IMvigor_all_prognosis)
+wnt_IMvigor_all_prognosis = na.omit(wnt_IMvigor_all_prognosis)
 
 # Show the number of samples per group
 print(table(wnt_IMvigor_all_prognosis$level))
 
 # ========== 4. Survival analysis
-fitd  <- survdiff(Surv(os, censOS) ~ level, data = wnt_IMvigor_all_prognosis)
-p.val <- 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
+fitd = survdiff(Surv(os, censOS) ~ level, data = wnt_IMvigor_all_prognosis)
+p.val = 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
 
-fit <- survfit(
+fit = survfit(
   Surv(os, censOS) ~ level,
   data = wnt_IMvigor_all_prognosis,
   type = "kaplan-meier",
@@ -734,26 +734,26 @@ fit <- survfit(
   conf.type = "plain"
 )
 
-ps <- pairwise_survdiff(
+ps = pairwise_survdiff(
   Surv(os, censOS) ~ level,
   data = wnt_IMvigor_all_prognosis,
   p.adjust.method = "none"
 )
 
 # ========== 5. Extract the p-value of the two-group comparison
-all_low_vs_high_p <- NA
+all_low_vs_high_p = NA
 
 if ("All_low" %in% rownames(ps$p.value) && "All_high" %in% colnames(ps$p.value)) {
-  all_low_vs_high_p <- ps$p.value["All_low", "All_high"]
+  all_low_vs_high_p = ps$p.value["All_low", "All_high"]
 } else if ("All_high" %in% rownames(ps$p.value) && "All_low" %in% colnames(ps$p.value)) {
-  all_low_vs_high_p <- ps$p.value["All_high", "All_low"]
+  all_low_vs_high_p = ps$p.value["All_high", "All_low"]
 } else {
-  temp_data <- wnt_IMvigor_all_prognosis
-  temp_fit <- survdiff(Surv(os, censOS) ~ level, data = temp_data)
-  all_low_vs_high_p <- 1 - pchisq(temp_fit$chisq, length(temp_fit$n) - 1)
+  temp_data = wnt_IMvigor_all_prognosis
+  temp_fit = survdiff(Surv(os, censOS) ~ level, data = temp_data)
+  all_low_vs_high_p = 1 - pchisq(temp_fit$chisq, length(temp_fit$n) - 1)
 }
 
-all_low_vs_high_label <- ifelse(
+all_low_vs_high_label = ifelse(
   is.na(all_low_vs_high_p), "NA",
   ifelse(all_low_vs_high_p < 0.001, "p < 0.001",
          ifelse(all_low_vs_high_p < 0.05,
@@ -761,11 +761,11 @@ all_low_vs_high_label <- ifelse(
 )
 
 # ========== 6. Plot (same style as above)
-mycol <- c('#009ad6', '#d71345')   # All_low blue, All_high red
+mycol = c('#009ad6', '#d71345')   # All_low blue, All_high red
 
-names(fit$strata) <- gsub("level=", "", names(fit$strata))
+names(fit$strata) = gsub("level=", "", names(fit$strata))
 
-p <- ggsurvplot(
+p = ggsurvplot(
   fit = fit,
   data = wnt_IMvigor_all_prognosis,
   conf.int = FALSE,
@@ -792,11 +792,11 @@ p <- ggsurvplot(
   censor.size = 3
 )
 
-p.lab <- paste0("log-rank test p",
+p.lab = paste0("log-rank test p",
                 ifelse(p.val < 0.001, " < 0.001",
                        paste0(" = ", round(p.val, 3))))
 
-p$plot <- p$plot +
+p$plot = p$plot +
   annotate("text", x = 0, y = 0,
            label = p.lab, size = 6, hjust = 0, fontface = "italic")
 
@@ -818,16 +818,16 @@ for (q in 1:length(vector)) {
 }
 
 # ========== 1. All samples, no cold filtering
-Dai_2025 <- Dai_2025
+Dai_2025 = Dai_2025
 
 # ========== 2. KNN classification with TMEclassifier
 library(TMEclassifier)
 source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 
-res_knn <- tme_classifier(eset = Dai_2025, method = "knn", scale = TRUE)
+res_knn = tme_classifier(eset = Dai_2025, method = "knn", scale = TRUE)
 
 # Convert to Hot / Cold with the ifelse rule
-res_knn$group <- ifelse(res_knn[, 5] == "IA", "Hot", "Cold")
+res_knn$group = ifelse(res_knn[, 5] == "IA", "Hot", "Cold")
 table(res_knn$group)
 
 # ========== 3. Compute the Wnt activity score
@@ -850,20 +850,20 @@ WNT_Score = Calculate_bioactivity_scores(
 WNT_score = WNT_Score$final_activity_score
 
 # ========== 4. Merge the WNT score, clinical data and KNN labels
-wnt_IMvigor <- merge(WNT_score, Dai_2025_info, by.x = "row.names", by.y = "tag")
+wnt_IMvigor = merge(WNT_score, Dai_2025_info, by.x = "row.names", by.y = "tag")
 
-wnt_IMvigor <- merge(wnt_IMvigor, res_knn,
+wnt_IMvigor = merge(wnt_IMvigor, res_knn,
                      by.x = "Row.names", by.y = "ID")
 
 table(wnt_IMvigor$group)
 
 # ========== 5. Keep only the Cold group (Hot is excluded downstream)
-wnt_IMvigor_cold <- wnt_IMvigor[wnt_IMvigor$group == "Cold", ]
+wnt_IMvigor_cold = wnt_IMvigor[wnt_IMvigor$group == "Cold", ]
 
-wnt_IMvigor_cold_prognosis <- wnt_IMvigor_cold[, c("activity_score", "os.time", "os.status")]
+wnt_IMvigor_cold_prognosis = wnt_IMvigor_cold[, c("activity_score", "os.time", "os.status")]
 
 # Express time in months
-wnt_IMvigor_cold_prognosis$os.time <- wnt_IMvigor_cold_prognosis$os.time / 30
+wnt_IMvigor_cold_prognosis$os.time = wnt_IMvigor_cold_prognosis$os.time / 30
 
 cat("Cold group n = ", nrow(wnt_IMvigor_cold_prognosis), "\n")
 
@@ -871,7 +871,7 @@ cat("Cold group n = ", nrow(wnt_IMvigor_cold_prognosis), "\n")
 library(survival)
 library(survminer)
 
-res.cut <- surv_cutpoint(
+res.cut = surv_cutpoint(
   wnt_IMvigor_cold_prognosis,
   time      = "os.time",
   event     = "os.status",
@@ -881,26 +881,26 @@ res.cut <- surv_cutpoint(
 summary(res.cut)
 cat("Cold group optimal cut point: ", res.cut$activity_score$cutpoint, "\n")
 
-res.cat <- surv_categorize(res.cut)
+res.cat = surv_categorize(res.cut)
 table(res.cat$activity_score)
 
-wnt_IMvigor_cold_prognosis$level <- ifelse(
+wnt_IMvigor_cold_prognosis$level = ifelse(
   res.cat$activity_score == "low", "Cold_low", "Cold_high"
 )
 
-wnt_IMvigor_cold_prognosis$level <- factor(
+wnt_IMvigor_cold_prognosis$level = factor(
   wnt_IMvigor_cold_prognosis$level,
   levels = c("Cold_low", "Cold_high")
 )
 
-wnt_IMvigor_cold_prognosis <- na.omit(wnt_IMvigor_cold_prognosis)
+wnt_IMvigor_cold_prognosis = na.omit(wnt_IMvigor_cold_prognosis)
 print(table(wnt_IMvigor_cold_prognosis$level))
 
 # ========== 7. Survival analysis
-fitd  <- survdiff(Surv(os.time, os.status) ~ level, data = wnt_IMvigor_cold_prognosis)
-p.val <- 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
+fitd = survdiff(Surv(os.time, os.status) ~ level, data = wnt_IMvigor_cold_prognosis)
+p.val = 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
 
-fit <- survfit(
+fit = survfit(
   Surv(os.time, os.status) ~ level,
   data = wnt_IMvigor_cold_prognosis,
   type = "kaplan-meier",
@@ -908,26 +908,26 @@ fit <- survfit(
   conf.type = "plain"
 )
 
-ps <- pairwise_survdiff(
+ps = pairwise_survdiff(
   Surv(os.time, os.status) ~ level,
   data = wnt_IMvigor_cold_prognosis,
   p.adjust.method = "none"
 )
 
 # ========== 8. Cold_low vs Cold_high computed manually
-cold_low_vs_cold_high_p <- NA
+cold_low_vs_cold_high_p = NA
 
 if ("Cold_low" %in% rownames(ps$p.value) && "Cold_high" %in% colnames(ps$p.value)) {
-  cold_low_vs_cold_high_p <- ps$p.value["Cold_low", "Cold_high"]
+  cold_low_vs_cold_high_p = ps$p.value["Cold_low", "Cold_high"]
 } else if ("Cold_high" %in% rownames(ps$p.value) && "Cold_low" %in% colnames(ps$p.value)) {
-  cold_low_vs_cold_high_p <- ps$p.value["Cold_high", "Cold_low"]
+  cold_low_vs_cold_high_p = ps$p.value["Cold_high", "Cold_low"]
 } else {
-  temp_data2 <- wnt_IMvigor_cold_prognosis
-  temp_fit2 <- survdiff(Surv(os.time, os.status) ~ level, data = temp_data2)
-  cold_low_vs_cold_high_p <- 1 - pchisq(temp_fit2$chisq, length(temp_fit2$n) - 1)
+  temp_data2 = wnt_IMvigor_cold_prognosis
+  temp_fit2 = survdiff(Surv(os.time, os.status) ~ level, data = temp_data2)
+  cold_low_vs_cold_high_p = 1 - pchisq(temp_fit2$chisq, length(temp_fit2$n) - 1)
 }
 
-cold_low_vs_cold_high_label <- ifelse(
+cold_low_vs_cold_high_label = ifelse(
   is.na(cold_low_vs_cold_high_p), "NA",
   ifelse(cold_low_vs_cold_high_p < 0.001, "p < 0.001",
          ifelse(cold_low_vs_cold_high_p < 0.05,
@@ -939,11 +939,11 @@ library(RColorBrewer)
 library(tibble)
 library(ggpp)
 
-mycol <- c('#009ad6', '#d71345')   # Cold_low blue, Cold_high red
+mycol = c('#009ad6', '#d71345')   # Cold_low blue, Cold_high red
 
-names(fit$strata) <- gsub("level=", "", names(fit$strata))
+names(fit$strata) = gsub("level=", "", names(fit$strata))
 
-p <- ggsurvplot(
+p = ggsurvplot(
   fit = fit,
   data = wnt_IMvigor_cold_prognosis,
   conf.int = FALSE,
@@ -970,11 +970,11 @@ p <- ggsurvplot(
   censor.size = 3
 )
 
-p.lab <- paste0("log-rank test p",
+p.lab = paste0("log-rank test p",
                 ifelse(p.val < 0.001, " < 0.001",
                        paste0(" = ", round(p.val, 3))))
 
-p$plot <- p$plot +
+p$plot = p$plot +
   annotate("text", x = 0, y = -0.08,
            label = p.lab, size = 6, hjust = 0, fontface = "italic")
 
@@ -996,16 +996,16 @@ for (q in 1:length(vector)) {
 }
 
 # ========== 1. All samples, no cold filtering
-Dai_2025 <- Dai_2025
+Dai_2025 = Dai_2025
 
 # ========== 2. KNN classification with TMEclassifier
 library(TMEclassifier)
 source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 
-res_knn <- tme_classifier(eset = Dai_2025, method = "knn", scale = TRUE)
+res_knn = tme_classifier(eset = Dai_2025, method = "knn", scale = TRUE)
 
 # Convert to Hot / Cold with the ifelse rule
-res_knn$group <- ifelse(res_knn[, 5] == "IA", "Hot", "Cold")
+res_knn$group = ifelse(res_knn[, 5] == "IA", "Hot", "Cold")
 table(res_knn$group)
 
 # ========== 3. Compute the Wnt activity score
@@ -1028,20 +1028,20 @@ WNT_Score = Calculate_bioactivity_scores(
 WNT_score = WNT_Score$final_activity_score
 
 # ========== 4. Merge the WNT score, clinical data and KNN labels
-wnt_IMvigor <- merge(WNT_score, Dai_2025_info, by.x = "row.names", by.y = "tag")
+wnt_IMvigor = merge(WNT_score, Dai_2025_info, by.x = "row.names", by.y = "tag")
 
-wnt_IMvigor <- merge(wnt_IMvigor, res_knn,
+wnt_IMvigor = merge(wnt_IMvigor, res_knn,
                      by.x = "Row.names", by.y = "ID")
 
 table(wnt_IMvigor$group)
 
 # ========== 5. Keep only the Cold group (Hot is excluded downstream)
-wnt_IMvigor_cold <- wnt_IMvigor[wnt_IMvigor$group == "Cold", ]
+wnt_IMvigor_cold = wnt_IMvigor[wnt_IMvigor$group == "Cold", ]
 
-wnt_IMvigor_cold_prognosis <- wnt_IMvigor_cold[, c("activity_score", "pfs.time", "pfs.status")]
+wnt_IMvigor_cold_prognosis = wnt_IMvigor_cold[, c("activity_score", "pfs.time", "pfs.status")]
 
 # Express time in months
-wnt_IMvigor_cold_prognosis$pfs.time <- wnt_IMvigor_cold_prognosis$pfs.time / 30
+wnt_IMvigor_cold_prognosis$pfs.time = wnt_IMvigor_cold_prognosis$pfs.time / 30
 
 cat("Cold group n = ", nrow(wnt_IMvigor_cold_prognosis), "\n")
 
@@ -1049,7 +1049,7 @@ cat("Cold group n = ", nrow(wnt_IMvigor_cold_prognosis), "\n")
 library(survival)
 library(survminer)
 
-res.cut <- surv_cutpoint(
+res.cut = surv_cutpoint(
   wnt_IMvigor_cold_prognosis,
   time      = "pfs.time",
   event     = "pfs.status",
@@ -1059,26 +1059,26 @@ res.cut <- surv_cutpoint(
 summary(res.cut)
 cat("Cold group optimal cut point: ", res.cut$activity_score$cutpoint, "\n")
 
-res.cat <- surv_categorize(res.cut)
+res.cat = surv_categorize(res.cut)
 table(res.cat$activity_score)
 
-wnt_IMvigor_cold_prognosis$level <- ifelse(
+wnt_IMvigor_cold_prognosis$level = ifelse(
   res.cat$activity_score == "low", "Cold_low", "Cold_high"
 )
 
-wnt_IMvigor_cold_prognosis$level <- factor(
+wnt_IMvigor_cold_prognosis$level = factor(
   wnt_IMvigor_cold_prognosis$level,
   levels = c("Cold_low", "Cold_high")
 )
 
-wnt_IMvigor_cold_prognosis <- na.omit(wnt_IMvigor_cold_prognosis)
+wnt_IMvigor_cold_prognosis = na.omit(wnt_IMvigor_cold_prognosis)
 print(table(wnt_IMvigor_cold_prognosis$level))
 
 # ========== 7. Survival analysis
-fitd  <- survdiff(Surv(pfs.time, pfs.status) ~ level, data = wnt_IMvigor_cold_prognosis)
-p.val <- 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
+fitd = survdiff(Surv(pfs.time, pfs.status) ~ level, data = wnt_IMvigor_cold_prognosis)
+p.val = 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
 
-fit <- survfit(
+fit = survfit(
   Surv(pfs.time, pfs.status) ~ level,
   data = wnt_IMvigor_cold_prognosis,
   type = "kaplan-meier",
@@ -1086,26 +1086,26 @@ fit <- survfit(
   conf.type = "plain"
 )
 
-ps <- pairwise_survdiff(
+ps = pairwise_survdiff(
   Surv(pfs.time, pfs.status) ~ level,
   data = wnt_IMvigor_cold_prognosis,
   p.adjust.method = "none"
 )
 
 # ========== 8. Cold_low vs Cold_high computed manually
-cold_low_vs_cold_high_p <- NA
+cold_low_vs_cold_high_p = NA
 
 if ("Cold_low" %in% rownames(ps$p.value) && "Cold_high" %in% colnames(ps$p.value)) {
-  cold_low_vs_cold_high_p <- ps$p.value["Cold_low", "Cold_high"]
+  cold_low_vs_cold_high_p = ps$p.value["Cold_low", "Cold_high"]
 } else if ("Cold_high" %in% rownames(ps$p.value) && "Cold_low" %in% colnames(ps$p.value)) {
-  cold_low_vs_cold_high_p <- ps$p.value["Cold_high", "Cold_low"]
+  cold_low_vs_cold_high_p = ps$p.value["Cold_high", "Cold_low"]
 } else {
-  temp_data2 <- wnt_IMvigor_cold_prognosis
-  temp_fit2 <- survdiff(Surv(pfs.time, pfs.status) ~ level, data = temp_data2)
-  cold_low_vs_cold_high_p <- 1 - pchisq(temp_fit2$chisq, length(temp_fit2$n) - 1)
+  temp_data2 = wnt_IMvigor_cold_prognosis
+  temp_fit2 = survdiff(Surv(pfs.time, pfs.status) ~ level, data = temp_data2)
+  cold_low_vs_cold_high_p = 1 - pchisq(temp_fit2$chisq, length(temp_fit2$n) - 1)
 }
 
-cold_low_vs_cold_high_label <- ifelse(
+cold_low_vs_cold_high_label = ifelse(
   is.na(cold_low_vs_cold_high_p), "NA",
   ifelse(cold_low_vs_cold_high_p < 0.001, "p < 0.001",
          ifelse(cold_low_vs_cold_high_p < 0.05,
@@ -1117,11 +1117,11 @@ library(RColorBrewer)
 library(tibble)
 library(ggpp)
 
-mycol <- c('#009ad6', '#d71345')   # Cold_low blue, Cold_high red
+mycol = c('#009ad6', '#d71345')   # Cold_low blue, Cold_high red
 
-names(fit$strata) <- gsub("level=", "", names(fit$strata))
+names(fit$strata) = gsub("level=", "", names(fit$strata))
 
-p <- ggsurvplot(
+p = ggsurvplot(
   fit = fit,
   data = wnt_IMvigor_cold_prognosis,
   conf.int = FALSE,
@@ -1148,11 +1148,11 @@ p <- ggsurvplot(
   censor.size = 3
 )
 
-p.lab <- paste0("log-rank test p",
+p.lab = paste0("log-rank test p",
                 ifelse(p.val < 0.001, " < 0.001",
                        paste0(" = ", round(p.val, 3))))
 
-p$plot <- p$plot +
+p$plot = p$plot +
   annotate("text", x = 0, y = -0.08,
            label = p.lab, size = 6, hjust = 0, fontface = "italic")
 
@@ -1174,16 +1174,16 @@ for (q in 1:length(vector)) {
 }
 
 # ========== 1. All samples, no cold filtering
-GSE253260 <- GSE253260
+GSE253260 = GSE253260
 
 # ========== 2. KNN classification with TMEclassifier
 library(TMEclassifier)
 source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 
-res_knn <- tme_classifier(eset = GSE253260, method = "knn", scale = TRUE)
+res_knn = tme_classifier(eset = GSE253260, method = "knn", scale = TRUE)
 
 # Convert to Hot / Cold with the ifelse rule
-res_knn$group <- ifelse(res_knn[, 5] == "IA", "Hot", "Cold")
+res_knn$group = ifelse(res_knn[, 5] == "IA", "Hot", "Cold")
 table(res_knn$group)
 
 # ========== 3. Compute the Wnt activity score
@@ -1206,20 +1206,20 @@ WNT_Score = Calculate_bioactivity_scores(
 WNT_score = WNT_Score$final_activity_score
 
 # ========== 4. Merge the WNT score, clinical data and KNN labels
-wnt_IMvigor <- merge(WNT_score, GSE253260_info, by.x = "row.names", by.y = "tag")
+wnt_IMvigor = merge(WNT_score, GSE253260_info, by.x = "row.names", by.y = "tag")
 
-wnt_IMvigor <- merge(wnt_IMvigor, res_knn,
+wnt_IMvigor = merge(wnt_IMvigor, res_knn,
                      by.x = "Row.names", by.y = "ID")
 
 table(wnt_IMvigor$group)
 
 # ========== 5. Keep only the Cold group (Hot is excluded downstream)
-wnt_IMvigor_cold <- wnt_IMvigor[wnt_IMvigor$group == "Cold", ]
+wnt_IMvigor_cold = wnt_IMvigor[wnt_IMvigor$group == "Cold", ]
 
-wnt_IMvigor_cold_prognosis <- wnt_IMvigor_cold[, c("activity_score", "os.time", "os.status")]
+wnt_IMvigor_cold_prognosis = wnt_IMvigor_cold[, c("activity_score", "os.time", "os.status")]
 
 # Express time in months
-wnt_IMvigor_cold_prognosis$os.time <- wnt_IMvigor_cold_prognosis$os.time / 30
+wnt_IMvigor_cold_prognosis$os.time = wnt_IMvigor_cold_prognosis$os.time / 30
 
 cat("Cold group n = ", nrow(wnt_IMvigor_cold_prognosis), "\n")
 
@@ -1227,7 +1227,7 @@ cat("Cold group n = ", nrow(wnt_IMvigor_cold_prognosis), "\n")
 library(survival)
 library(survminer)
 
-res.cut <- surv_cutpoint(
+res.cut = surv_cutpoint(
   wnt_IMvigor_cold_prognosis,
   time      = "os.time",
   event     = "os.status",
@@ -1237,26 +1237,26 @@ res.cut <- surv_cutpoint(
 summary(res.cut)
 cat("Cold group optimal cut point: ", res.cut$activity_score$cutpoint, "\n")
 
-res.cat <- surv_categorize(res.cut)
+res.cat = surv_categorize(res.cut)
 table(res.cat$activity_score)
 
-wnt_IMvigor_cold_prognosis$level <- ifelse(
+wnt_IMvigor_cold_prognosis$level = ifelse(
   res.cat$activity_score == "low", "Cold_low", "Cold_high"
 )
 
-wnt_IMvigor_cold_prognosis$level <- factor(
+wnt_IMvigor_cold_prognosis$level = factor(
   wnt_IMvigor_cold_prognosis$level,
   levels = c("Cold_low", "Cold_high")
 )
 
-wnt_IMvigor_cold_prognosis <- na.omit(wnt_IMvigor_cold_prognosis)
+wnt_IMvigor_cold_prognosis = na.omit(wnt_IMvigor_cold_prognosis)
 print(table(wnt_IMvigor_cold_prognosis$level))
 
 # ========== 7. Survival analysis
-fitd  <- survdiff(Surv(os.time, os.status) ~ level, data = wnt_IMvigor_cold_prognosis)
-p.val <- 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
+fitd = survdiff(Surv(os.time, os.status) ~ level, data = wnt_IMvigor_cold_prognosis)
+p.val = 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
 
-fit <- survfit(
+fit = survfit(
   Surv(os.time, os.status) ~ level,
   data = wnt_IMvigor_cold_prognosis,
   type = "kaplan-meier",
@@ -1264,26 +1264,26 @@ fit <- survfit(
   conf.type = "plain"
 )
 
-ps <- pairwise_survdiff(
+ps = pairwise_survdiff(
   Surv(os.time, os.status) ~ level,
   data = wnt_IMvigor_cold_prognosis,
   p.adjust.method = "none"
 )
 
 # ========== 8. Cold_low vs Cold_high computed manually
-cold_low_vs_cold_high_p <- NA
+cold_low_vs_cold_high_p = NA
 
 if ("Cold_low" %in% rownames(ps$p.value) && "Cold_high" %in% colnames(ps$p.value)) {
-  cold_low_vs_cold_high_p <- ps$p.value["Cold_low", "Cold_high"]
+  cold_low_vs_cold_high_p = ps$p.value["Cold_low", "Cold_high"]
 } else if ("Cold_high" %in% rownames(ps$p.value) && "Cold_low" %in% colnames(ps$p.value)) {
-  cold_low_vs_cold_high_p <- ps$p.value["Cold_high", "Cold_low"]
+  cold_low_vs_cold_high_p = ps$p.value["Cold_high", "Cold_low"]
 } else {
-  temp_data2 <- wnt_IMvigor_cold_prognosis
-  temp_fit2 <- survdiff(Surv(os.time, os.status) ~ level, data = temp_data2)
-  cold_low_vs_cold_high_p <- 1 - pchisq(temp_fit2$chisq, length(temp_fit2$n) - 1)
+  temp_data2 = wnt_IMvigor_cold_prognosis
+  temp_fit2 = survdiff(Surv(os.time, os.status) ~ level, data = temp_data2)
+  cold_low_vs_cold_high_p = 1 - pchisq(temp_fit2$chisq, length(temp_fit2$n) - 1)
 }
 
-cold_low_vs_cold_high_label <- ifelse(
+cold_low_vs_cold_high_label = ifelse(
   is.na(cold_low_vs_cold_high_p), "NA",
   ifelse(cold_low_vs_cold_high_p < 0.001, "p < 0.001",
          ifelse(cold_low_vs_cold_high_p < 0.05,
@@ -1295,11 +1295,11 @@ library(RColorBrewer)
 library(tibble)
 library(ggpp)
 
-mycol <- c('#009ad6', '#d71345')   # Cold_low blue, Cold_high red
+mycol = c('#009ad6', '#d71345')   # Cold_low blue, Cold_high red
 
-names(fit$strata) <- gsub("level=", "", names(fit$strata))
+names(fit$strata) = gsub("level=", "", names(fit$strata))
 
-p <- ggsurvplot(
+p = ggsurvplot(
   fit = fit,
   data = wnt_IMvigor_cold_prognosis,
   conf.int = FALSE,
@@ -1326,11 +1326,11 @@ p <- ggsurvplot(
   censor.size = 3
 )
 
-p.lab <- paste0("log-rank test p",
+p.lab = paste0("log-rank test p",
                 ifelse(p.val < 0.001, " < 0.001",
                        paste0(" = ", round(p.val, 3))))
 
-p$plot <- p$plot +
+p$plot = p$plot +
   annotate("text", x = 0, y = -0.08,
            label = p.lab, size = 6, hjust = 0, fontface = "italic")
 
@@ -1352,16 +1352,16 @@ for (q in 1:length(vector)) {
 }
 
 # ========== 1. All samples, no cold filtering
-GSE253260 <- GSE253260
+GSE253260 = GSE253260
 
 # ========== 2. KNN classification with TMEclassifier
 library(TMEclassifier)
 source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 
-res_knn <- tme_classifier(eset = GSE253260, method = "knn", scale = TRUE)
+res_knn = tme_classifier(eset = GSE253260, method = "knn", scale = TRUE)
 
 # Convert to Hot / Cold with the ifelse rule
-res_knn$group <- ifelse(res_knn[, 5] == "IA", "Hot", "Cold")
+res_knn$group = ifelse(res_knn[, 5] == "IA", "Hot", "Cold")
 table(res_knn$group)
 
 # ========== 3. Compute the Wnt activity score
@@ -1384,20 +1384,20 @@ WNT_Score = Calculate_bioactivity_scores(
 WNT_score = WNT_Score$final_activity_score
 
 # ========== 4. Merge the WNT score, clinical data and KNN labels
-wnt_IMvigor <- merge(WNT_score, GSE253260_info, by.x = "row.names", by.y = "tag")
+wnt_IMvigor = merge(WNT_score, GSE253260_info, by.x = "row.names", by.y = "tag")
 
-wnt_IMvigor <- merge(wnt_IMvigor, res_knn,
+wnt_IMvigor = merge(wnt_IMvigor, res_knn,
                      by.x = "Row.names", by.y = "ID")
 
 table(wnt_IMvigor$group)
 
 # ========== 5. Keep only the Cold group (Hot is excluded downstream)
-wnt_IMvigor_cold <- wnt_IMvigor[wnt_IMvigor$group == "Cold", ]
+wnt_IMvigor_cold = wnt_IMvigor[wnt_IMvigor$group == "Cold", ]
 
-wnt_IMvigor_cold_prognosis <- wnt_IMvigor_cold[, c("activity_score", "pfs.time", "pfs.status")]
+wnt_IMvigor_cold_prognosis = wnt_IMvigor_cold[, c("activity_score", "pfs.time", "pfs.status")]
 
 # Express time in months
-wnt_IMvigor_cold_prognosis$pfs.time <- wnt_IMvigor_cold_prognosis$pfs.time / 30
+wnt_IMvigor_cold_prognosis$pfs.time = wnt_IMvigor_cold_prognosis$pfs.time / 30
 
 cat("Cold group n = ", nrow(wnt_IMvigor_cold_prognosis), "\n")
 
@@ -1405,7 +1405,7 @@ cat("Cold group n = ", nrow(wnt_IMvigor_cold_prognosis), "\n")
 library(survival)
 library(survminer)
 
-res.cut <- surv_cutpoint(
+res.cut = surv_cutpoint(
   wnt_IMvigor_cold_prognosis,
   time      = "pfs.time",
   event     = "pfs.status",
@@ -1415,26 +1415,26 @@ res.cut <- surv_cutpoint(
 summary(res.cut)
 cat("Cold group optimal cut point: ", res.cut$activity_score$cutpoint, "\n")
 
-res.cat <- surv_categorize(res.cut)
+res.cat = surv_categorize(res.cut)
 table(res.cat$activity_score)
 
-wnt_IMvigor_cold_prognosis$level <- ifelse(
+wnt_IMvigor_cold_prognosis$level = ifelse(
   res.cat$activity_score == "low", "Cold_low", "Cold_high"
 )
 
-wnt_IMvigor_cold_prognosis$level <- factor(
+wnt_IMvigor_cold_prognosis$level = factor(
   wnt_IMvigor_cold_prognosis$level,
   levels = c("Cold_low", "Cold_high")
 )
 
-wnt_IMvigor_cold_prognosis <- na.omit(wnt_IMvigor_cold_prognosis)
+wnt_IMvigor_cold_prognosis = na.omit(wnt_IMvigor_cold_prognosis)
 print(table(wnt_IMvigor_cold_prognosis$level))
 
 # ========== 7. Survival analysis
-fitd  <- survdiff(Surv(pfs.time, pfs.status) ~ level, data = wnt_IMvigor_cold_prognosis)
-p.val <- 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
+fitd = survdiff(Surv(pfs.time, pfs.status) ~ level, data = wnt_IMvigor_cold_prognosis)
+p.val = 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
 
-fit <- survfit(
+fit = survfit(
   Surv(pfs.time, pfs.status) ~ level,
   data = wnt_IMvigor_cold_prognosis,
   type = "kaplan-meier",
@@ -1442,26 +1442,26 @@ fit <- survfit(
   conf.type = "plain"
 )
 
-ps <- pairwise_survdiff(
+ps = pairwise_survdiff(
   Surv(pfs.time, pfs.status) ~ level,
   data = wnt_IMvigor_cold_prognosis,
   p.adjust.method = "none"
 )
 
 # ========== 8. Cold_low vs Cold_high computed manually
-cold_low_vs_cold_high_p <- NA
+cold_low_vs_cold_high_p = NA
 
 if ("Cold_low" %in% rownames(ps$p.value) && "Cold_high" %in% colnames(ps$p.value)) {
-  cold_low_vs_cold_high_p <- ps$p.value["Cold_low", "Cold_high"]
+  cold_low_vs_cold_high_p = ps$p.value["Cold_low", "Cold_high"]
 } else if ("Cold_high" %in% rownames(ps$p.value) && "Cold_low" %in% colnames(ps$p.value)) {
-  cold_low_vs_cold_high_p <- ps$p.value["Cold_high", "Cold_low"]
+  cold_low_vs_cold_high_p = ps$p.value["Cold_high", "Cold_low"]
 } else {
-  temp_data2 <- wnt_IMvigor_cold_prognosis
-  temp_fit2 <- survdiff(Surv(pfs.time, pfs.status) ~ level, data = temp_data2)
-  cold_low_vs_cold_high_p <- 1 - pchisq(temp_fit2$chisq, length(temp_fit2$n) - 1)
+  temp_data2 = wnt_IMvigor_cold_prognosis
+  temp_fit2 = survdiff(Surv(pfs.time, pfs.status) ~ level, data = temp_data2)
+  cold_low_vs_cold_high_p = 1 - pchisq(temp_fit2$chisq, length(temp_fit2$n) - 1)
 }
 
-cold_low_vs_cold_high_label <- ifelse(
+cold_low_vs_cold_high_label = ifelse(
   is.na(cold_low_vs_cold_high_p), "NA",
   ifelse(cold_low_vs_cold_high_p < 0.001, "p < 0.001",
          ifelse(cold_low_vs_cold_high_p < 0.05,
@@ -1473,11 +1473,11 @@ library(RColorBrewer)
 library(tibble)
 library(ggpp)
 
-mycol <- c('#009ad6', '#d71345')   # Cold_low blue, Cold_high red
+mycol = c('#009ad6', '#d71345')   # Cold_low blue, Cold_high red
 
-names(fit$strata) <- gsub("level=", "", names(fit$strata))
+names(fit$strata) = gsub("level=", "", names(fit$strata))
 
-p <- ggsurvplot(
+p = ggsurvplot(
   fit = fit,
   data = wnt_IMvigor_cold_prognosis,
   conf.int = FALSE,
@@ -1504,11 +1504,11 @@ p <- ggsurvplot(
   censor.size = 3
 )
 
-p.lab <- paste0("log-rank test p",
+p.lab = paste0("log-rank test p",
                 ifelse(p.val < 0.001, " < 0.001",
                        paste0(" = ", round(p.val, 3))))
 
-p$plot <- p$plot +
+p$plot = p$plot +
   annotate("text", x = 0, y = -0.08,
            label = p.lab, size = 6, hjust = 0, fontface = "italic")
 
@@ -1530,16 +1530,16 @@ for (q in 1:length(vector)) {
 }
 
 # ========== 1. All samples, no cold filtering
-Braun_NatMed_2020 <- Braun_NatMed_2020
+Braun_NatMed_2020 = Braun_NatMed_2020
 
 # ========== 2. KNN classification with TMEclassifier
 library(TMEclassifier)
 source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 
-res_knn <- tme_classifier(eset = Braun_NatMed_2020, method = "knn", scale = TRUE)
+res_knn = tme_classifier(eset = Braun_NatMed_2020, method = "knn", scale = TRUE)
 
 # Convert to Hot / Cold with the ifelse rule
-res_knn$group <- ifelse(res_knn[, 5] == "IA", "Hot", "Cold")
+res_knn$group = ifelse(res_knn[, 5] == "IA", "Hot", "Cold")
 table(res_knn$group)
 
 # ========== 3. Compute the Wnt activity score
@@ -1562,20 +1562,20 @@ WNT_Score = Calculate_bioactivity_scores(
 WNT_score = WNT_Score$final_activity_score
 
 # ========== 4. Merge the WNT score, clinical data and KNN labels
-wnt_IMvigor <- merge(WNT_score, Braun_NatMed_2020_info, by.x = "row.names", by.y = "tag")
+wnt_IMvigor = merge(WNT_score, Braun_NatMed_2020_info, by.x = "row.names", by.y = "tag")
 
-wnt_IMvigor <- merge(wnt_IMvigor, res_knn,
+wnt_IMvigor = merge(wnt_IMvigor, res_knn,
                      by.x = "Row.names", by.y = "ID")
 
 table(wnt_IMvigor$group)
 
 # ========== 5. Keep only the Cold group (Hot is excluded downstream)
-wnt_IMvigor_cold <- wnt_IMvigor[wnt_IMvigor$group == "Cold", ]
+wnt_IMvigor_cold = wnt_IMvigor[wnt_IMvigor$group == "Cold", ]
 
-wnt_IMvigor_cold_prognosis <- wnt_IMvigor_cold[, c("activity_score", "os.time", "os.status")]
+wnt_IMvigor_cold_prognosis = wnt_IMvigor_cold[, c("activity_score", "os.time", "os.status")]
 
 # Express time in months
-wnt_IMvigor_cold_prognosis$os.time <- wnt_IMvigor_cold_prognosis$os.time / 30
+wnt_IMvigor_cold_prognosis$os.time = wnt_IMvigor_cold_prognosis$os.time / 30
 
 cat("Cold group n = ", nrow(wnt_IMvigor_cold_prognosis), "\n")
 
@@ -1583,7 +1583,7 @@ cat("Cold group n = ", nrow(wnt_IMvigor_cold_prognosis), "\n")
 library(survival)
 library(survminer)
 
-res.cut <- surv_cutpoint(
+res.cut = surv_cutpoint(
   wnt_IMvigor_cold_prognosis,
   time      = "os.time",
   event     = "os.status",
@@ -1593,26 +1593,26 @@ res.cut <- surv_cutpoint(
 summary(res.cut)
 cat("Cold group optimal cut point: ", res.cut$activity_score$cutpoint, "\n")
 
-res.cat <- surv_categorize(res.cut)
+res.cat = surv_categorize(res.cut)
 table(res.cat$activity_score)
 
-wnt_IMvigor_cold_prognosis$level <- ifelse(
+wnt_IMvigor_cold_prognosis$level = ifelse(
   res.cat$activity_score == "low", "Cold_low", "Cold_high"
 )
 
-wnt_IMvigor_cold_prognosis$level <- factor(
+wnt_IMvigor_cold_prognosis$level = factor(
   wnt_IMvigor_cold_prognosis$level,
   levels = c("Cold_low", "Cold_high")
 )
 
-wnt_IMvigor_cold_prognosis <- na.omit(wnt_IMvigor_cold_prognosis)
+wnt_IMvigor_cold_prognosis = na.omit(wnt_IMvigor_cold_prognosis)
 print(table(wnt_IMvigor_cold_prognosis$level))
 
 # ========== 7. Survival analysis
-fitd  <- survdiff(Surv(os.time, os.status) ~ level, data = wnt_IMvigor_cold_prognosis)
-p.val <- 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
+fitd = survdiff(Surv(os.time, os.status) ~ level, data = wnt_IMvigor_cold_prognosis)
+p.val = 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
 
-fit <- survfit(
+fit = survfit(
   Surv(os.time, os.status) ~ level,
   data = wnt_IMvigor_cold_prognosis,
   type = "kaplan-meier",
@@ -1620,26 +1620,26 @@ fit <- survfit(
   conf.type = "plain"
 )
 
-ps <- pairwise_survdiff(
+ps = pairwise_survdiff(
   Surv(os.time, os.status) ~ level,
   data = wnt_IMvigor_cold_prognosis,
   p.adjust.method = "none"
 )
 
 # ========== 8. Cold_low vs Cold_high computed manually
-cold_low_vs_cold_high_p <- NA
+cold_low_vs_cold_high_p = NA
 
 if ("Cold_low" %in% rownames(ps$p.value) && "Cold_high" %in% colnames(ps$p.value)) {
-  cold_low_vs_cold_high_p <- ps$p.value["Cold_low", "Cold_high"]
+  cold_low_vs_cold_high_p = ps$p.value["Cold_low", "Cold_high"]
 } else if ("Cold_high" %in% rownames(ps$p.value) && "Cold_low" %in% colnames(ps$p.value)) {
-  cold_low_vs_cold_high_p <- ps$p.value["Cold_high", "Cold_low"]
+  cold_low_vs_cold_high_p = ps$p.value["Cold_high", "Cold_low"]
 } else {
-  temp_data2 <- wnt_IMvigor_cold_prognosis
-  temp_fit2 <- survdiff(Surv(os.time, os.status) ~ level, data = temp_data2)
-  cold_low_vs_cold_high_p <- 1 - pchisq(temp_fit2$chisq, length(temp_fit2$n) - 1)
+  temp_data2 = wnt_IMvigor_cold_prognosis
+  temp_fit2 = survdiff(Surv(os.time, os.status) ~ level, data = temp_data2)
+  cold_low_vs_cold_high_p = 1 - pchisq(temp_fit2$chisq, length(temp_fit2$n) - 1)
 }
 
-cold_low_vs_cold_high_label <- ifelse(
+cold_low_vs_cold_high_label = ifelse(
   is.na(cold_low_vs_cold_high_p), "NA",
   ifelse(cold_low_vs_cold_high_p < 0.001, "p < 0.001",
          ifelse(cold_low_vs_cold_high_p < 0.05,
@@ -1651,11 +1651,11 @@ library(RColorBrewer)
 library(tibble)
 library(ggpp)
 
-mycol <- c('#009ad6', '#d71345')   # Cold_low blue, Cold_high red
+mycol = c('#009ad6', '#d71345')   # Cold_low blue, Cold_high red
 
-names(fit$strata) <- gsub("level=", "", names(fit$strata))
+names(fit$strata) = gsub("level=", "", names(fit$strata))
 
-p <- ggsurvplot(
+p = ggsurvplot(
   fit = fit,
   data = wnt_IMvigor_cold_prognosis,
   conf.int = FALSE,
@@ -1682,11 +1682,11 @@ p <- ggsurvplot(
   censor.size = 3
 )
 
-p.lab <- paste0("log-rank test p",
+p.lab = paste0("log-rank test p",
                 ifelse(p.val < 0.001, " < 0.001",
                        paste0(" = ", round(p.val, 3))))
 
-p$plot <- p$plot +
+p$plot = p$plot +
   annotate("text", x = 0, y = -0.08,
            label = p.lab, size = 6, hjust = 0, fontface = "italic")
 
@@ -1708,16 +1708,16 @@ for (q in 1:length(vector)) {
 }
 
 # ========== 1. All samples, no cold filtering
-Zhao_NatMed_2019 <- Zhao_NatMed_2019
+Zhao_NatMed_2019 = Zhao_NatMed_2019
 
 # ========== 2. KNN classification with TMEclassifier
 library(TMEclassifier)
 source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 
-res_knn <- tme_classifier(eset = Zhao_NatMed_2019, method = "knn", scale = TRUE)
+res_knn = tme_classifier(eset = Zhao_NatMed_2019, method = "knn", scale = TRUE)
 
 # Convert to Hot / Cold with the ifelse rule
-res_knn$group <- ifelse(res_knn[, 5] == "IA", "Hot", "Cold")
+res_knn$group = ifelse(res_knn[, 5] == "IA", "Hot", "Cold")
 table(res_knn$group)
 
 # ========== 3. Compute the Wnt activity score
@@ -1740,20 +1740,20 @@ WNT_Score = Calculate_bioactivity_scores(
 WNT_score = WNT_Score$final_activity_score
 
 # ========== 4. Merge the WNT score, clinical data and KNN labels
-wnt_IMvigor <- merge(WNT_score, Zhao_NatMed_2019_info, by.x = "row.names", by.y = "tag")
+wnt_IMvigor = merge(WNT_score, Zhao_NatMed_2019_info, by.x = "row.names", by.y = "tag")
 
-wnt_IMvigor <- merge(wnt_IMvigor, res_knn,
+wnt_IMvigor = merge(wnt_IMvigor, res_knn,
                      by.x = "Row.names", by.y = "ID")
 
 table(wnt_IMvigor$group)
 
 # ========== 5. Keep only the Cold group (Hot is excluded downstream)
-wnt_IMvigor_cold <- wnt_IMvigor[wnt_IMvigor$group == "Cold", ]
+wnt_IMvigor_cold = wnt_IMvigor[wnt_IMvigor$group == "Cold", ]
 
-wnt_IMvigor_cold_prognosis <- wnt_IMvigor_cold[, c("activity_score", "os.time", "os.status")]
+wnt_IMvigor_cold_prognosis = wnt_IMvigor_cold[, c("activity_score", "os.time", "os.status")]
 
 # Express time in months
-wnt_IMvigor_cold_prognosis$os.time <- wnt_IMvigor_cold_prognosis$os.time / 30
+wnt_IMvigor_cold_prognosis$os.time = wnt_IMvigor_cold_prognosis$os.time / 30
 
 cat("Cold group n = ", nrow(wnt_IMvigor_cold_prognosis), "\n")
 
@@ -1761,7 +1761,7 @@ cat("Cold group n = ", nrow(wnt_IMvigor_cold_prognosis), "\n")
 library(survival)
 library(survminer)
 
-res.cut <- surv_cutpoint(
+res.cut = surv_cutpoint(
   wnt_IMvigor_cold_prognosis,
   time      = "os.time",
   event     = "os.status",
@@ -1771,26 +1771,26 @@ res.cut <- surv_cutpoint(
 summary(res.cut)
 cat("Cold group optimal cut point: ", res.cut$activity_score$cutpoint, "\n")
 
-res.cat <- surv_categorize(res.cut)
+res.cat = surv_categorize(res.cut)
 table(res.cat$activity_score)
 
-wnt_IMvigor_cold_prognosis$level <- ifelse(
+wnt_IMvigor_cold_prognosis$level = ifelse(
   res.cat$activity_score == "low", "Cold_low", "Cold_high"
 )
 
-wnt_IMvigor_cold_prognosis$level <- factor(
+wnt_IMvigor_cold_prognosis$level = factor(
   wnt_IMvigor_cold_prognosis$level,
   levels = c("Cold_low", "Cold_high")
 )
 
-wnt_IMvigor_cold_prognosis <- na.omit(wnt_IMvigor_cold_prognosis)
+wnt_IMvigor_cold_prognosis = na.omit(wnt_IMvigor_cold_prognosis)
 print(table(wnt_IMvigor_cold_prognosis$level))
 
 # ========== 7. Survival analysis
-fitd  <- survdiff(Surv(os.time, os.status) ~ level, data = wnt_IMvigor_cold_prognosis)
-p.val <- 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
+fitd = survdiff(Surv(os.time, os.status) ~ level, data = wnt_IMvigor_cold_prognosis)
+p.val = 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
 
-fit <- survfit(
+fit = survfit(
   Surv(os.time, os.status) ~ level,
   data = wnt_IMvigor_cold_prognosis,
   type = "kaplan-meier",
@@ -1798,26 +1798,26 @@ fit <- survfit(
   conf.type = "plain"
 )
 
-ps <- pairwise_survdiff(
+ps = pairwise_survdiff(
   Surv(os.time, os.status) ~ level,
   data = wnt_IMvigor_cold_prognosis,
   p.adjust.method = "none"
 )
 
 # ========== 8. Cold_low vs Cold_high computed manually
-cold_low_vs_cold_high_p <- NA
+cold_low_vs_cold_high_p = NA
 
 if ("Cold_low" %in% rownames(ps$p.value) && "Cold_high" %in% colnames(ps$p.value)) {
-  cold_low_vs_cold_high_p <- ps$p.value["Cold_low", "Cold_high"]
+  cold_low_vs_cold_high_p = ps$p.value["Cold_low", "Cold_high"]
 } else if ("Cold_high" %in% rownames(ps$p.value) && "Cold_low" %in% colnames(ps$p.value)) {
-  cold_low_vs_cold_high_p <- ps$p.value["Cold_high", "Cold_low"]
+  cold_low_vs_cold_high_p = ps$p.value["Cold_high", "Cold_low"]
 } else {
-  temp_data2 <- wnt_IMvigor_cold_prognosis
-  temp_fit2 <- survdiff(Surv(os.time, os.status) ~ level, data = temp_data2)
-  cold_low_vs_cold_high_p <- 1 - pchisq(temp_fit2$chisq, length(temp_fit2$n) - 1)
+  temp_data2 = wnt_IMvigor_cold_prognosis
+  temp_fit2 = survdiff(Surv(os.time, os.status) ~ level, data = temp_data2)
+  cold_low_vs_cold_high_p = 1 - pchisq(temp_fit2$chisq, length(temp_fit2$n) - 1)
 }
 
-cold_low_vs_cold_high_label <- ifelse(
+cold_low_vs_cold_high_label = ifelse(
   is.na(cold_low_vs_cold_high_p), "NA",
   ifelse(cold_low_vs_cold_high_p < 0.001, "p < 0.001",
          ifelse(cold_low_vs_cold_high_p < 0.05,
@@ -1829,11 +1829,11 @@ library(RColorBrewer)
 library(tibble)
 library(ggpp)
 
-mycol <- c('#009ad6', '#d71345')   # Cold_low blue, Cold_high red
+mycol = c('#009ad6', '#d71345')   # Cold_low blue, Cold_high red
 
-names(fit$strata) <- gsub("level=", "", names(fit$strata))
+names(fit$strata) = gsub("level=", "", names(fit$strata))
 
-p <- ggsurvplot(
+p = ggsurvplot(
   fit = fit,
   data = wnt_IMvigor_cold_prognosis,
   conf.int = FALSE,
@@ -1860,11 +1860,11 @@ p <- ggsurvplot(
   censor.size = 3
 )
 
-p.lab <- paste0("log-rank test p",
+p.lab = paste0("log-rank test p",
                 ifelse(p.val < 0.001, " < 0.001",
                        paste0(" = ", round(p.val, 3))))
 
-p$plot <- p$plot +
+p$plot = p$plot +
   annotate("text", x = 0, y = -0.08,
            label = p.lab, size = 6, hjust = 0, fontface = "italic")
 
@@ -1886,16 +1886,16 @@ for (q in 1:length(vector)) {
 }
 
 # ========== 1. All samples, no cold filtering
-GSE78220 <- GSE78220
+GSE78220 = GSE78220
 
 # ========== 2. KNN classification with TMEclassifier
 library(TMEclassifier)
 source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 
-res_knn <- tme_classifier(eset = GSE78220, method = "knn", scale = TRUE)
+res_knn = tme_classifier(eset = GSE78220, method = "knn", scale = TRUE)
 
 # Convert to Hot / Cold with the ifelse rule
-res_knn$group <- ifelse(res_knn[, 5] == "IA", "Hot", "Cold")
+res_knn$group = ifelse(res_knn[, 5] == "IA", "Hot", "Cold")
 table(res_knn$group)
 
 # ========== 3. Compute the Wnt activity score
@@ -1918,20 +1918,20 @@ WNT_Score = Calculate_bioactivity_scores(
 WNT_score = WNT_Score$final_activity_score
 
 # ========== 4. Merge the WNT score, clinical data and KNN labels
-wnt_IMvigor <- merge(WNT_score, GSE78220_info, by.x = "row.names", by.y = "tag")
+wnt_IMvigor = merge(WNT_score, GSE78220_info, by.x = "row.names", by.y = "tag")
 
-wnt_IMvigor <- merge(wnt_IMvigor, res_knn,
+wnt_IMvigor = merge(wnt_IMvigor, res_knn,
                      by.x = "Row.names", by.y = "ID")
 
 table(wnt_IMvigor$group)
 
 # ========== 5. Keep only the Cold group (Hot is excluded downstream)
-wnt_IMvigor_cold <- wnt_IMvigor[wnt_IMvigor$group == "Cold", ]
+wnt_IMvigor_cold = wnt_IMvigor[wnt_IMvigor$group == "Cold", ]
 
-wnt_IMvigor_cold_prognosis <- wnt_IMvigor_cold[, c("activity_score", "os.time", "os.status")]
+wnt_IMvigor_cold_prognosis = wnt_IMvigor_cold[, c("activity_score", "os.time", "os.status")]
 
 # Express time in months
-wnt_IMvigor_cold_prognosis$os.time <- wnt_IMvigor_cold_prognosis$os.time / 30
+wnt_IMvigor_cold_prognosis$os.time = wnt_IMvigor_cold_prognosis$os.time / 30
 
 cat("Cold group n = ", nrow(wnt_IMvigor_cold_prognosis), "\n")
 
@@ -1939,7 +1939,7 @@ cat("Cold group n = ", nrow(wnt_IMvigor_cold_prognosis), "\n")
 library(survival)
 library(survminer)
 
-res.cut <- surv_cutpoint(
+res.cut = surv_cutpoint(
   wnt_IMvigor_cold_prognosis,
   time      = "os.time",
   event     = "os.status",
@@ -1949,26 +1949,26 @@ res.cut <- surv_cutpoint(
 summary(res.cut)
 cat("Cold group optimal cut point: ", res.cut$activity_score$cutpoint, "\n")
 
-res.cat <- surv_categorize(res.cut)
+res.cat = surv_categorize(res.cut)
 table(res.cat$activity_score)
 
-wnt_IMvigor_cold_prognosis$level <- ifelse(
+wnt_IMvigor_cold_prognosis$level = ifelse(
   res.cat$activity_score == "low", "Cold_low", "Cold_high"
 )
 
-wnt_IMvigor_cold_prognosis$level <- factor(
+wnt_IMvigor_cold_prognosis$level = factor(
   wnt_IMvigor_cold_prognosis$level,
   levels = c("Cold_low", "Cold_high")
 )
 
-wnt_IMvigor_cold_prognosis <- na.omit(wnt_IMvigor_cold_prognosis)
+wnt_IMvigor_cold_prognosis = na.omit(wnt_IMvigor_cold_prognosis)
 print(table(wnt_IMvigor_cold_prognosis$level))
 
 # ========== 7. Survival analysis
-fitd  <- survdiff(Surv(os.time, os.status) ~ level, data = wnt_IMvigor_cold_prognosis)
-p.val <- 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
+fitd = survdiff(Surv(os.time, os.status) ~ level, data = wnt_IMvigor_cold_prognosis)
+p.val = 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
 
-fit <- survfit(
+fit = survfit(
   Surv(os.time, os.status) ~ level,
   data = wnt_IMvigor_cold_prognosis,
   type = "kaplan-meier",
@@ -1976,26 +1976,26 @@ fit <- survfit(
   conf.type = "plain"
 )
 
-ps <- pairwise_survdiff(
+ps = pairwise_survdiff(
   Surv(os.time, os.status) ~ level,
   data = wnt_IMvigor_cold_prognosis,
   p.adjust.method = "none"
 )
 
 # ========== 8. Cold_low vs Cold_high computed manually
-cold_low_vs_cold_high_p <- NA
+cold_low_vs_cold_high_p = NA
 
 if ("Cold_low" %in% rownames(ps$p.value) && "Cold_high" %in% colnames(ps$p.value)) {
-  cold_low_vs_cold_high_p <- ps$p.value["Cold_low", "Cold_high"]
+  cold_low_vs_cold_high_p = ps$p.value["Cold_low", "Cold_high"]
 } else if ("Cold_high" %in% rownames(ps$p.value) && "Cold_low" %in% colnames(ps$p.value)) {
-  cold_low_vs_cold_high_p <- ps$p.value["Cold_high", "Cold_low"]
+  cold_low_vs_cold_high_p = ps$p.value["Cold_high", "Cold_low"]
 } else {
-  temp_data2 <- wnt_IMvigor_cold_prognosis
-  temp_fit2 <- survdiff(Surv(os.time, os.status) ~ level, data = temp_data2)
-  cold_low_vs_cold_high_p <- 1 - pchisq(temp_fit2$chisq, length(temp_fit2$n) - 1)
+  temp_data2 = wnt_IMvigor_cold_prognosis
+  temp_fit2 = survdiff(Surv(os.time, os.status) ~ level, data = temp_data2)
+  cold_low_vs_cold_high_p = 1 - pchisq(temp_fit2$chisq, length(temp_fit2$n) - 1)
 }
 
-cold_low_vs_cold_high_label <- ifelse(
+cold_low_vs_cold_high_label = ifelse(
   is.na(cold_low_vs_cold_high_p), "NA",
   ifelse(cold_low_vs_cold_high_p < 0.001, "p < 0.001",
          ifelse(cold_low_vs_cold_high_p < 0.05,
@@ -2007,11 +2007,11 @@ library(RColorBrewer)
 library(tibble)
 library(ggpp)
 
-mycol <- c('#009ad6', '#d71345')   # Cold_low blue, Cold_high red
+mycol = c('#009ad6', '#d71345')   # Cold_low blue, Cold_high red
 
-names(fit$strata) <- gsub("level=", "", names(fit$strata))
+names(fit$strata) = gsub("level=", "", names(fit$strata))
 
-p <- ggsurvplot(
+p = ggsurvplot(
   fit = fit,
   data = wnt_IMvigor_cold_prognosis,
   conf.int = FALSE,
@@ -2038,11 +2038,11 @@ p <- ggsurvplot(
   censor.size = 3
 )
 
-p.lab <- paste0("log-rank test p",
+p.lab = paste0("log-rank test p",
                 ifelse(p.val < 0.001, " < 0.001",
                        paste0(" = ", round(p.val, 3))))
 
-p$plot <- p$plot +
+p$plot = p$plot +
   annotate("text", x = 0, y = -0.08,
            label = p.lab, size = 6, hjust = 0, fontface = "italic")
 
@@ -2064,16 +2064,16 @@ for (q in 1:length(vector)) {
 }
 
 # ========== 1. All samples, no cold filtering
-PORTER_2025 <- PORTER_2025
+PORTER_2025 = PORTER_2025
 
 # ========== 2. KNN classification with TMEclassifier
 library(TMEclassifier)
 source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 
-res_knn <- tme_classifier(eset = PORTER_2025, method = "knn", scale = TRUE)
+res_knn = tme_classifier(eset = PORTER_2025, method = "knn", scale = TRUE)
 
 # Convert to Hot / Cold with the ifelse rule
-res_knn$group <- ifelse(res_knn[, 5] == "IA", "Hot", "Cold")
+res_knn$group = ifelse(res_knn[, 5] == "IA", "Hot", "Cold")
 table(res_knn$group)
 
 # ========== 3. Compute the Wnt activity score
@@ -2096,20 +2096,20 @@ WNT_Score = Calculate_bioactivity_scores(
 WNT_score = WNT_Score$final_activity_score
 
 # ========== 4. Merge the WNT score, clinical data and KNN labels
-wnt_IMvigor <- merge(WNT_score, PORTER_2025_info, by.x = "row.names", by.y = "tag")
+wnt_IMvigor = merge(WNT_score, PORTER_2025_info, by.x = "row.names", by.y = "tag")
 
-wnt_IMvigor <- merge(wnt_IMvigor, res_knn,
+wnt_IMvigor = merge(wnt_IMvigor, res_knn,
                      by.x = "Row.names", by.y = "ID")
 
 table(wnt_IMvigor$group)
 
 # ========== 5. Keep only the Cold group (Hot is excluded downstream)
-wnt_IMvigor_cold <- wnt_IMvigor[wnt_IMvigor$group == "Cold", ]
+wnt_IMvigor_cold = wnt_IMvigor[wnt_IMvigor$group == "Cold", ]
 
-wnt_IMvigor_cold_prognosis <- wnt_IMvigor_cold[, c("activity_score", "os.time", "os.status")]
+wnt_IMvigor_cold_prognosis = wnt_IMvigor_cold[, c("activity_score", "os.time", "os.status")]
 
 # Express time in months
-wnt_IMvigor_cold_prognosis$os.time <- wnt_IMvigor_cold_prognosis$os.time / 30
+wnt_IMvigor_cold_prognosis$os.time = wnt_IMvigor_cold_prognosis$os.time / 30
 
 cat("Cold group n = ", nrow(wnt_IMvigor_cold_prognosis), "\n")
 
@@ -2117,7 +2117,7 @@ cat("Cold group n = ", nrow(wnt_IMvigor_cold_prognosis), "\n")
 library(survival)
 library(survminer)
 
-res.cut <- surv_cutpoint(
+res.cut = surv_cutpoint(
   wnt_IMvigor_cold_prognosis,
   time      = "os.time",
   event     = "os.status",
@@ -2127,26 +2127,26 @@ res.cut <- surv_cutpoint(
 summary(res.cut)
 cat("Cold group optimal cut point: ", res.cut$activity_score$cutpoint, "\n")
 
-res.cat <- surv_categorize(res.cut)
+res.cat = surv_categorize(res.cut)
 table(res.cat$activity_score)
 
-wnt_IMvigor_cold_prognosis$level <- ifelse(
+wnt_IMvigor_cold_prognosis$level = ifelse(
   res.cat$activity_score == "low", "Cold_low", "Cold_high"
 )
 
-wnt_IMvigor_cold_prognosis$level <- factor(
+wnt_IMvigor_cold_prognosis$level = factor(
   wnt_IMvigor_cold_prognosis$level,
   levels = c("Cold_low", "Cold_high")
 )
 
-wnt_IMvigor_cold_prognosis <- na.omit(wnt_IMvigor_cold_prognosis)
+wnt_IMvigor_cold_prognosis = na.omit(wnt_IMvigor_cold_prognosis)
 print(table(wnt_IMvigor_cold_prognosis$level))
 
 # ========== 7. Survival analysis
-fitd  <- survdiff(Surv(os.time, os.status) ~ level, data = wnt_IMvigor_cold_prognosis)
-p.val <- 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
+fitd = survdiff(Surv(os.time, os.status) ~ level, data = wnt_IMvigor_cold_prognosis)
+p.val = 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
 
-fit <- survfit(
+fit = survfit(
   Surv(os.time, os.status) ~ level,
   data = wnt_IMvigor_cold_prognosis,
   type = "kaplan-meier",
@@ -2154,26 +2154,26 @@ fit <- survfit(
   conf.type = "plain"
 )
 
-ps <- pairwise_survdiff(
+ps = pairwise_survdiff(
   Surv(os.time, os.status) ~ level,
   data = wnt_IMvigor_cold_prognosis,
   p.adjust.method = "none"
 )
 
 # ========== 8. Cold_low vs Cold_high computed manually
-cold_low_vs_cold_high_p <- NA
+cold_low_vs_cold_high_p = NA
 
 if ("Cold_low" %in% rownames(ps$p.value) && "Cold_high" %in% colnames(ps$p.value)) {
-  cold_low_vs_cold_high_p <- ps$p.value["Cold_low", "Cold_high"]
+  cold_low_vs_cold_high_p = ps$p.value["Cold_low", "Cold_high"]
 } else if ("Cold_high" %in% rownames(ps$p.value) && "Cold_low" %in% colnames(ps$p.value)) {
-  cold_low_vs_cold_high_p <- ps$p.value["Cold_high", "Cold_low"]
+  cold_low_vs_cold_high_p = ps$p.value["Cold_high", "Cold_low"]
 } else {
-  temp_data2 <- wnt_IMvigor_cold_prognosis
-  temp_fit2 <- survdiff(Surv(os.time, os.status) ~ level, data = temp_data2)
-  cold_low_vs_cold_high_p <- 1 - pchisq(temp_fit2$chisq, length(temp_fit2$n) - 1)
+  temp_data2 = wnt_IMvigor_cold_prognosis
+  temp_fit2 = survdiff(Surv(os.time, os.status) ~ level, data = temp_data2)
+  cold_low_vs_cold_high_p = 1 - pchisq(temp_fit2$chisq, length(temp_fit2$n) - 1)
 }
 
-cold_low_vs_cold_high_label <- ifelse(
+cold_low_vs_cold_high_label = ifelse(
   is.na(cold_low_vs_cold_high_p), "NA",
   ifelse(cold_low_vs_cold_high_p < 0.001, "p < 0.001",
          ifelse(cold_low_vs_cold_high_p < 0.05,
@@ -2185,11 +2185,11 @@ library(RColorBrewer)
 library(tibble)
 library(ggpp)
 
-mycol <- c('#009ad6', '#d71345')   # Cold_low blue, Cold_high red
+mycol = c('#009ad6', '#d71345')   # Cold_low blue, Cold_high red
 
-names(fit$strata) <- gsub("level=", "", names(fit$strata))
+names(fit$strata) = gsub("level=", "", names(fit$strata))
 
-p <- ggsurvplot(
+p = ggsurvplot(
   fit = fit,
   data = wnt_IMvigor_cold_prognosis,
   conf.int = FALSE,
@@ -2216,11 +2216,11 @@ p <- ggsurvplot(
   censor.size = 3
 )
 
-p.lab <- paste0("log-rank test p",
+p.lab = paste0("log-rank test p",
                 ifelse(p.val < 0.001, " < 0.001",
                        paste0(" = ", round(p.val, 3))))
 
-p$plot <- p$plot +
+p$plot = p$plot +
   annotate("text", x = 0, y = -0.08,
            label = p.lab, size = 6, hjust = 0, fontface = "italic")
 
@@ -2242,16 +2242,16 @@ for (q in 1:length(vector)) {
 }
 
 # ========== 1. All samples, no cold filtering
-Prins_GBM_2019_RNAseq <- Prins_GBM_2019_RNAseq
+Prins_GBM_2019_RNAseq = Prins_GBM_2019_RNAseq
 
 # ========== 2. KNN classification with TMEclassifier
 library(TMEclassifier)
 source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 
-res_knn <- tme_classifier(eset = Prins_GBM_2019_RNAseq, method = "knn", scale = TRUE)
+res_knn = tme_classifier(eset = Prins_GBM_2019_RNAseq, method = "knn", scale = TRUE)
 
 # Convert to Hot / Cold with the ifelse rule
-res_knn$group <- ifelse(res_knn[, 5] == "IA", "Hot", "Cold")
+res_knn$group = ifelse(res_knn[, 5] == "IA", "Hot", "Cold")
 table(res_knn$group)
 
 # ========== 3. Compute the Wnt activity score
@@ -2274,20 +2274,20 @@ WNT_Score = Calculate_bioactivity_scores(
 WNT_score = WNT_Score$final_activity_score
 
 # ========== 4. Merge the WNT score, clinical data and KNN labels
-wnt_IMvigor <- merge(WNT_score, Prins_GBM_2019_RNAseq_info, by.x = "row.names", by.y = "tag")
+wnt_IMvigor = merge(WNT_score, Prins_GBM_2019_RNAseq_info, by.x = "row.names", by.y = "tag")
 
-wnt_IMvigor <- merge(wnt_IMvigor, res_knn,
+wnt_IMvigor = merge(wnt_IMvigor, res_knn,
                      by.x = "Row.names", by.y = "ID")
 
 table(wnt_IMvigor$group)
 
 # ========== 5. Keep only the Cold group (Hot is excluded downstream)
-wnt_IMvigor_cold <- wnt_IMvigor[wnt_IMvigor$group == "Cold", ]
+wnt_IMvigor_cold = wnt_IMvigor[wnt_IMvigor$group == "Cold", ]
 
-wnt_IMvigor_cold_prognosis <- wnt_IMvigor_cold[, c("activity_score", "pfs.time", "pfs.status")]
+wnt_IMvigor_cold_prognosis = wnt_IMvigor_cold[, c("activity_score", "pfs.time", "pfs.status")]
 
 # Express time in months
-wnt_IMvigor_cold_prognosis$pfs.time <- wnt_IMvigor_cold_prognosis$pfs.time / 30
+wnt_IMvigor_cold_prognosis$pfs.time = wnt_IMvigor_cold_prognosis$pfs.time / 30
 
 cat("Cold group n = ", nrow(wnt_IMvigor_cold_prognosis), "\n")
 
@@ -2295,7 +2295,7 @@ cat("Cold group n = ", nrow(wnt_IMvigor_cold_prognosis), "\n")
 library(survival)
 library(survminer)
 
-res.cut <- surv_cutpoint(
+res.cut = surv_cutpoint(
   wnt_IMvigor_cold_prognosis,
   time      = "pfs.time",
   event     = "pfs.status",
@@ -2305,26 +2305,26 @@ res.cut <- surv_cutpoint(
 summary(res.cut)
 cat("Cold group optimal cut point: ", res.cut$activity_score$cutpoint, "\n")
 
-res.cat <- surv_categorize(res.cut)
+res.cat = surv_categorize(res.cut)
 table(res.cat$activity_score)
 
-wnt_IMvigor_cold_prognosis$level <- ifelse(
+wnt_IMvigor_cold_prognosis$level = ifelse(
   res.cat$activity_score == "low", "Cold_low", "Cold_high"
 )
 
-wnt_IMvigor_cold_prognosis$level <- factor(
+wnt_IMvigor_cold_prognosis$level = factor(
   wnt_IMvigor_cold_prognosis$level,
   levels = c("Cold_low", "Cold_high")
 )
 
-wnt_IMvigor_cold_prognosis <- na.omit(wnt_IMvigor_cold_prognosis)
+wnt_IMvigor_cold_prognosis = na.omit(wnt_IMvigor_cold_prognosis)
 print(table(wnt_IMvigor_cold_prognosis$level))
 
 # ========== 7. Survival analysis
-fitd  <- survdiff(Surv(pfs.time, pfs.status) ~ level, data = wnt_IMvigor_cold_prognosis)
-p.val <- 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
+fitd = survdiff(Surv(pfs.time, pfs.status) ~ level, data = wnt_IMvigor_cold_prognosis)
+p.val = 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
 
-fit <- survfit(
+fit = survfit(
   Surv(pfs.time, pfs.status) ~ level,
   data = wnt_IMvigor_cold_prognosis,
   type = "kaplan-meier",
@@ -2332,26 +2332,26 @@ fit <- survfit(
   conf.type = "plain"
 )
 
-ps <- pairwise_survdiff(
+ps = pairwise_survdiff(
   Surv(pfs.time, pfs.status) ~ level,
   data = wnt_IMvigor_cold_prognosis,
   p.adjust.method = "none"
 )
 
 # ========== 8. Cold_low vs Cold_high computed manually
-cold_low_vs_cold_high_p <- NA
+cold_low_vs_cold_high_p = NA
 
 if ("Cold_low" %in% rownames(ps$p.value) && "Cold_high" %in% colnames(ps$p.value)) {
-  cold_low_vs_cold_high_p <- ps$p.value["Cold_low", "Cold_high"]
+  cold_low_vs_cold_high_p = ps$p.value["Cold_low", "Cold_high"]
 } else if ("Cold_high" %in% rownames(ps$p.value) && "Cold_low" %in% colnames(ps$p.value)) {
-  cold_low_vs_cold_high_p <- ps$p.value["Cold_high", "Cold_low"]
+  cold_low_vs_cold_high_p = ps$p.value["Cold_high", "Cold_low"]
 } else {
-  temp_data2 <- wnt_IMvigor_cold_prognosis
-  temp_fit2 <- survdiff(Surv(pfs.time, pfs.status) ~ level, data = temp_data2)
-  cold_low_vs_cold_high_p <- 1 - pchisq(temp_fit2$chisq, length(temp_fit2$n) - 1)
+  temp_data2 = wnt_IMvigor_cold_prognosis
+  temp_fit2 = survdiff(Surv(pfs.time, pfs.status) ~ level, data = temp_data2)
+  cold_low_vs_cold_high_p = 1 - pchisq(temp_fit2$chisq, length(temp_fit2$n) - 1)
 }
 
-cold_low_vs_cold_high_label <- ifelse(
+cold_low_vs_cold_high_label = ifelse(
   is.na(cold_low_vs_cold_high_p), "NA",
   ifelse(cold_low_vs_cold_high_p < 0.001, "p < 0.001",
          ifelse(cold_low_vs_cold_high_p < 0.05,
@@ -2363,11 +2363,11 @@ library(RColorBrewer)
 library(tibble)
 library(ggpp)
 
-mycol <- c('#009ad6', '#d71345')   # Cold_low blue, Cold_high red
+mycol = c('#009ad6', '#d71345')   # Cold_low blue, Cold_high red
 
-names(fit$strata) <- gsub("level=", "", names(fit$strata))
+names(fit$strata) = gsub("level=", "", names(fit$strata))
 
-p <- ggsurvplot(
+p = ggsurvplot(
   fit = fit,
   data = wnt_IMvigor_cold_prognosis,
   conf.int = FALSE,
@@ -2394,11 +2394,11 @@ p <- ggsurvplot(
   censor.size = 3
 )
 
-p.lab <- paste0("log-rank test p",
+p.lab = paste0("log-rank test p",
                 ifelse(p.val < 0.001, " < 0.001",
                        paste0(" = ", round(p.val, 3))))
 
-p$plot <- p$plot +
+p$plot = p$plot +
   annotate("text", x = 0, y = -0.08,
            label = p.lab, size = 6, hjust = 0, fontface = "italic")
 
@@ -2419,29 +2419,29 @@ load("C:/Users/user/Desktop/input/res_knn.Rdata")
 table(res_knn$KNN)
 
 # ========== 1. Merge the WNT score, phenoData and KNN labels
-wnt_IMvigor <- merge(IMvigor_WNT_score$final_activity_score,
+wnt_IMvigor = merge(IMvigor_WNT_score$final_activity_score,
                      phenoData,
                      by = "row.names")
 
-wnt_IMvigor <- merge(wnt_IMvigor, res_knn,
+wnt_IMvigor = merge(wnt_IMvigor, res_knn,
                      by.x = "Row.names", by.y = "ID")
 
 # IA -> Hot, everything else -> Cold
-wnt_IMvigor$KNN <- ifelse(wnt_IMvigor$KNN == "IA", "Hot", "Cold")
+wnt_IMvigor$KNN = ifelse(wnt_IMvigor$KNN == "IA", "Hot", "Cold")
 table(wnt_IMvigor$KNN)
 
 # ========== 2. Split into Hot / Cold
-wnt_IMvigor_hot  <- wnt_IMvigor[wnt_IMvigor$KNN == "Hot", ]
-wnt_IMvigor_cold <- wnt_IMvigor[wnt_IMvigor$KNN == "Cold", ]
+wnt_IMvigor_hot = wnt_IMvigor[wnt_IMvigor$KNN == "Hot", ]
+wnt_IMvigor_cold = wnt_IMvigor[wnt_IMvigor$KNN == "Cold", ]
 
-wnt_IMvigor_hot_prognosis  <- wnt_IMvigor_hot[,  c("activity_score", "os", "censOS")]
-wnt_IMvigor_cold_prognosis <- wnt_IMvigor_cold[, c("activity_score", "os", "censOS")]
+wnt_IMvigor_hot_prognosis = wnt_IMvigor_hot[,  c("activity_score", "os", "censOS")]
+wnt_IMvigor_cold_prognosis = wnt_IMvigor_cold[, c("activity_score", "os", "censOS")]
 
 cat("Hot group n = ", nrow(wnt_IMvigor_hot_prognosis), "\n")
 cat("Cold group n = ", nrow(wnt_IMvigor_cold_prognosis), "\n")
 
 # ========== 3. Find the optimal cut point in the Cold group with surv_cutpoint
-res.cut <- surv_cutpoint(
+res.cut = surv_cutpoint(
   wnt_IMvigor_cold_prognosis,
   time      = "os",
   event     = "censOS",
@@ -2451,32 +2451,32 @@ res.cut <- surv_cutpoint(
 summary(res.cut)
 cat("Cold group optimal cut point: ", res.cut$activity_score$cutpoint, "\n")
 
-res.cat <- surv_categorize(res.cut)
+res.cat = surv_categorize(res.cut)
 table(res.cat$activity_score)
 
-wnt_IMvigor_cold_prognosis$level <- ifelse(
+wnt_IMvigor_cold_prognosis$level = ifelse(
   res.cat$activity_score == "low", "Cold_low", "Cold_high"
 )
 
 # ========== 4. Label the Hot group
-wnt_IMvigor_hot_prognosis$level <- "Hot"
+wnt_IMvigor_hot_prognosis$level = "Hot"
 
 # ========== 5. Merge
-wnt_IMvigor_prognosis <- rbind(wnt_IMvigor_hot_prognosis, wnt_IMvigor_cold_prognosis)
+wnt_IMvigor_prognosis = rbind(wnt_IMvigor_hot_prognosis, wnt_IMvigor_cold_prognosis)
 
-wnt_IMvigor_prognosis$level <- factor(
+wnt_IMvigor_prognosis$level = factor(
   wnt_IMvigor_prognosis$level,
   levels = c("Hot", "Cold_low", "Cold_high")
 )
 
-wnt_IMvigor_prognosis <- na.omit(wnt_IMvigor_prognosis)
+wnt_IMvigor_prognosis = na.omit(wnt_IMvigor_prognosis)
 print(table(wnt_IMvigor_prognosis$level))
 
 # ========== 6. Survival analysis
-fitd  <- survdiff(Surv(os, censOS) ~ level, data = wnt_IMvigor_prognosis)
-p.val <- 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
+fitd = survdiff(Surv(os, censOS) ~ level, data = wnt_IMvigor_prognosis)
+p.val = 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
 
-fit <- survfit(
+fit = survfit(
   Surv(os, censOS) ~ level,
   data = wnt_IMvigor_prognosis,
   type = "kaplan-meier",
@@ -2484,20 +2484,20 @@ fit <- survfit(
   conf.type = "plain"
 )
 
-ps <- pairwise_survdiff(
+ps = pairwise_survdiff(
   Surv(os, censOS) ~ level,
   data = wnt_IMvigor_prognosis,
   p.adjust.method = "none"
 )
 
 # ========== 7. Hot vs Cold_high computed manually
-temp_data <- wnt_IMvigor_prognosis[wnt_IMvigor_prognosis$level %in% c("Hot", "Cold_high"), ]
-temp_data$level <- droplevels(temp_data$level)
+temp_data = wnt_IMvigor_prognosis[wnt_IMvigor_prognosis$level %in% c("Hot", "Cold_high"), ]
+temp_data$level = droplevels(temp_data$level)
 
-temp_fit <- survdiff(Surv(os, censOS) ~ level, data = temp_data)
-hot_vs_cold_high_p <- 1 - pchisq(temp_fit$chisq, length(temp_fit$n) - 1)
+temp_fit = survdiff(Surv(os, censOS) ~ level, data = temp_data)
+hot_vs_cold_high_p = 1 - pchisq(temp_fit$chisq, length(temp_fit$n) - 1)
 
-hot_vs_cold_high_label <- ifelse(
+hot_vs_cold_high_label = ifelse(
   is.na(hot_vs_cold_high_p), "NA",
   ifelse(hot_vs_cold_high_p < 0.001, "p < 0.001",
          ifelse(hot_vs_cold_high_p < 0.05,
@@ -2505,13 +2505,13 @@ hot_vs_cold_high_label <- ifelse(
 )
 
 # ========== 8. Cold_low vs Cold_high computed manually
-temp_data2 <- wnt_IMvigor_prognosis[wnt_IMvigor_prognosis$level %in% c("Cold_low", "Cold_high"), ]
-temp_data2$level <- droplevels(temp_data2$level)
+temp_data2 = wnt_IMvigor_prognosis[wnt_IMvigor_prognosis$level %in% c("Cold_low", "Cold_high"), ]
+temp_data2$level = droplevels(temp_data2$level)
 
-temp_fit2 <- survdiff(Surv(os, censOS) ~ level, data = temp_data2)
-cold_low_vs_cold_high_p <- 1 - pchisq(temp_fit2$chisq, length(temp_fit2$n) - 1)
+temp_fit2 = survdiff(Surv(os, censOS) ~ level, data = temp_data2)
+cold_low_vs_cold_high_p = 1 - pchisq(temp_fit2$chisq, length(temp_fit2$n) - 1)
 
-cold_low_vs_cold_high_label <- ifelse(
+cold_low_vs_cold_high_label = ifelse(
   is.na(cold_low_vs_cold_high_p), "NA",
   ifelse(cold_low_vs_cold_high_p < 0.001, "p < 0.001",
          ifelse(cold_low_vs_cold_high_p < 0.05,
@@ -2519,11 +2519,11 @@ cold_low_vs_cold_high_label <- ifelse(
 )
 
 # ========== 9. Plot
-mycol <- c('#ffd400', '#009ad6', '#d71345')   # Hot yellow, Cold_low blue, Cold_high red
+mycol = c('#ffd400', '#009ad6', '#d71345')   # Hot yellow, Cold_low blue, Cold_high red
 
-names(fit$strata) <- gsub("level=", "", names(fit$strata))
+names(fit$strata) = gsub("level=", "", names(fit$strata))
 
-p <- ggsurvplot(
+p = ggsurvplot(
   fit = fit,
   data = wnt_IMvigor_prognosis,
   conf.int = FALSE,
@@ -2549,11 +2549,11 @@ p <- ggsurvplot(
   censor.size = 3
 )
 
-p.lab <- paste0("log-rank test p",
+p.lab = paste0("log-rank test p",
                 ifelse(p.val < 0.001, " < 0.001",
                        paste0(" = ", round(p.val, 3))))
 
-p$plot <- p$plot +
+p$plot = p$plot +
   annotate("text", x = 0, y = -0.08,
            label = p.lab, size = 6, hjust = 0, fontface = "italic") +
   annotate("text", x = 0, y = 0.0,
@@ -2575,17 +2575,17 @@ library(scales)
 
 source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 
-vector <- unique(c("GSE253260", "Dai_2025", "Prins_GBM_2019_RNAseq",
+vector = unique(c("GSE253260", "Dai_2025", "Prins_GBM_2019_RNAseq",
                    "PORTER_2025", "Zhao_NatMed_2019",
                    "Braun_NatMed_2020", "GSE78220",
                    "IMvigor"))
 
-all_data <- data.frame()
+all_data = data.frame()
 
 for (q in seq_along(vector)) {
 
-  dataset_name <- vector[q]
-  data_file    <- paste0(dataset_name, ".Rdata")
+  dataset_name = vector[q]
+  data_file = paste0(dataset_name, ".Rdata")
 
   # Load only the expression matrix, not _G.Rdata
   if (!file.exists(data_file)) {
@@ -2601,10 +2601,10 @@ for (q in seq_along(vector)) {
     cat("  Objects in the environment: ", paste(ls(), collapse = ", "), "\n")
     next
   }
-  eset_tmp <- get(dataset_name)
+  eset_tmp = get(dataset_name)
 
   # ========== KNN classification (the only source of grouping)
-  res_knn <- tryCatch(
+  res_knn = tryCatch(
     tme_classifier(eset = eset_tmp, method = "knn", scale = TRUE),
     error = function(e) {
       cat("KNN failed: ", dataset_name, "-", conditionMessage(e), "\n")
@@ -2614,14 +2614,14 @@ for (q in seq_along(vector)) {
   if (is.null(res_knn)) next
 
   # IA -> hot, everything else -> cold
-  res_knn$group <- ifelse(res_knn[, 5] == "IA", "Hot", "Cold")
+  res_knn$group = ifelse(res_knn[, 5] == "IA", "Hot", "Cold")
 
-  count_data <- as.data.frame(table(res_knn$group))
-  colnames(count_data) <- c("Group", "Count")
-  count_data$Dataset    <- dataset_name
-  count_data$Percentage <- count_data$Count / sum(count_data$Count) * 100
+  count_data = as.data.frame(table(res_knn$group))
+  colnames(count_data) = c("Group", "Count")
+  count_data$Dataset    = dataset_name
+  count_data$Percentage = count_data$Count / sum(count_data$Count) * 100
 
-  all_data <- rbind(all_data, count_data)
+  all_data = rbind(all_data, count_data)
 
   cat("Done: ", dataset_name,
       " Hot =", sum(res_knn$group == "Hot"),
@@ -2629,28 +2629,28 @@ for (q in seq_along(vector)) {
 }
 
 # ========== Rename the datasets
-all_data$Dataset <- ifelse(all_data$Dataset == "GSE253260", "Nicolle_EBioMedicine_2024", all_data$Dataset)
-all_data$Dataset <- ifelse(all_data$Dataset == "Dai_2025", "Dai_Nature_2025", all_data$Dataset)
-all_data$Dataset <- ifelse(all_data$Dataset == "PORTER_2025", "Galsky_ClinCancerRes_2025", all_data$Dataset)
-all_data$Dataset <- ifelse(all_data$Dataset == "GSE78220", "Hugo_Cell_2016", all_data$Dataset)
-all_data$Dataset <- ifelse(all_data$Dataset == "Prins_GBM_2019_RNAseq", "Cloughesy_NatMed_2019", all_data$Dataset)
+all_data$Dataset = ifelse(all_data$Dataset == "GSE253260", "Nicolle_EBioMedicine_2024", all_data$Dataset)
+all_data$Dataset = ifelse(all_data$Dataset == "Dai_2025", "Dai_Nature_2025", all_data$Dataset)
+all_data$Dataset = ifelse(all_data$Dataset == "PORTER_2025", "Galsky_ClinCancerRes_2025", all_data$Dataset)
+all_data$Dataset = ifelse(all_data$Dataset == "GSE78220", "Hugo_Cell_2016", all_data$Dataset)
+all_data$Dataset = ifelse(all_data$Dataset == "Prins_GBM_2019_RNAseq", "Cloughesy_NatMed_2019", all_data$Dataset)
 
 # ========== Sort by the hot proportion, low to high
-all_data$Group <- factor(all_data$Group, levels = c("Hot", "Cold"))
+all_data$Group = factor(all_data$Group, levels = c("Hot", "Cold"))
 
-hot_order <- all_data %>%
+hot_order = all_data %>%
   filter(Group == "Hot") %>%
   arrange(Percentage) %>%
   pull(Dataset)
 
 # Datasets without a hot group are moved to the front
-missing_ds <- setdiff(unique(all_data$Dataset), hot_order)
-hot_order  <- c(missing_ds, hot_order)
+missing_ds = setdiff(unique(all_data$Dataset), hot_order)
+hot_order = c(missing_ds, hot_order)
 
-all_data$Dataset <- factor(all_data$Dataset, levels = hot_order)
+all_data$Dataset = factor(all_data$Dataset, levels = hot_order)
 
 # ========== Label positions
-label_data <- all_data %>%
+label_data = all_data %>%
   group_by(Dataset) %>%
   arrange(desc(Group)) %>%
   mutate(
@@ -2659,7 +2659,7 @@ label_data <- all_data %>%
   )
 
 # ========== Plot
-p <- ggplot(all_data, aes(x = Dataset, y = Percentage, fill = Group)) +
+p = ggplot(all_data, aes(x = Dataset, y = Percentage, fill = Group)) +
   geom_bar(stat = "identity", position = "stack", width = 0.9) +
   geom_text(data = label_data,
             aes(x = Dataset, y = label_pos,
@@ -2693,34 +2693,34 @@ library(GSEABase)
 library(IOBR)
 library(TMEclassifier)
 
-input_dir <- "C:/Users/user/Desktop/input"
-wnt_dir   <- "C:/Users/user/Desktop/input/Wnt_immunotherapy"
+input_dir = "C:/Users/user/Desktop/input"
+wnt_dir = "C:/Users/user/Desktop/input/Wnt_immunotherapy"
 
 source("C:/Users/user/Desktop/input_wnt/TMEclassifier-master/R/tme_classifier_fix.R")
 source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
 
-geneSets <- getGmt(file.path(input_dir, "wpags_wpigs.gmt"))
+geneSets = getGmt(file.path(input_dir, "wpags_wpigs.gmt"))
 
 # ---------- Fixed metrics
-gene <- c("AXIN2", "ZNRF3", "RNF43", "LGR5", "TCF7", "PDCD1", "CD274", "TGFB1")
+gene = c("AXIN2", "ZNRF3", "RNF43", "LGR5", "TCF7", "PDCD1", "CD274", "TGFB1")
 
-signature <- c(
+signature = c(
   "CD8+_T_effector", "Pan_F_TBRS", "Antigen_processing_machinery",
   "Immune_checkpoint", "T_cell_inflamed_GEP", "IFNG_signature",
   "T_cell_accumulation", "T_cell_exhaustion", "T_cell_regulatory",
   "ICB_resistance", "MDSC", "TAM", "CAF"
 )
 
-immunotherapy <- getGmt(file.path(input_dir, "immunotherapy.gmt"))
-immunotherapy_gmt <- lapply(immunotherapy, function(x) x@geneIds)
-names(immunotherapy_gmt) <- names(immunotherapy)
+immunotherapy = getGmt(file.path(input_dir, "immunotherapy.gmt"))
+immunotherapy_gmt = lapply(immunotherapy, function(x) x@geneIds)
+names(immunotherapy_gmt) = names(immunotherapy)
 
-wnt_usual <- getGmt(file.path(input_dir, "wnt_usual_using.gmt"))
-wnt_usual_gmt <- lapply(wnt_usual, function(x) x@geneIds)
-names(wnt_usual_gmt) <- names(wnt_usual)
+wnt_usual = getGmt(file.path(input_dir, "wnt_usual_using.gmt"))
+wnt_usual_gmt = lapply(wnt_usual, function(x) x@geneIds)
+names(wnt_usual_gmt) = names(wnt_usual)
 
 # ---------- Configuration table (10 entries including IMvigor, OS only)
-dataset_config <- data.frame(
+dataset_config = data.frame(
   var_name = c("Dai_2025", "Dai_2025",
                "GSE253260", "GSE253260",
                "Braun_NatMed_2020",
@@ -2742,17 +2742,17 @@ dataset_config <- data.frame(
 )
 
 # ---------- One data frame per dataset
-result_list <- list()
+result_list = list()
 
 for (i in seq_len(nrow(dataset_config))) {
 
-  v     <- dataset_config$var_name[i]
-  title <- dataset_config$title[i]
-  ep    <- dataset_config$endpoint[i]
+  v = dataset_config$var_name[i]
+  title = dataset_config$title[i]
+  ep = dataset_config$endpoint[i]
 
   cat("\n==========", title, ep, "==========\n")
 
-  data_file <- file.path(wnt_dir, paste0(v, ".Rdata"))
+  data_file = file.path(wnt_dir, paste0(v, ".Rdata"))
 
   if (!file.exists(data_file)) {
     cat("Skipped (file missing): ", data_file, "\n")
@@ -2767,10 +2767,10 @@ for (i in seq_len(nrow(dataset_config))) {
     cat("  Objects in the environment: ", paste(ls(), collapse = ", "), "\n")
     next
   }
-  exp_tmp <- get(v)
+  exp_tmp = get(v)
 
   # ---------- KNN classification
-  res_knn <- tryCatch(
+  res_knn = tryCatch(
     tme_classifier(eset = exp_tmp, method = "knn", scale = TRUE),
     error = function(e) {
       cat("KNN failed: ", conditionMessage(e), "\n")
@@ -2779,11 +2779,11 @@ for (i in seq_len(nrow(dataset_config))) {
   )
   if (is.null(res_knn)) next
 
-  knn_col <- if ("KNN" %in% colnames(res_knn)) "KNN" else colnames(res_knn)[5]
-  res_knn$group <- ifelse(res_knn[[knn_col]] == "IA", "Hot", "Cold")
+  knn_col = if ("KNN" %in% colnames(res_knn)) "KNN" else colnames(res_knn)[5]
+  res_knn$group = ifelse(res_knn[[knn_col]] == "IA", "Hot", "Cold")
 
-  cold_tags <- res_knn$ID[res_knn$group == "Cold"]
-  cold_tags <- intersect(cold_tags, colnames(exp_tmp))
+  cold_tags = res_knn$ID[res_knn$group == "Cold"]
+  cold_tags = intersect(cold_tags, colnames(exp_tmp))
 
   if (length(cold_tags) < 5) {
     cat("Too few Cold samples, skipped: ", length(cold_tags), "\n")
@@ -2792,15 +2792,15 @@ for (i in seq_len(nrow(dataset_config))) {
 
   cat("Cold n =", length(cold_tags), "\n")
 
-  exp_cal <- exp_tmp[, cold_tags, drop = FALSE]
+  exp_cal = exp_tmp[, cold_tags, drop = FALSE]
 
   # ===== 1. Single-gene expression
-  gene_use <- intersect(gene, rownames(exp_cal))
-  gene_mat <- as.data.frame(t(exp_cal[gene_use, , drop = FALSE]))
-  gene_mat$Sample <- rownames(gene_mat)
+  gene_use = intersect(gene, rownames(exp_cal))
+  gene_mat = as.data.frame(t(exp_cal[gene_use, , drop = FALSE]))
+  gene_mat$Sample = rownames(gene_mat)
 
   # ===== 2. Wnt score
-  WNT_Score <- Calculate_bioactivity_scores(
+  WNT_Score = Calculate_bioactivity_scores(
     file_paths         = input_dir,
     expression_profile = exp_cal,
     foundation         = "relative_ssGSEA",
@@ -2812,40 +2812,40 @@ for (i in seq_len(nrow(dataset_config))) {
     geneset_direction  = c(rep("pos", sum(grepl("WPAGS", names(geneSets)))),
                            rep("neg", sum(grepl("WPIGS", names(geneSets)))))
   )
-  WNT_score <- WNT_Score$final_activity_score
-  WNT_score$Sample <- rownames(WNT_score)
+  WNT_score = WNT_Score$final_activity_score
+  WNT_score$Sample = rownames(WNT_score)
 
   # ===== 3. Immune signatures
-  im_ssGSEA <- calculate_sig_score(
+  im_ssGSEA = calculate_sig_score(
     eset            = as.data.frame(exp_cal),
     signature       = immunotherapy_gmt,
     method          = "ssgsea",
     mini_gene_count = 1
   )
-  im_ssGSEA <- as.data.frame(im_ssGSEA)
-  rownames(im_ssGSEA) <- im_ssGSEA[, 1]
-  im_ssGSEA <- im_ssGSEA[, -1]
-  im_ssGSEA$Sample <- rownames(im_ssGSEA)
+  im_ssGSEA = as.data.frame(im_ssGSEA)
+  rownames(im_ssGSEA) = im_ssGSEA[, 1]
+  im_ssGSEA = im_ssGSEA[, -1]
+  im_ssGSEA$Sample = rownames(im_ssGSEA)
 
   # ===== 4. wnt_usual_using.gmt
-  wnt_usual_score <- calculate_sig_score(
+  wnt_usual_score = calculate_sig_score(
     eset            = as.data.frame(exp_cal),
     signature       = wnt_usual_gmt,
     method          = "ssgsea",
     mini_gene_count = 1
   )
-  wnt_usual_score <- as.data.frame(wnt_usual_score)
-  rownames(wnt_usual_score) <- wnt_usual_score[, 1]
-  wnt_usual_score <- wnt_usual_score[, -1]
-  wnt_usual_score$Sample <- rownames(wnt_usual_score)
+  wnt_usual_score = as.data.frame(wnt_usual_score)
+  rownames(wnt_usual_score) = wnt_usual_score[, 1]
+  wnt_usual_score = wnt_usual_score[, -1]
+  wnt_usual_score$Sample = rownames(wnt_usual_score)
 
   # ===== Merge
-  df <- Reduce(function(x, y) merge(x, y, by = "Sample", all = TRUE),
+  df = Reduce(function(x, y) merge(x, y, by = "Sample", all = TRUE),
                list(gene_mat, WNT_score, im_ssGSEA, wnt_usual_score))
 
-  df <- df[, c("Sample", setdiff(colnames(df), "Sample"))]
+  df = df[, c("Sample", setdiff(colnames(df), "Sample"))]
 
-  result_list[[paste0(title, "_", ep)]] <- df
+  result_list[[paste0(title, "_", ep)]] = df
 
   cat("Done, metric columns = ", ncol(df) - 1, "\n")
 }
@@ -2867,12 +2867,12 @@ library(ggplot2)
 library(patchwork)
 
 # ---------- 1. Paths and configuration
-input_dir <- "C:/Users/user/Desktop/input"
-wnt_dir   <- "C:/Users/user/Desktop/input/Wnt_immunotherapy"
+input_dir = "C:/Users/user/Desktop/input"
+wnt_dir = "C:/Users/user/Desktop/input/Wnt_immunotherapy"
 
 load(file.path(input_dir, "result_list.Rdata"))
 
-surv_config <- data.frame(
+surv_config = data.frame(
   key        = c("Dai_Nature_2025_os", "Dai_Nature_2025_pfs",
                  "Nicolle_EBioMedicine_2024_os", "Nicolle_EBioMedicine_2024_pfs",
                  "Braun_NatMed_2020_os", "Zhao_NatMed_2019_os",
@@ -2889,76 +2889,76 @@ surv_config <- data.frame(
 )
 
 # ---------- 2. Load the survival data and merge it with the feature matrix
-df_list <- list()
+df_list = list()
 for (i in seq_len(nrow(surv_config))) {
-  key  <- surv_config$key[i]
-  v    <- surv_config$var_name[i]
+  key = surv_config$key[i]
+  v = surv_config$var_name[i]
   if (!key %in% names(result_list)) next
 
-  info_file <- file.path(wnt_dir, paste0(v, "_info.Rdata"))
+  info_file = file.path(wnt_dir, paste0(v, "_info.Rdata"))
   if (!file.exists(info_file)) next
 
   load(info_file)
-  info_tmp <- get(paste0(v, "_info"))
-  surv_info <- na.omit(data.frame(
+  info_tmp = get(paste0(v, "_info"))
+  surv_info = na.omit(data.frame(
     Sample = info_tmp$tag,
     time   = info_tmp[[surv_config$time_col[i]]] / 30,
     status = as.numeric(info_tmp[[surv_config$status_col[i]]])
   ))
 
-  df_all <- na.omit(merge(result_list[[key]], surv_info, by = "Sample"))
-  if (nrow(df_all) > 0) df_list[[key]] <- df_all
+  df_all = na.omit(merge(result_list[[key]], surv_info, by = "Sample"))
+  if (nrow(df_all) > 0) df_list[[key]] = df_all
 }
 
 # ---------- 3. Survival statistics loop (cut point + log-rank + Cox)
-p_list  <- hr_list <- list()
+p_list = hr_list = list()
 
 for (key in names(df_list)) {
-  df_all <- df_list[[key]]
-  indicator_cols <- setdiff(colnames(df_all), c("Sample", "time", "status"))
+  df_all = df_list[[key]]
+  indicator_cols = setdiff(colnames(df_all), c("Sample", "time", "status"))
 
   for (ind in indicator_cols) {
-    sub_df <- na.omit(df_all[, c(ind, "time", "status")])
+    sub_df = na.omit(df_all[, c(ind, "time", "status")])
     if (nrow(sub_df) < 10 || length(unique(sub_df[[ind]])) < 3) next
-    sub_df[[ind]] <- as.numeric(as.character(sub_df[[ind]]))
+    sub_df[[ind]] = as.numeric(as.character(sub_df[[ind]]))
 
     # Optimal cut-off
-    cut_res <- tryCatch(surv_cutpoint(sub_df, time = "time", event = "status", variables = ind, minprop = 0.1), error = function(e) NULL)
+    cut_res = tryCatch(surv_cutpoint(sub_df, time = "time", event = "status", variables = ind, minprop = 0.1), error = function(e) NULL)
     if (is.null(cut_res)) next
-    cp <- tryCatch(cut_res$cutpoint[ind, "cutpoint"], error = function(e) NULL)
+    cp = tryCatch(cut_res$cutpoint[ind, "cutpoint"], error = function(e) NULL)
     if (is.null(cp) || is.na(cp)) next
 
     # Group
-    sub_df$level <- factor(ifelse(sub_df[[ind]] > cp, "high", "low"), levels = c("low", "high"))
+    sub_df$level = factor(ifelse(sub_df[[ind]] > cp, "high", "low"), levels = c("low", "high"))
     if (sum(sub_df$level == "low") < 1 || sum(sub_df$level == "high") < 1) next
 
     # Log-rank p-value
-    fitd <- tryCatch(survdiff(Surv(time, status) ~ level, data = sub_df), error = function(e) NULL)
+    fitd = tryCatch(survdiff(Surv(time, status) ~ level, data = sub_df), error = function(e) NULL)
     if (is.null(fitd)) next
-    p_val <- 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
+    p_val = 1 - pchisq(fitd$chisq, length(fitd$n) - 1)
 
     # Cox model
-    cox_fit <- tryCatch(coxph(Surv(time, status) ~ level, data = sub_df), error = function(e) NULL)
+    cox_fit = tryCatch(coxph(Surv(time, status) ~ level, data = sub_df), error = function(e) NULL)
     if (is.null(cox_fit)) next
-    cox_sum <- summary(cox_fit)
+    cox_sum = summary(cox_fit)
     if (nrow(cox_sum$conf.int) < 1) next
 
-    hr     <- cox_sum$conf.int[1, "exp(coef)"]
-    hr_low <- cox_sum$conf.int[1, "lower .95"]
-    hr_up  <- cox_sum$conf.int[1, "upper .95"]
+    hr = cox_sum$conf.int[1, "exp(coef)"]
+    hr_low = cox_sum$conf.int[1, "lower .95"]
+    hr_up = cox_sum$conf.int[1, "upper .95"]
     if (any(is.na(c(hr, hr_low, hr_up)))) next
 
     # Collect the results
-    p_list[[length(p_list) + 1]] <- data.frame(Dataset = key, Indicator = ind, p = p_val, stringsAsFactors = FALSE)
-    hr_list[[length(hr_list) + 1]] <- data.frame(Dataset = key, Indicator = ind, HR = hr, HR_lower = hr_low, HR_upper = hr_up, stringsAsFactors = FALSE)
+    p_list[[length(p_list) + 1]] = data.frame(Dataset = key, Indicator = ind, p = p_val, stringsAsFactors = FALSE)
+    hr_list[[length(hr_list) + 1]] = data.frame(Dataset = key, Indicator = ind, HR = hr, HR_lower = hr_low, HR_upper = hr_up, stringsAsFactors = FALSE)
   }
 }
 
-p_df  <- do.call(rbind, p_list)
-hr_df <- do.call(rbind, hr_list)
+p_df = do.call(rbind, p_list)
+hr_df = do.call(rbind, hr_list)
 
 # ---------- 4. Normalise the names and prepare the plotting data
-name_mapping <- c(
+name_mapping = c(
   "Pan_F_TBRS"          = "Pan-F-TBRS",
   "ICB_resistance"      = "ICB resistance",
   "Immune_checkpoint"   = "Immune checkpoint",
@@ -2973,7 +2973,7 @@ name_mapping <- c(
   "neg_score"           = "WntQuant_inhibition"
 )
 
-plot_df <- p_df %>%
+plot_df = p_df %>%
   mutate(
     neg_log_p = -log10(p),
     Indicator = recode(Indicator, !!!name_mapping),
@@ -2981,15 +2981,15 @@ plot_df <- p_df %>%
     Dataset = ifelse(Dataset == "IMvigor210_os", "IMvigor_os", Dataset)
   )
 
-mean_df <- plot_df %>%
+mean_df = plot_df %>%
   group_by(Indicator) %>%
   summarise(mean_val = mean(neg_log_p, na.rm = TRUE)) %>%
   arrange(desc(mean_val))
 
-plot_df$Indicator <- factor(plot_df$Indicator, levels = mean_df$Indicator)
-mean_df$Indicator <- factor(mean_df$Indicator, levels = mean_df$Indicator)
+plot_df$Indicator = factor(plot_df$Indicator, levels = mean_df$Indicator)
+mean_df$Indicator = factor(mean_df$Indicator, levels = mean_df$Indicator)
 
-p_bar <- ggplot(mean_df, aes(x = Indicator, y = mean_val)) +
+p_bar = ggplot(mean_df, aes(x = Indicator, y = mean_val)) +
   geom_col(fill = "#9b95c9", alpha = 0.85, width = 0.7) +
   theme_minimal(base_size = 14) +
   theme(
@@ -3003,7 +3003,7 @@ p_bar <- ggplot(mean_df, aes(x = Indicator, y = mean_val)) +
   ) +
   labs(y = "")
 
-p_hm <- ggplot(plot_df, aes(x = Indicator, y = Dataset, fill = neg_log_p)) +
+p_hm = ggplot(plot_df, aes(x = Indicator, y = Dataset, fill = neg_log_p)) +
   geom_tile(color = "black", linewidth = 0.4) +
   scale_fill_gradient2(
     low = "lightblue",
@@ -3025,7 +3025,7 @@ p_hm <- ggplot(plot_df, aes(x = Indicator, y = Dataset, fill = neg_log_p)) +
   labs(x = "", y = "")
 
 # Assemble the figure
-combined_plot <- p_bar / p_hm + plot_layout(heights = c(1, 3))
+combined_plot = p_bar / p_hm + plot_layout(heights = c(1, 3))
 print(combined_plot)
 ################################################################################Multivariable Cox regression analysis####
 rm(list=ls())
@@ -3048,7 +3048,7 @@ data = data[, c("os","censOS","activity_score","binaryResponse",
                 "Neoantigen burden per MB","TCGA Subtype")]
 colnames(data)
 
-colnames(data) <- c(
+colnames(data) = c(
   "OS", "CensOS", "WntQuant", "BinaryResponse",
   "FMOne_mutation_burden", "Enrollment_IC",
   "Sex", "Race", "BCG", "ECOG", "Tobacco", "Met_status",
@@ -3057,45 +3057,45 @@ colnames(data) <- c(
 )
 
 # ========== 2. Convert the data types
-num_vars <- c("OS", "CensOS", "WntQuant",
+num_vars = c("OS", "CensOS", "WntQuant",
               "FMOne_mutation_burden", "Neoantigen_burden")
-for (v in num_vars) data[[v]] <- as.numeric(data[[v]])
+for (v in num_vars) data[[v]] = as.numeric(data[[v]])
 
-chr_vars <- c("Race", "Pre_platinum_samples")
-for (v in chr_vars) data[[v]] <- as.factor(data[[v]])
+chr_vars = c("Race", "Pre_platinum_samples")
+for (v in chr_vars) data[[v]] = as.factor(data[[v]])
 
-data$ECOG <- as.factor(data$ECOG)
+data$ECOG = as.factor(data$ECOG)
 
-data$BinaryResponse    <- factor(data$BinaryResponse, levels = c("SD/PD", "CR/PR"))
-data$Sex               <- factor(data$Sex, levels = c("F", "M"))
-data$BCG               <- factor(data$BCG, levels = c("N", "Y"))
-data$Platinum_received <- factor(data$Platinum_received, levels = c("N", "Y"))
-data$Met_status        <- factor(data$Met_status)
-data$Tobacco           <- factor(data$Tobacco)
-data$TCGA_subtype      <- factor(data$TCGA_subtype)
-data$Enrollment_IC     <- factor(data$Enrollment_IC, levels = c("IC0", "IC1", "IC2"))
+data$BinaryResponse    = factor(data$BinaryResponse, levels = c("SD/PD", "CR/PR"))
+data$Sex               = factor(data$Sex, levels = c("F", "M"))
+data$BCG               = factor(data$BCG, levels = c("N", "Y"))
+data$Platinum_received = factor(data$Platinum_received, levels = c("N", "Y"))
+data$Met_status        = factor(data$Met_status)
+data$Tobacco           = factor(data$Tobacco)
+data$TCGA_subtype      = factor(data$TCGA_subtype)
+data$Enrollment_IC     = factor(data$Enrollment_IC, levels = c("IC0", "IC1", "IC2"))
 
 # ========== 3. Multivariable Cox regression (ECOG excluded, Met_status included)
 
-data_cc <- data[complete.cases(data[, c("OS", "CensOS", "WntQuant")]), ]
+data_cc = data[complete.cases(data[, c("OS", "CensOS", "WntQuant")]), ]
 cat("Samples with complete survival data: ", nrow(data_cc), "\n")
 
 # Drop ECOG, add Met_status back
-multi_vars <- c("WntQuant", "BinaryResponse", "Sex",
+multi_vars = c("WntQuant", "BinaryResponse", "Sex",
                 "BCG", "Met_status", "Platinum_received",
                 "FMOne_mutation_burden", "Neoantigen_burden",
                 "TCGA_subtype", "Enrollment_IC")
 
-multi_data <- data_cc[complete.cases(data_cc[, multi_vars]), ]
+multi_data = data_cc[complete.cases(data_cc[, multi_vars]), ]
 cat("Samples in the multivariable model: ", nrow(multi_data), "\n")
 
-form_multi <- as.formula(
+form_multi = as.formula(
   paste0("Surv(OS, CensOS) ~ ", paste(multi_vars, collapse = " + "))
 )
-fit_multi <- coxph(form_multi, data = multi_data)
+fit_multi = coxph(form_multi, data = multi_data)
 print(summary(fit_multi))
 
-multi_res <- data.frame(
+multi_res = data.frame(
   Variable = rownames(summary(fit_multi)$coefficients),
   HR       = round(summary(fit_multi)$coefficients[, "exp(coef)"], 3),
   lower95  = round(summary(fit_multi)$conf.int[, "lower .95"], 3),
@@ -3125,7 +3125,7 @@ library(survival)
 library(survminer)
 
 # ---- 6.1 Split Wnt-high / Wnt-low by the median
-multi_data$WntGroup <- factor(
+multi_data$WntGroup = factor(
   ifelse(multi_data$WntQuant > median(multi_data$WntQuant, na.rm = TRUE),
          "Wnt High", "Wnt Low"),
   levels = c("Wnt Low", "Wnt High")
@@ -3134,7 +3134,7 @@ multi_data$WntGroup <- factor(
 
 # ---- 6.2 Stratify by response, two panels in one figure
 
-fit_km <- survfit(Surv(OS, CensOS) ~ WntGroup + BinaryResponse,
+fit_km = survfit(Surv(OS, CensOS) ~ WntGroup + BinaryResponse,
                   data = multi_data)
 
 ggsurvplot(
@@ -3178,20 +3178,20 @@ ggsurvplot(
 library(ggplot2)
 
 # ---- 6.1 Centre the WntQuant scores
-multi_data$WntQuant_c <- as.numeric(scale(multi_data$WntQuant,
+multi_data$WntQuant_c = as.numeric(scale(multi_data$WntQuant,
                                           center = TRUE, scale = FALSE))
 
 # ---- 6.2 Cox model with an interaction term (only to obtain the interaction p-value)
-covars_no_int <- setdiff(multi_vars, c("WntQuant", "BinaryResponse"))
+covars_no_int = setdiff(multi_vars, c("WntQuant", "BinaryResponse"))
 
-form_int <- as.formula(
+form_int = as.formula(
   paste0("Surv(OS, CensOS) ~ WntQuant_c * BinaryResponse + ",
          paste(covars_no_int, collapse = " + "))
 )
-fit_int <- coxph(form_int, data = multi_data)
+fit_int = coxph(form_int, data = multi_data)
 
-int_term <- grep(":", rownames(summary(fit_int)$coefficients), value = TRUE)
-int_p    <- round(summary(fit_int)$coefficients[int_term, "Pr(>|z|)"], 3)
+int_term = grep(":", rownames(summary(fit_int)$coefficients), value = TRUE)
+int_p = round(summary(fit_int)$coefficients[int_term, "Pr(>|z|)"], 3)
 int_p
 ################################################################################Multivariable Cox regression analysis with KNN####
 rm(list=ls())
@@ -3215,7 +3215,7 @@ data = data[, c("os","censOS","activity_score","binaryResponse",
                 "Received platinum","Sample collected pre-platinum",
                 "Neoantigen burden per MB","TCGA Subtype")]
 
-colnames(data) <- c(
+colnames(data) = c(
   "OS", "CensOS", "WntQuant", "BinaryResponse",
   "FMOne_mutation_burden", "Enrollment_IC",
   "Sex", "Race", "BCG", "ECOG", "Tobacco", "Met_status",
@@ -3224,45 +3224,45 @@ colnames(data) <- c(
 )
 
 # ========== 2. Convert the data types
-num_vars <- c("OS", "CensOS", "WntQuant",
+num_vars = c("OS", "CensOS", "WntQuant",
               "FMOne_mutation_burden", "Neoantigen_burden")
-for (v in num_vars) data[[v]] <- as.numeric(data[[v]])
+for (v in num_vars) data[[v]] = as.numeric(data[[v]])
 
-chr_vars <- c("Race", "Pre_platinum_samples")
-for (v in chr_vars) data[[v]] <- as.factor(data[[v]])
+chr_vars = c("Race", "Pre_platinum_samples")
+for (v in chr_vars) data[[v]] = as.factor(data[[v]])
 
-data$ECOG <- as.factor(data$ECOG)
+data$ECOG = as.factor(data$ECOG)
 
-data$BinaryResponse    <- factor(data$BinaryResponse, levels = c("SD/PD", "CR/PR"))
-data$Sex               <- factor(data$Sex, levels = c("F", "M"))
-data$BCG               <- factor(data$BCG, levels = c("N", "Y"))
-data$Platinum_received <- factor(data$Platinum_received, levels = c("N", "Y"))
-data$Met_status        <- factor(data$Met_status)
-data$Tobacco           <- factor(data$Tobacco)
-data$TCGA_subtype      <- factor(data$TCGA_subtype)
-data$Enrollment_IC     <- factor(data$Enrollment_IC, levels = c("IC0", "IC1", "IC2"))
+data$BinaryResponse    = factor(data$BinaryResponse, levels = c("SD/PD", "CR/PR"))
+data$Sex               = factor(data$Sex, levels = c("F", "M"))
+data$BCG               = factor(data$BCG, levels = c("N", "Y"))
+data$Platinum_received = factor(data$Platinum_received, levels = c("N", "Y"))
+data$Met_status        = factor(data$Met_status)
+data$Tobacco           = factor(data$Tobacco)
+data$TCGA_subtype      = factor(data$TCGA_subtype)
+data$Enrollment_IC     = factor(data$Enrollment_IC, levels = c("IC0", "IC1", "IC2"))
 
 # ========== 3. Multivariable Cox regression (ECOG and Met_status excluded)
 
-data_cc <- data[complete.cases(data[, c("OS", "CensOS", "WntQuant")]), ]
+data_cc = data[complete.cases(data[, c("OS", "CensOS", "WntQuant")]), ]
 cat("Samples with complete survival data: ", nrow(data_cc), "\n")
 
 # Drop ECOG and Met_status
-multi_vars <- c("WntQuant", "BinaryResponse", "Sex",
+multi_vars = c("WntQuant", "BinaryResponse", "Sex",
                 "BCG", "Platinum_received",
                 "FMOne_mutation_burden", "Neoantigen_burden",
                 "TCGA_subtype", "Enrollment_IC")
 
-multi_data <- data_cc[complete.cases(data_cc[, multi_vars]), ]
+multi_data = data_cc[complete.cases(data_cc[, multi_vars]), ]
 cat("Samples in the multivariable model: ", nrow(multi_data), "\n")
 
-form_multi <- as.formula(
+form_multi = as.formula(
   paste0("Surv(OS, CensOS) ~ ", paste(multi_vars, collapse = " + "))
 )
-fit_multi <- coxph(form_multi, data = multi_data)
+fit_multi = coxph(form_multi, data = multi_data)
 print(summary(fit_multi))
 
-multi_res <- data.frame(
+multi_res = data.frame(
   Variable = rownames(summary(fit_multi)$coefficients),
   HR       = round(summary(fit_multi)$coefficients[, "exp(coef)"], 3),
   lower95  = round(summary(fit_multi)$conf.int[, "lower .95"], 3),

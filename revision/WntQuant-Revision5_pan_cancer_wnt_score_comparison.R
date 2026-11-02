@@ -78,12 +78,12 @@ WNT_Score_group_tumor$type="Tumor"
 WNT_Score_group_normal$type="Normal"
 pairs_data=rbind(WNT_Score_group_tumor,WNT_Score_group_normal)
 library(dplyr)
-pairs_data <- pairs_data %>%
+pairs_data = pairs_data %>%
   group_by(ID) %>%
   filter(n() > 1)
 pairs_data$activity_score=as.numeric(pairs_data$activity_score)
 pairs_data=pairs_data[!pairs_data$Project%in%c("SARC","SKCM","THYM"),]
-mytheme <- theme(plot.margin=unit(c(0.5,0.5,0.5,0.5), "cm"),
+mytheme = theme(plot.margin=unit(c(0.5,0.5,0.5,0.5), "cm"),
                  axis.line = element_line(color = "black", linewidth = 0.4),
                  panel.grid.minor = element_blank(),
                  panel.grid.major = element_line(size = 0.1, color = "#e5e5e5"),
@@ -234,7 +234,7 @@ for (i in 1:length(vector)){
   library(dplyr)
   group = group %>%
     mutate(group = ntile(activity_score,2))
-  group$group <- factor(group$group, levels =1:2, labels = c("L","H"))
+  group$group = factor(group$group, levels =1:2, labels = c("L","H"))
   group$Tag=rownames(group)
   group=group[,c("Tag","group")]
   result=Get_limma(gene=exp,
@@ -361,7 +361,7 @@ for (i in 1:length(vector)){
   library(dplyr)
   group = group %>%
     mutate(group = ntile(AXIN2,2))# Replacement point
-  group$group <- factor(group$group, levels =1:2, labels = c("L","H"))
+  group$group = factor(group$group, levels =1:2, labels = c("L","H"))
   group$Tag=rownames(group)
   group=group[,c("Tag","group")]
   identical(group$Tag,colnames(exp))
@@ -754,7 +754,7 @@ library(ggplot2)
 library(ggpubr)
 library(patchwork)
 # 8.1 BCR Shannon
-p1 <- ggplot(geneset_hippo1, aes(x = cluster, y = `BCR Shannon`, fill = cluster)) +
+p1 = ggplot(geneset_hippo1, aes(x = cluster, y = `BCR Shannon`, fill = cluster)) +
   geom_boxplot(alpha = 0.7, outlier.shape = NA) +
   labs(title = "BCR Shannon", x = "", y = "Shannon index") +
   theme_minimal() +
@@ -768,7 +768,7 @@ p1 <- ggplot(geneset_hippo1, aes(x = cluster, y = `BCR Shannon`, fill = cluster)
   coord_flip(ylim = c(0, 6))  # Widen the range so the boxes stand out
 
 # 8.2 TCR Shannon
-p2 <- ggplot(geneset_hippo2, aes(x = cluster, y = `TCR Shannon`, fill = cluster)) +
+p2 = ggplot(geneset_hippo2, aes(x = cluster, y = `TCR Shannon`, fill = cluster)) +
   geom_boxplot(alpha = 0.7, outlier.shape = NA) +
   labs(title = "TCR Shannon", x = "", y = "Shannon index") +
   theme_minimal() +
@@ -782,7 +782,7 @@ p2 <- ggplot(geneset_hippo2, aes(x = cluster, y = `TCR Shannon`, fill = cluster)
   coord_flip(ylim = c(0, 6))
 
 # 8.3 BCR Evenness
-p3 <- ggplot(geneset_hippo3, aes(x = cluster, y = `BCR Evenness`, fill = cluster)) +
+p3 = ggplot(geneset_hippo3, aes(x = cluster, y = `BCR Evenness`, fill = cluster)) +
   geom_boxplot(alpha = 0.7, outlier.shape = NA) +
   labs(title = "BCR Evenness", x = "", y = "Evenness index") +
   theme_minimal() +
@@ -796,7 +796,7 @@ p3 <- ggplot(geneset_hippo3, aes(x = cluster, y = `BCR Evenness`, fill = cluster
   coord_flip(ylim = c(0.5, 1))
 
 # 8.4 TCR Evenness
-p4 <- ggplot(geneset_hippo4, aes(x = cluster, y = `TCR Evenness`, fill = cluster)) +
+p4 = ggplot(geneset_hippo4, aes(x = cluster, y = `TCR Evenness`, fill = cluster)) +
   geom_boxplot(alpha = 0.7, outlier.shape = NA) +
   labs(title = "TCR Evenness", x = "", y = "Evenness index") +
   theme_minimal() +
@@ -810,7 +810,7 @@ p4 <- ggplot(geneset_hippo4, aes(x = cluster, y = `TCR Evenness`, fill = cluster
   coord_flip(ylim = c(0.9, 1))
 
 # 8.5 BCR Richness
-p5 <- ggplot(geneset_hippo5, aes(x = cluster, y = `BCR Richness`, fill = cluster)) +
+p5 = ggplot(geneset_hippo5, aes(x = cluster, y = `BCR Richness`, fill = cluster)) +
   geom_boxplot(alpha = 0.7, outlier.shape = NA) +
   labs(title = "BCR Richness", x = "", y = "Richness index") +
   theme_minimal() +
@@ -824,7 +824,7 @@ p5 <- ggplot(geneset_hippo5, aes(x = cluster, y = `BCR Richness`, fill = cluster
   coord_flip(ylim = c(0, 100))
 
 # 8.6 TCR Richness
-p6 <- ggplot(geneset_hippo6, aes(x = cluster, y = `TCR Richness`, fill = cluster)) +
+p6 = ggplot(geneset_hippo6, aes(x = cluster, y = `TCR Richness`, fill = cluster)) +
   geom_boxplot(alpha = 0.7, outlier.shape = NA) +
   labs(title = "TCR Richness", x = "", y = "Richness index") +
   theme_minimal() +
@@ -836,5 +836,5 @@ p6 <- ggplot(geneset_hippo6, aes(x = cluster, y = `TCR Richness`, fill = cluster
   stat_compare_means(method = "kruskal.test", label = "p.signif") +
   scale_fill_manual(values = c("#d71345", "#f47920", "#145b7d", "#6950a1")) +
   coord_flip(ylim = c(0, 100))
-combined_plot <- (p1 | p3 | p5) / (p2 | p4 | p6)
+combined_plot = (p1 | p3 | p5) / (p2 | p4 | p6)
 print(combined_plot)

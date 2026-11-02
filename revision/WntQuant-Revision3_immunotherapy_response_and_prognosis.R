@@ -35,39 +35,39 @@ for (q in 1:length(vector)) {
 }
 
 # Check for valid datasets
-valid_vector <- character()
-valid_vector_CD274 <- character()
+valid_vector = character()
+valid_vector_CD274 = character()
 
 for (q in 1:length(vector)) {
-  dataset_name <- vector[q]
-  data_obj_name <- dataset_name
-  info_obj_name <- paste0(dataset_name, "_info")
+  dataset_name = vector[q]
+  data_obj_name = dataset_name
+  info_obj_name = paste0(dataset_name, "_info")
 
   if(exists(info_obj_name) && exists(data_obj_name)) {
-    info_obj <- get(info_obj_name)
-    data_obj <- get(data_obj_name)
+    info_obj = get(info_obj_name)
+    data_obj = get(data_obj_name)
 
     # Check that the os.time and os.status columns are present
-    has_os_time <- "os.time" %in% colnames(info_obj)
-    has_os_status <- "os.status" %in% colnames(info_obj)
+    has_os_time = "os.time" %in% colnames(info_obj)
+    has_os_status = "os.status" %in% colnames(info_obj)
 
     if(has_os_time && has_os_status) {
       # Check that neither column is entirely NA
-      os_time_valid <- !all(is.na(info_obj$os.time))
-      os_status_valid <- !all(is.na(info_obj$os.status))
+      os_time_valid = !all(is.na(info_obj$os.time))
+      os_status_valid = !all(is.na(info_obj$os.status))
 
       if(os_time_valid && os_status_valid) {
-        valid_vector <- c(valid_vector, dataset_name)
+        valid_vector = c(valid_vector, dataset_name)
         cat(paste0("✓ ", dataset_name, ": valid (os.time and os.status present and not all NA)\n"))
 
         # Require more than 10 samples and the presence of CD274
-        sample_size <- nrow(info_obj)
+        sample_size = nrow(info_obj)
 
         # Check whether CD274 is present
-        has_cd274 <- "CD274" %in% rownames(data_obj)
+        has_cd274 = "CD274" %in% rownames(data_obj)
 
         if(sample_size > 10 && has_cd274) {
-          valid_vector_CD274 <- c(valid_vector_CD274, dataset_name)
+          valid_vector_CD274 = c(valid_vector_CD274, dataset_name)
           cat(paste0("  OK meets the CD274 criterion: n = ", sample_size, ", CD274 present = ", has_cd274, "\n"))
         } else {
           cat(paste0("  FAILS the CD274 criterion: n = ", sample_size, ", CD274 present = ", has_cd274, "\n"))
@@ -76,9 +76,9 @@ for (q in 1:length(vector)) {
         cat(paste0("✗ ", dataset_name, ": columns present but all NA\n"))
       }
     } else {
-      missing_cols <- c()
-      if(!has_os_time) missing_cols <- c(missing_cols, "os.time")
-      if(!has_os_status) missing_cols <- c(missing_cols, "os.status")
+      missing_cols = c()
+      if(!has_os_time) missing_cols = c(missing_cols, "os.time")
+      if(!has_os_status) missing_cols = c(missing_cols, "os.status")
       cat(paste0("✗ ", dataset_name, ": missing columns - ", paste(missing_cols, collapse = ", "), "\n"))
     }
   } else {
@@ -97,9 +97,9 @@ save(valid_vector, valid_vector_CD274, file = "filtered_datasets.RData")
 if(length(valid_vector_CD274) > 0) {
   cat("\nDetailed statistics:\n")
   for(dataset in valid_vector_CD274) {
-    info_obj <- get(paste0(dataset, "_info"))
-    data_obj <- get(dataset)
-    sample_size <- nrow(info_obj)
+    info_obj = get(paste0(dataset, "_info"))
+    data_obj = get(dataset)
+    sample_size = nrow(info_obj)
     cat(paste0("- ", dataset, ": n = ", sample_size, ", CD274 expression range = ",
                paste(round(range(data_obj["CD274", ], na.rm = TRUE), 3), collapse = " ~ "), "\n"))
   }
@@ -204,7 +204,7 @@ wnt_IMvigor=merge(IMvigor_WNT_score$final_activity_score,phenoData,by="row.names
 wnt_IMvigor=wnt_IMvigor[!is.na(wnt_IMvigor$`Immune phenotype`), ]
 wnt_IMvigor_prognosis=wnt_IMvigor[,c("activity_score","os","censOS")]
 wnt_IMvigor_prognosis=na.omit(wnt_IMvigor_prognosis)
-quartiles <- quantile(wnt_IMvigor_prognosis$activity_score, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+quartiles = quantile(wnt_IMvigor_prognosis$activity_score, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
 wnt_IMvigor_prognosis$level = cut(wnt_IMvigor_prognosis$activity_score, breaks = quartiles, include.lowest = TRUE,
                                   labels = c("Low","Medium","High"))
 wnt_IMvigor_prognosis$level=factor(wnt_IMvigor_prognosis$level,levels=c("Low","Medium","High"))
@@ -263,7 +263,7 @@ wnt_IMvigor=wnt_IMvigor[wnt_IMvigor$`Immune phenotype`%in%c("desert","excluded")
 # wnt_IMvigor=wnt_IMvigor[wnt_IMvigor$`Immune phenotype`%in%c("desert"),]
 wnt_IMvigor_prognosis=wnt_IMvigor[,c("activity_score","os","censOS")]
 wnt_IMvigor_prognosis=na.omit(wnt_IMvigor_prognosis)
-quartiles <- quantile(wnt_IMvigor_prognosis$activity_score, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+quartiles = quantile(wnt_IMvigor_prognosis$activity_score, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
 wnt_IMvigor_prognosis$level = cut(wnt_IMvigor_prognosis$activity_score, breaks = quartiles, include.lowest = TRUE,
                                   labels = c("Low","Medium","High"))
 wnt_IMvigor_prognosis$level=factor(wnt_IMvigor_prognosis$level,levels=c("Low","Medium","High"))
@@ -322,7 +322,7 @@ wnt_IMvigor_hot_prognosis=wnt_IMvigor_hot[,c("activity_score","os","censOS")]
 wnt_IMvigor_cold=wnt_IMvigor[wnt_IMvigor$`Immune phenotype`%in%c("desert","excluded"),]
 wnt_IMvigor_cold_prognosis=wnt_IMvigor_cold[,c("activity_score","os","censOS")]
 wnt_IMvigor_cold_prognosis=na.omit(wnt_IMvigor_cold_prognosis)
-quartiles <- quantile(wnt_IMvigor_cold_prognosis$activity_score, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+quartiles = quantile(wnt_IMvigor_cold_prognosis$activity_score, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
 wnt_IMvigor_cold_prognosis$level = cut(wnt_IMvigor_cold_prognosis$activity_score, breaks = quartiles, include.lowest = TRUE,
                                        labels = c("Cold_low","Cold_medium","Cold_high"))
 wnt_IMvigor_hot_prognosis$level="Hot"
@@ -353,23 +353,23 @@ print(colnames(ps$p.value))
 
 # Corrected p-value extraction
 # Method 1: inspect the whole matrix directly
-hot_vs_cold_high_p <- NA
+hot_vs_cold_high_p = NA
 
 # Check whether these combinations exist in the matrix
 if ("Hot" %in% rownames(ps$p.value) && "Cold_high" %in% colnames(ps$p.value)) {
-  hot_vs_cold_high_p <- ps$p.value["Hot", "Cold_high"]
+  hot_vs_cold_high_p = ps$p.value["Hot", "Cold_high"]
 } else if ("Cold_high" %in% rownames(ps$p.value) && "Hot" %in% colnames(ps$p.value)) {
-  hot_vs_cold_high_p <- ps$p.value["Cold_high", "Hot"]
+  hot_vs_cold_high_p = ps$p.value["Cold_high", "Hot"]
 } else {
   # If none of the above works, compute the Hot vs Cold_high p-value by hand
-  temp_data <- wnt_IMvigor_prognosis[wnt_IMvigor_prognosis$level %in% c("Hot", "Cold_high"), ]
-  temp_data$level <- factor(temp_data$level)
-  temp_fit <- survdiff(Surv(os, censOS) ~ level, data = temp_data)
-  hot_vs_cold_high_p <- 1 - pchisq(temp_fit$chisq, length(temp_fit$n) - 1)
+  temp_data = wnt_IMvigor_prognosis[wnt_IMvigor_prognosis$level %in% c("Hot", "Cold_high"), ]
+  temp_data$level = factor(temp_data$level)
+  temp_fit = survdiff(Surv(os, censOS) ~ level, data = temp_data)
+  hot_vs_cold_high_p = 1 - pchisq(temp_fit$chisq, length(temp_fit$n) - 1)
 }
 
 # Format the p-value labels
-hot_vs_cold_high_label <- ifelse(is.na(hot_vs_cold_high_p), "NA",
+hot_vs_cold_high_label = ifelse(is.na(hot_vs_cold_high_p), "NA",
                                  ifelse(hot_vs_cold_high_p < 0.001, "p < 0.001",
                                         ifelse(hot_vs_cold_high_p < 0.01, paste0("p = ", round(hot_vs_cold_high_p, 3)),
                                                ifelse(hot_vs_cold_high_p < 0.05, paste0("p = ", round(hot_vs_cold_high_p, 3)), "ns"))))
@@ -457,34 +457,34 @@ library(GSEABase)
 library(dplyr)
 
 # Read the data and build the dataset list
-ici_precog_info <- read.csv("ici_precog_all_patient_clinical_data_FOR_DOWNLOAD.csv")
-datasets <- unique(ici_precog_info$Dataset)
-datasets <- unique(c(datasets, "Zhao_NatMed_2019", "Kim_NatMed_2018", "GSE67501", "Braun_NatMed_2020",
+ici_precog_info = read.csv("ici_precog_all_patient_clinical_data_FOR_DOWNLOAD.csv")
+datasets = unique(ici_precog_info$Dataset)
+datasets = unique(c(datasets, "Zhao_NatMed_2019", "Kim_NatMed_2018", "GSE67501", "Braun_NatMed_2020",
                      "GSE93157", "Gide_CancerCell_2019", "GSE115821", "GSE106128", "GSE100797",
                      "GSE93157", "Müller_JCI_2018", "GSE100797", "GSE135222", "GSE19423", "GSE100797",
                      "GSE78220", "IMVigor210"))
-vector <- datasets[datasets != "Gide_Cell_2019"]
+vector = datasets[datasets != "Gide_Cell_2019"]
 
 # Check for valid datasets
-vector_responder <- c()
+vector_responder = c()
 
 for (q in 1:length(vector)) {
-  data_file <- paste0(vector[q], ".Rdata")
-  info_file <- paste0(vector[q], "_info.Rdata")
+  data_file = paste0(vector[q], ".Rdata")
+  info_file = paste0(vector[q], "_info.Rdata")
 
   if(file.exists(data_file) && file.exists(info_file)) {
     load(data_file)
     load(info_file)
 
-    info_var_name <- paste0(vector[q], "_info")
+    info_var_name = paste0(vector[q], "_info")
 
     if(exists(info_var_name)) {
-      info_data <- get(info_var_name)
+      info_data = get(info_var_name)
 
       if("responder" %in% colnames(info_data)) {
-        responder_values <- info_data$responder
+        responder_values = info_data$responder
         if(!all(is.na(responder_values)) && length(responder_values) > 0) {
-          vector_responder <- c(vector_responder, vector[q])
+          vector_responder = c(vector_responder, vector[q])
           cat(paste0("OK dataset ", vector[q], " has a valid responder column\n"))
         } else {
           cat(paste0("WARNING: ", vector[q], " has a responder column that is entirely NA or empty\n"))
@@ -511,22 +511,22 @@ if(length(vector_responder) == 0) {
 
 # Load the required functions and gene sets
 source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
-geneSets <- getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+geneSets = getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
 
 # Compute the Wnt activity score
-all_WNT_scores <- list()
+all_WNT_scores = list()
 
 for(i in 1:length(vector_responder)) {
-  dataset_name <- vector_responder[i]
+  dataset_name = vector_responder[i]
   cat("Processing dataset:", dataset_name, "\n")
 
   tryCatch({
     # Get the expression data and clinical information
-    exp_data <- get(dataset_name)
-    info_data <- get(paste0(dataset_name, "_info"))
+    exp_data = get(dataset_name)
+    info_data = get(paste0(dataset_name, "_info"))
 
     # Compute the Wnt activity score
-    WNT_Score <- Calculate_bioactivity_scores(
+    WNT_Score = Calculate_bioactivity_scores(
       file_paths = "C:/Users/user/Desktop/input",
       expression_profile = exp_data,
       foundation = "relative_ssGSEA",
@@ -541,22 +541,22 @@ for(i in 1:length(vector_responder)) {
       )
     )
 
-    WNT_score <- WNT_Score$final_activity_score
+    WNT_score = WNT_Score$final_activity_score
 
     # Merge the response information
-    responder_info <- info_data[, c("tag", "responder")]
-    WNT_score_pro <- merge(responder_info, WNT_score, by.x = "tag", by.y = "row.names")
+    responder_info = info_data[, c("tag", "responder")]
+    WNT_score_pro = merge(responder_info, WNT_score, by.x = "tag", by.y = "row.names")
 
     # Data cleaning and formatting
-    WNT_score_pro$responder <- factor(WNT_score_pro$responder, levels = c("TRUE", "FALSE"))
-    WNT_score_pro <- WNT_score_pro[, c("responder", "activity_score")]
-    WNT_score_pro$dataset <- dataset_name
+    WNT_score_pro$responder = factor(WNT_score_pro$responder, levels = c("TRUE", "FALSE"))
+    WNT_score_pro = WNT_score_pro[, c("responder", "activity_score")]
+    WNT_score_pro$dataset = dataset_name
 
     # Remove NA values
-    WNT_score_pro <- na.omit(WNT_score_pro)
+    WNT_score_pro = na.omit(WNT_score_pro)
 
     # Save results
-    all_WNT_scores[[dataset_name]] <- WNT_score_pro
+    all_WNT_scores[[dataset_name]] = WNT_score_pro
     cat("OK processed dataset:", dataset_name, "\n")
 
   }, error = function(e) {
@@ -565,41 +565,41 @@ for(i in 1:length(vector_responder)) {
 }
 
 # Merge all data
-combined_data <- do.call(rbind, all_WNT_scores)
-combined_data <- na.omit(combined_data)
+combined_data = do.call(rbind, all_WNT_scores)
+combined_data = na.omit(combined_data)
 
 # Sample size
-sample_sizes <- data.frame(
+sample_sizes = data.frame(
   dataset = unique(combined_data$dataset)
 )
 
-sample_sizes$total_n <- sapply(sample_sizes$dataset, function(ds) {
+sample_sizes$total_n = sapply(sample_sizes$dataset, function(ds) {
   nrow(combined_data[combined_data$dataset == ds, ])
 })
 
-sample_sizes$responder_n <- sapply(sample_sizes$dataset, function(ds) {
+sample_sizes$responder_n = sapply(sample_sizes$dataset, function(ds) {
   sum(combined_data$dataset == ds & combined_data$responder == "TRUE")
 })
 
-sample_sizes$non_responder_n <- sapply(sample_sizes$dataset, function(ds) {
+sample_sizes$non_responder_n = sapply(sample_sizes$dataset, function(ds) {
   sum(combined_data$dataset == ds & combined_data$responder == "FALSE")
 })
 
-sample_sizes$label <- paste0("n=", sample_sizes$total_n,
+sample_sizes$label = paste0("n=", sample_sizes$total_n,
                              " (R:", sample_sizes$responder_n,
                              "/NR:", sample_sizes$non_responder_n, ")")
 
 # Build new x-axis labels that include the sample size
-new_labels <- setNames(
+new_labels = setNames(
   paste0(sample_sizes$dataset, "\n(n=", sample_sizes$total_n, ")"),
   sample_sizes$dataset
 )
-new_labels <- setNames(
+new_labels = setNames(
   paste0(sample_sizes$dataset, "(n=", sample_sizes$total_n, ")"),
   sample_sizes$dataset
 )
 # Create the figure
-p <- ggplot(combined_data, aes(x = dataset, y = activity_score, fill = responder)) +
+p = ggplot(combined_data, aes(x = dataset, y = activity_score, fill = responder)) +
   geom_boxplot(
     outlier.shape = 21,
     outlier.fill = 'black',
@@ -663,7 +663,7 @@ setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("Braun_NatMed_2020","CheckMate_Meta","Gide_CancerCell_2019","Goswami_2025","GSE159067",
          "GSE94873","IMmotion150","IMVigor210","Kinget_2024","Liu_NatMed_2019","phs000452",
          "Ravi_NatGen_2023","Riaz_Nivolumab_2017")
-filtered_vector <- c()
+filtered_vector = c()
 for (q in 1:length(vector)) {
   load(paste0(vector[q],".Rdata"))
   exp=get(vector[q])
@@ -767,10 +767,10 @@ setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("Braun_NatMed_2020","CheckMate_Meta","Gide_CancerCell_2019","Goswami_2025","GSE159067",
          "GSE94873","IMmotion150","IMVigor210","Kinget_2024","Liu_NatMed_2019","phs000452",
          "Ravi_NatGen_2023","Riaz_Nivolumab_2017")
-filtered_vector <- c()
+filtered_vector = c()
 for (q in 1:length(vector)) {
   load(paste0(vector[q],".Rdata"))
-  exp <- get(vector[q])
+  exp = get(vector[q])
 
   # Check whether CD274 is present
   if("CD274" %in% rownames(exp)) {
@@ -778,14 +778,14 @@ for (q in 1:length(vector)) {
     load(paste0(vector[q],"_info.Rdata"))
 
     # Get the name of the info data frame (assumed to be vector[q] plus an _info suffix)
-    info_name <- paste0(vector[q], "_info")
-    info_data <- get(info_name)
+    info_name = paste0(vector[q], "_info")
+    info_data = get(info_name)
 
     # Check that os.time and os.status exist and are not entirely NA
     if(all(c("os.time", "os.status") %in% colnames(info_data))) {
       # Check that neither column is entirely NA
       if(!all(is.na(info_data$os.time)) && !all(is.na(info_data$os.status))) {
-        filtered_vector <- c(filtered_vector, vector[q])
+        filtered_vector = c(filtered_vector, vector[q])
         print(paste0(vector[q], ": ", length(colnames(exp)), " samples"))
       } else {
         print(paste0(vector[q], ": CD274 present but os.time or os.status all NA"))
@@ -895,10 +895,10 @@ setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("Braun_NatMed_2020","CheckMate_Meta","Gide_CancerCell_2019","Goswami_2025","GSE159067",
          "GSE94873","IMmotion150","IMVigor210","Kinget_2024","Liu_NatMed_2019","phs000452",
          "Ravi_NatGen_2023","Riaz_Nivolumab_2017")
-filtered_vector <- c()
+filtered_vector = c()
 for (q in 1:length(vector)) {
   load(paste0(vector[q],".Rdata"))
-  exp <- get(vector[q])
+  exp = get(vector[q])
 
   # Check whether CD274 is present
   if("CD274" %in% rownames(exp)) {
@@ -906,14 +906,14 @@ for (q in 1:length(vector)) {
     load(paste0(vector[q],"_info.Rdata"))
 
     # Get the name of the info data frame (assumed to be vector[q] plus an _info suffix)
-    info_name <- paste0(vector[q], "_info")
-    info_data <- get(info_name)
+    info_name = paste0(vector[q], "_info")
+    info_data = get(info_name)
 
     # Check that pfs.time and pfs.status exist and are not entirely NA
     if(all(c("pfs.time", "pfs.status") %in% colnames(info_data))) {
       # Check that neither column is entirely NA
       if(!all(is.na(info_data$pfs.time)) && !all(is.na(info_data$pfs.status))) {
-        filtered_vector <- c(filtered_vector, vector[q])
+        filtered_vector = c(filtered_vector, vector[q])
         print(paste0(vector[q], ": ", length(colnames(exp)), " samples"))
       } else {
         print(paste0(vector[q], ": CD274 present but pfs.time or pfs.status all NA"))
@@ -1025,20 +1025,20 @@ vector=c("Braun_NatMed_2020","CheckMate_Meta","Gide_CancerCell_2019","Goswami_20
          "GSE94873","IMmotion150","IMVigor210","Kinget_2024","Liu_NatMed_2019","phs000452",
          "Ravi_NatGen_2023","Riaz_Nivolumab_2017")
 
-filtered_vector <- c()
+filtered_vector = c()
 for (q in 1:length(vector)) {
   load(paste0(vector[q],".Rdata"))
-  exp <- get(vector[q])
+  exp = get(vector[q])
   load(paste0(vector[q],"_info.Rdata"))
-  info_name <- paste0(vector[q], "_info")
-  info_data <- get(info_name)
+  info_name = paste0(vector[q], "_info")
+  info_data = get(info_name)
 
   # Run only two checks
-  column_exists <- "responder" %in% colnames(info_data)
-  data_valid <- !all(is.na(info_data$responder))
+  column_exists = "responder" %in% colnames(info_data)
+  data_valid = !all(is.na(info_data$responder))
 
   if(column_exists && data_valid) {
-    filtered_vector <- c(filtered_vector, vector[q])
+    filtered_vector = c(filtered_vector, vector[q])
     print(paste0(vector[q], ": passed the check, ", length(colnames(exp)), " samples"))
   }
 }
@@ -1138,20 +1138,20 @@ setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("Braun_NatMed_2020","CheckMate_Meta","Gide_CancerCell_2019","Goswami_2025","GSE159067",
          "GSE94873","IMmotion150","IMVigor210","Kinget_2024","Liu_NatMed_2019","phs000452",
          "Ravi_NatGen_2023","Riaz_Nivolumab_2017")
-filtered_vector <- c()
+filtered_vector = c()
 for (q in 1:length(vector)) {
   load(paste0(vector[q],".Rdata"))
-  exp <- get(vector[q])
+  exp = get(vector[q])
   load(paste0(vector[q],"_info.Rdata"))
-  info_name <- paste0(vector[q], "_info")
-  info_data <- get(info_name)
+  info_name = paste0(vector[q], "_info")
+  info_data = get(info_name)
 
   # Run only two checks
-  columns_exist <- all(c("os.time", "os.status") %in% colnames(info_data))
-  data_valid <- !all(is.na(info_data$os.time)) && !all(is.na(info_data$os.status))
+  columns_exist = all(c("os.time", "os.status") %in% colnames(info_data))
+  data_valid = !all(is.na(info_data$os.time)) && !all(is.na(info_data$os.status))
 
   if(columns_exist && data_valid) {
-    filtered_vector <- c(filtered_vector, vector[q])
+    filtered_vector = c(filtered_vector, vector[q])
     print(paste0(vector[q], ": passed the check, ", length(colnames(exp)), " samples"))
   }
 }
@@ -1256,20 +1256,20 @@ setwd("C:/Users/user/Desktop/input/Wnt_immunotherapy")
 vector=c("Braun_NatMed_2020","CheckMate_Meta","Gide_CancerCell_2019","Goswami_2025","GSE159067",
          "GSE94873","IMmotion150","IMVigor210","Kinget_2024","Liu_NatMed_2019","phs000452",
          "Ravi_NatGen_2023","Riaz_Nivolumab_2017")
-filtered_vector <- c()
+filtered_vector = c()
 for (q in 1:length(vector)) {
   load(paste0(vector[q],".Rdata"))
-  exp <- get(vector[q])
+  exp = get(vector[q])
   load(paste0(vector[q],"_info.Rdata"))
-  info_name <- paste0(vector[q], "_info")
-  info_data <- get(info_name)
+  info_name = paste0(vector[q], "_info")
+  info_data = get(info_name)
 
   # Run only two checks
-  columns_exist <- all(c("pfs.time", "pfs.status") %in% colnames(info_data))
-  data_valid <- !all(is.na(info_data$pfs.time)) && !all(is.na(info_data$pfs.status))
+  columns_exist = all(c("pfs.time", "pfs.status") %in% colnames(info_data))
+  data_valid = !all(is.na(info_data$pfs.time)) && !all(is.na(info_data$pfs.status))
 
   if(columns_exist && data_valid) {
-    filtered_vector <- c(filtered_vector, vector[q])
+    filtered_vector = c(filtered_vector, vector[q])
     print(paste0(vector[q], ": passed the check, ", length(colnames(exp)), " samples"))
   }
 }
@@ -1416,25 +1416,25 @@ library(scales)
 library(RColorBrewer)
 
 theme_set(theme_minimal(base_size = 14))
-my_colors <- c("#2E86AB", "#A23B72", "#F18F01", "#C73E1D", "#3B1F2B")
+my_colors = c("#2E86AB", "#A23B72", "#F18F01", "#C73E1D", "#3B1F2B")
 
 # Data preprocessing
-xcell_pheno$phenotype <- ifelse(xcell_pheno$phenotype == "hot", 1, 0)
-xcell_pheno$phenotype <- as.factor(xcell_pheno$phenotype)
-processed_data <- xcell_pheno
-colnames(processed_data)[1] <- "target"
+xcell_pheno$phenotype = ifelse(xcell_pheno$phenotype == "hot", 1, 0)
+xcell_pheno$phenotype = as.factor(xcell_pheno$phenotype)
+processed_data = xcell_pheno
+colnames(processed_data)[1] = "target"
 
 # Prepare matrix format
-x <- as.matrix(processed_data[, -1])
-y <- processed_data$target
+x = as.matrix(processed_data[, -1])
+y = processed_data$target
 
 # Create factor response variable (required by caret)
-processed_data$target_factor <- factor(ifelse(processed_data$target == 1, "hot", "cold"),
+processed_data$target_factor = factor(ifelse(processed_data$target == 1, "hot", "cold"),
                                        levels = c("hot", "cold"))
 
 # Set up cross-validation
 set.seed(123)
-train_control <- trainControl(
+train_control = trainControl(
   method = "repeatedcv",
   number = 10,
   repeats = 10,
@@ -1447,7 +1447,7 @@ train_control <- trainControl(
 
 # Train LASSO model
 cat("Training LASSO model...\n")
-lasso_model <- train(
+lasso_model = train(
   x = x,
   y = processed_data$target_factor,
   method = "glmnet",
@@ -1465,8 +1465,8 @@ cat("\n=== Best Tuning Results ===\n")
 print(lasso_model$bestTune)
 
 # 1. Tuning results plot
-tune_results <- lasso_model$results
-p1 <- ggplot(tune_results, aes(x = lambda, y = ROC)) +
+tune_results = lasso_model$results
+p1 = ggplot(tune_results, aes(x = lambda, y = ROC)) +
   geom_point(size = 3, color = my_colors[1], alpha = 0.7) +
   geom_line(color = my_colors[1], linewidth = 1.2, alpha = 0.8) +
   geom_vline(xintercept = lasso_model$bestTune$lambda,
@@ -1492,16 +1492,16 @@ p1 <- ggplot(tune_results, aes(x = lambda, y = ROC)) +
 print(p1)
 
 # 2. Coefficient paths plot
-coef_data <- as.matrix(coef(lasso_model$finalModel, s = lasso_model$finalModel$lambda))
-coef_df <- data.frame(
+coef_data = as.matrix(coef(lasso_model$finalModel, s = lasso_model$finalModel$lambda))
+coef_df = data.frame(
   Lambda = rep(lasso_model$finalModel$lambda, each = nrow(coef_data)),
   Variable = rep(rownames(coef_data), times = ncol(coef_data)),
   Value = as.vector(coef_data)
 )
-coef_df <- coef_df[coef_df$Variable != "(Intercept)", ]
+coef_df = coef_df[coef_df$Variable != "(Intercept)", ]
 
 # Full coefficient paths
-p2_full <- ggplot(coef_df, aes(x = log(Lambda), y = Value, group = Variable)) +
+p2_full = ggplot(coef_df, aes(x = log(Lambda), y = Value, group = Variable)) +
   geom_line(aes(color = abs(Value)), alpha = 0.8, linewidth = 0.8) +
   scale_color_gradientn(colors = c("#4575B4", "#91BFDB", "#E0F3F8", "#FEE090", "#FC8D59", "#D73027"),
                         name = "|Coefficient|") +
@@ -1521,25 +1521,25 @@ p2_full <- ggplot(coef_df, aes(x = log(Lambda), y = Value, group = Variable)) +
 print(p2_full)
 
 # Selected variables coefficient paths
-final_coef <- coef(lasso_model$finalModel, s = lasso_model$bestTune$lambda)
-selected_vars <- rownames(final_coef)[which(final_coef != 0)]
-selected_vars <- selected_vars[selected_vars != "(Intercept)"]
+final_coef = coef(lasso_model$finalModel, s = lasso_model$bestTune$lambda)
+selected_vars = rownames(final_coef)[which(final_coef != 0)]
+selected_vars = selected_vars[selected_vars != "(Intercept)"]
 
 cat("\nNumber of selected variables:", length(selected_vars), "\n")
 
 if(length(selected_vars) > 0) {
-  coef_df_selected <- coef_df[coef_df$Variable %in% selected_vars, ]
+  coef_df_selected = coef_df[coef_df$Variable %in% selected_vars, ]
 
   # Choose appropriate color scheme based on number of variables
   if(length(selected_vars) <= 8) {
-    color_scheme <- brewer.pal(max(3, length(selected_vars)), "Set2")
+    color_scheme = brewer.pal(max(3, length(selected_vars)), "Set2")
   } else if(length(selected_vars) <= 12) {
-    color_scheme <- brewer.pal(length(selected_vars), "Set3")
+    color_scheme = brewer.pal(length(selected_vars), "Set3")
   } else {
-    color_scheme <- colorRampPalette(brewer.pal(8, "Set2"))(length(selected_vars))
+    color_scheme = colorRampPalette(brewer.pal(8, "Set2"))(length(selected_vars))
   }
 
-  p2_selected <- ggplot(coef_df_selected, aes(x = log(Lambda), y = Value, color = Variable)) +
+  p2_selected = ggplot(coef_df_selected, aes(x = log(Lambda), y = Value, color = Variable)) +
     geom_line(linewidth = 1.2, alpha = 0.8) +
     geom_vline(xintercept = log(lasso_model$bestTune$lambda),
                linetype = "dashed", color = "#E31A1C", linewidth = 1.2, alpha = 0.8) +
@@ -1563,7 +1563,7 @@ if(length(selected_vars) > 0) {
 
   # Simplify legend if too many variables
   if(length(selected_vars) > 10) {
-    p2_selected <- p2_selected +
+    p2_selected = p2_selected +
       theme(legend.position = "none") +
       labs(title = "LASSO coefficient paths",
            subtitle = paste(length(selected_vars), "selected variables (legend omitted)"))
@@ -1575,10 +1575,10 @@ if(length(selected_vars) > 0) {
 }
 
 # 3. Variable importance plot
-importance_data <- vi(lasso_model)
-top_n <- min(8, nrow(importance_data))
+importance_data = vi(lasso_model)
+top_n = min(8, nrow(importance_data))
 
-p3 <- importance_data %>%
+p3 = importance_data %>%
   slice_max(Importance, n = top_n) %>%
   mutate(Variable = factor(Variable, levels = Variable[order(Importance)])) %>%
   ggplot(aes(x = Importance, y = Variable)) +
@@ -1600,41 +1600,41 @@ p3 <- importance_data %>%
 print(p3)
 
 # 4. ROC curve - with individual CV curves (fixed version)
-create_roc_plot <- function() {
+create_roc_plot = function() {
   # Use cross-validation predictions
-  cv_predictions <- lasso_model$pred %>%
+  cv_predictions = lasso_model$pred %>%
     filter(lambda == lasso_model$bestTune$lambda)
 
   # Calculate mean AUC across resamples
-  cv_aucs <- cv_predictions %>%
+  cv_aucs = cv_predictions %>%
     group_by(Resample) %>%
     summarise(
       auc = as.numeric(auc(roc(obs, hot, levels = c("cold", "hot"), quiet = TRUE))),
       .groups = 'drop'
     )
 
-  mean_auc <- mean(cv_aucs$auc)
+  mean_auc = mean(cv_aucs$auc)
 
   # Create individual ROC curves for each resample with error handling
-  roc_curves <- list()
-  valid_resamples <- c()
+  roc_curves = list()
+  valid_resamples = c()
 
   for (resample in unique(cv_predictions$Resample)) {
-    resample_data <- cv_predictions %>% filter(Resample == resample)
+    resample_data = cv_predictions %>% filter(Resample == resample)
 
     # Check if there are enough observations
     if (nrow(resample_data) > 1 && length(unique(resample_data$obs)) > 1) {
       tryCatch({
-        roc_obj <- roc(resample_data$obs, resample_data$hot,
+        roc_obj = roc(resample_data$obs, resample_data$hot,
                        levels = c("cold", "hot"), quiet = TRUE)
 
         if (length(roc_obj$sensitivities) > 0 && length(roc_obj$specificities) > 0) {
-          roc_curves[[resample]] <- data.frame(
+          roc_curves[[resample]] = data.frame(
             Sensitivity = roc_obj$sensitivities,
             Specificity = roc_obj$specificities,
             Resample = resample
           )
-          valid_resamples <- c(valid_resamples, resample)
+          valid_resamples = c(valid_resamples, resample)
         }
       }, error = function(e) {
         message("Skipping resample ", resample, " due to error: ", e$message)
@@ -1644,18 +1644,18 @@ create_roc_plot <- function() {
 
   # Combine all valid ROC curves
   if (length(roc_curves) > 0) {
-    roc_curves_df <- bind_rows(roc_curves)
+    roc_curves_df = bind_rows(roc_curves)
   } else {
-    roc_curves_df <- data.frame(Sensitivity = numeric(), Specificity = numeric(), Resample = character())
+    roc_curves_df = data.frame(Sensitivity = numeric(), Specificity = numeric(), Resample = character())
   }
 
   # Create mean ROC curve using all data
-  roc_obj <- roc(response = cv_predictions$obs,
+  roc_obj = roc(response = cv_predictions$obs,
                  predictor = cv_predictions$hot,
                  levels = c("cold", "hot"),
                  quiet = TRUE)
 
-  p4 <- ggplot() +
+  p4 = ggplot() +
     # Individual CV curves in light gray (if available)
     {if (nrow(roc_curves_df) > 0)
       geom_line(data = roc_curves_df,
@@ -1696,13 +1696,13 @@ create_roc_plot <- function() {
 }
 
 # Plot ROC curve
-p4 <- create_roc_plot()
+p4 = create_roc_plot()
 
 # 5. Coefficients of selected variables
 cat("\n=== Selected Variables (n =", length(selected_vars), ") ===\n")
 if(length(selected_vars) > 0) {
-  selected_coefs <- final_coef[selected_vars, ]
-  coef_summary <- data.frame(
+  selected_coefs = final_coef[selected_vars, ]
+  coef_summary = data.frame(
     Variable = selected_vars,
     Coefficient = round(selected_coefs, 4),
     Abs_Coefficient = abs(round(selected_coefs, 4))
@@ -1711,7 +1711,7 @@ if(length(selected_vars) > 0) {
   print(coef_summary)
 
   # Create coefficient bar plot
-  p5 <- coef_summary %>%
+  p5 = coef_summary %>%
     mutate(Variable = factor(Variable, levels = Variable[order(Abs_Coefficient)])) %>%
     ggplot(aes(x = Coefficient, y = Variable, fill = Coefficient > 0)) +
     geom_col(alpha = 0.8) +
@@ -1749,34 +1749,34 @@ library(GSEABase)
 library(dplyr)
 
 # Read the data and build the dataset list
-ici_precog_info <- read.csv("ici_precog_all_patient_clinical_data_FOR_DOWNLOAD.csv")
-datasets <- unique(ici_precog_info$Dataset)
-datasets <- unique(c(datasets, "Zhao_NatMed_2019", "Kim_NatMed_2018", "GSE67501", "Braun_NatMed_2020",
+ici_precog_info = read.csv("ici_precog_all_patient_clinical_data_FOR_DOWNLOAD.csv")
+datasets = unique(ici_precog_info$Dataset)
+datasets = unique(c(datasets, "Zhao_NatMed_2019", "Kim_NatMed_2018", "GSE67501", "Braun_NatMed_2020",
                      "GSE93157", "Gide_CancerCell_2019", "GSE115821", "GSE106128", "GSE100797",
                      "GSE93157", "Müller_JCI_2018", "GSE100797", "GSE135222", "GSE19423", "GSE100797",
                      "GSE78220", "IMVigor210"))
-vector <- datasets[datasets != "Gide_Cell_2019"]
+vector = datasets[datasets != "Gide_Cell_2019"]
 
 # Check for valid datasets
-vector_responder <- c()
+vector_responder = c()
 
 for (q in 1:length(vector)) {
-  data_file <- paste0(vector[q], ".Rdata")
-  info_file <- paste0(vector[q], "_info.Rdata")
+  data_file = paste0(vector[q], ".Rdata")
+  info_file = paste0(vector[q], "_info.Rdata")
 
   if(file.exists(data_file) && file.exists(info_file)) {
     load(data_file)
     load(info_file)
 
-    info_var_name <- paste0(vector[q], "_info")
+    info_var_name = paste0(vector[q], "_info")
 
     if(exists(info_var_name)) {
-      info_data <- get(info_var_name)
+      info_data = get(info_var_name)
 
       if("responder" %in% colnames(info_data)) {
-        responder_values <- info_data$responder
+        responder_values = info_data$responder
         if(!all(is.na(responder_values)) && length(responder_values) > 0) {
-          vector_responder <- c(vector_responder, vector[q])
+          vector_responder = c(vector_responder, vector[q])
           cat(paste0("OK dataset ", vector[q], " has a valid responder column\n"))
         } else {
           cat(paste0("WARNING: ", vector[q], " has a responder column that is entirely NA or empty\n"))
@@ -1803,7 +1803,7 @@ if(length(vector_responder) == 0) {
 
 # Load the required functions and gene sets
 source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
-geneSets <- getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+geneSets = getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
 t_test_result_all=data.frame()
 vector_responder=vector_responder[-c(17,46,55)]
 for(i in 1:length(vector_responder)){
@@ -1811,12 +1811,12 @@ for(i in 1:length(vector_responder)){
   if(length(rownames(exp))<800){
     next
   }
-  im_timer <- deconvo_tme(eset = exp, method = "xcell")
-  im_timer <- as.data.frame(im_timer)
-  rownames(im_timer) <- im_timer[,1]
-  im_timer <- im_timer[,-1]
-  colnames(im_timer) <- gsub("_xCell$", "", colnames(im_timer))
-  im_timer <- as.data.frame(scale(im_timer))
+  im_timer = deconvo_tme(eset = exp, method = "xcell")
+  im_timer = as.data.frame(im_timer)
+  rownames(im_timer) = im_timer[,1]
+  im_timer = im_timer[,-1]
+  colnames(im_timer) = gsub("_xCell$", "", colnames(im_timer))
+  im_timer = as.data.frame(scale(im_timer))
   load("C:/Users/user/Desktop/input/lasso_model.Rdata")
   im_timer$subtype = predict(object = lasso_model,
                               newdata = as.matrix(im_timer))
@@ -1859,50 +1859,50 @@ library(GSEABase)
 library(dplyr)
 
 # Read the data and build the dataset list
-ici_precog_info <- read.csv("ici_precog_all_patient_clinical_data_FOR_DOWNLOAD.csv")
-datasets <- unique(ici_precog_info$Dataset)
-datasets <- unique(c(datasets, "Zhao_NatMed_2019", "Kim_NatMed_2018", "GSE67501", "Braun_NatMed_2020",
+ici_precog_info = read.csv("ici_precog_all_patient_clinical_data_FOR_DOWNLOAD.csv")
+datasets = unique(ici_precog_info$Dataset)
+datasets = unique(c(datasets, "Zhao_NatMed_2019", "Kim_NatMed_2018", "GSE67501", "Braun_NatMed_2020",
                      "GSE93157", "Gide_CancerCell_2019", "GSE115821", "GSE106128", "GSE100797",
                      "GSE93157", "Müller_JCI_2018", "GSE100797", "GSE135222", "GSE19423", "GSE100797",
                      "GSE78220", "IMVigor210"))
-vector <- datasets[datasets != "Gide_Cell_2019"]
+vector = datasets[datasets != "Gide_Cell_2019"]
 
 # Check for valid survival data (os.time and os.status)
-vector_survival <- c()
+vector_survival = c()
 
 for (q in 1:length(vector)) {
-  data_file <- paste0(vector[q], ".Rdata")
-  info_file <- paste0(vector[q], "_info.Rdata")
+  data_file = paste0(vector[q], ".Rdata")
+  info_file = paste0(vector[q], "_info.Rdata")
 
   if(file.exists(data_file) && file.exists(info_file)) {
     load(data_file)
     load(info_file)
 
-    info_var_name <- paste0(vector[q], "_info")
+    info_var_name = paste0(vector[q], "_info")
 
     if(exists(info_var_name)) {
-      info_data <- get(info_var_name)
+      info_data = get(info_var_name)
 
       # Check that os.time and os.status are both present
-      has_os_time <- "os.time" %in% colnames(info_data)
-      has_os_status <- "os.status" %in% colnames(info_data)
+      has_os_time = "os.time" %in% colnames(info_data)
+      has_os_status = "os.status" %in% colnames(info_data)
 
       if(has_os_time && has_os_status) {
-        os_time_values <- info_data$os.time
-        os_status_values <- info_data$os.status
+        os_time_values = info_data$os.time
+        os_status_values = info_data$os.status
 
         # Check that both columns contain valid data
         if(!all(is.na(os_time_values)) && length(os_time_values) > 0 &&
            !all(is.na(os_status_values)) && length(os_status_values) > 0) {
-          vector_survival <- c(vector_survival, vector[q])
+          vector_survival = c(vector_survival, vector[q])
           cat(paste0("OK dataset ", vector[q], " has valid os.time and os.status columns\n"))
         } else {
           cat(paste0("WARNING: ", vector[q], " has os.time or os.status entirely NA or empty\n"))
         }
       } else {
-        missing_cols <- c()
-        if(!has_os_time) missing_cols <- c(missing_cols, "os.time")
-        if(!has_os_status) missing_cols <- c(missing_cols, "os.status")
+        missing_cols = c()
+        if(!has_os_time) missing_cols = c(missing_cols, "os.time")
+        if(!has_os_status) missing_cols = c(missing_cols, "os.status")
         cat(paste0("WARNING: ", vector[q], " missing columns: ", paste(missing_cols, collapse = ", "), "\n"))
       }
     } else {
@@ -1924,7 +1924,7 @@ if(length(vector_survival) == 0) {
 
 # Load the required functions and gene sets
 source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
-geneSets <- getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+geneSets = getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
 
 os_test_result_all=data.frame()
 vector_survival=vector_survival[-22]
@@ -1933,12 +1933,12 @@ for(i in 1:length(vector_survival)){
   if(length(rownames(exp))<800){
     next
   }
-  im_timer <- deconvo_tme(eset = exp, method = "xcell")
-  im_timer <- as.data.frame(im_timer)
-  rownames(im_timer) <- im_timer[,1]
-  im_timer <- im_timer[,-1]
-  colnames(im_timer) <- gsub("_xCell$", "", colnames(im_timer))
-  im_timer <- as.data.frame(scale(im_timer))
+  im_timer = deconvo_tme(eset = exp, method = "xcell")
+  im_timer = as.data.frame(im_timer)
+  rownames(im_timer) = im_timer[,1]
+  im_timer = im_timer[,-1]
+  colnames(im_timer) = gsub("_xCell$", "", colnames(im_timer))
+  im_timer = as.data.frame(scale(im_timer))
   load("C:/Users/user/Desktop/input/lasso_model.Rdata")
   im_timer$subtype = predict(object = lasso_model,
                              newdata = as.matrix(im_timer))
@@ -1985,50 +1985,50 @@ library(GSEABase)
 library(dplyr)
 
 # Read the data and build the dataset list
-ici_precog_info <- read.csv("ici_precog_all_patient_clinical_data_FOR_DOWNLOAD.csv")
-datasets <- unique(ici_precog_info$Dataset)
-datasets <- unique(c(datasets, "Zhao_NatMed_2019", "Kim_NatMed_2018", "GSE67501", "Braun_NatMed_2020",
+ici_precog_info = read.csv("ici_precog_all_patient_clinical_data_FOR_DOWNLOAD.csv")
+datasets = unique(ici_precog_info$Dataset)
+datasets = unique(c(datasets, "Zhao_NatMed_2019", "Kim_NatMed_2018", "GSE67501", "Braun_NatMed_2020",
                      "GSE93157", "Gide_CancerCell_2019", "GSE115821", "GSE106128", "GSE100797",
                      "GSE93157", "Müller_JCI_2018", "GSE100797", "GSE135222", "GSE19423", "GSE100797",
                      "GSE78220", "IMVigor210"))
-vector <- datasets[datasets != "Gide_Cell_2019"]
+vector = datasets[datasets != "Gide_Cell_2019"]
 
 # Check for valid survival data (pfs.time and pfs.status)
-vector_survival <- c()
+vector_survival = c()
 
 for (q in 1:length(vector)) {
-  data_file <- paste0(vector[q], ".Rdata")
-  info_file <- paste0(vector[q], "_info.Rdata")
+  data_file = paste0(vector[q], ".Rdata")
+  info_file = paste0(vector[q], "_info.Rdata")
 
   if(file.exists(data_file) && file.exists(info_file)) {
     load(data_file)
     load(info_file)
 
-    info_var_name <- paste0(vector[q], "_info")
+    info_var_name = paste0(vector[q], "_info")
 
     if(exists(info_var_name)) {
-      info_data <- get(info_var_name)
+      info_data = get(info_var_name)
 
       # Check that pfs.time and pfs.status are both present
-      has_pfs_time <- "pfs.time" %in% colnames(info_data)
-      has_pfs_status <- "pfs.status" %in% colnames(info_data)
+      has_pfs_time = "pfs.time" %in% colnames(info_data)
+      has_pfs_status = "pfs.status" %in% colnames(info_data)
 
       if(has_pfs_time && has_pfs_status) {
-        pfs_time_values <- info_data$pfs.time
-        pfs_status_values <- info_data$pfs.status
+        pfs_time_values = info_data$pfs.time
+        pfs_status_values = info_data$pfs.status
 
         # Check that both columns contain valid data
         if(!all(is.na(pfs_time_values)) && length(pfs_time_values) > 0 &&
            !all(is.na(pfs_status_values)) && length(pfs_status_values) > 0) {
-          vector_survival <- c(vector_survival, vector[q])
+          vector_survival = c(vector_survival, vector[q])
           cat(paste0("OK dataset ", vector[q], " has valid pfs.time and pfs.status columns\n"))
         } else {
           cat(paste0("WARNING: ", vector[q], " has pfs.time or pfs.status entirely NA or empty\n"))
         }
       } else {
-        missing_cols <- c()
-        if(!has_pfs_time) missing_cols <- c(missing_cols, "pfs.time")
-        if(!has_pfs_status) missing_cols <- c(missing_cols, "pfs.status")
+        missing_cols = c()
+        if(!has_pfs_time) missing_cols = c(missing_cols, "pfs.time")
+        if(!has_pfs_status) missing_cols = c(missing_cols, "pfs.status")
         cat(paste0("WARNING: ", vector[q], " missing columns: ", paste(missing_cols, collapse = ", "), "\n"))
       }
     } else {
@@ -2050,7 +2050,7 @@ if(length(vector_survival) == 0) {
 
 # Load the required functions and gene sets
 source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
-geneSets <- getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
+geneSets = getGmt("C:/Users/user/Desktop/input/wpags_wpigs.gmt")
 
 pfs_test_result_all=data.frame()
 vector_survival=vector_survival[-19]
@@ -2059,12 +2059,12 @@ for(i in 1:length(vector_survival)){
   if(length(rownames(exp))<800){
     next
   }
-  im_timer <- deconvo_tme(eset = exp, method = "xcell")
-  im_timer <- as.data.frame(im_timer)
-  rownames(im_timer) <- im_timer[,1]
-  im_timer <- im_timer[,-1]
-  colnames(im_timer) <- gsub("_xCell$", "", colnames(im_timer))
-  im_timer <- as.data.frame(scale(im_timer))
+  im_timer = deconvo_tme(eset = exp, method = "xcell")
+  im_timer = as.data.frame(im_timer)
+  rownames(im_timer) = im_timer[,1]
+  im_timer = im_timer[,-1]
+  colnames(im_timer) = gsub("_xCell$", "", colnames(im_timer))
+  im_timer = as.data.frame(scale(im_timer))
   load("C:/Users/user/Desktop/input/lasso_model.Rdata")
   im_timer$subtype = predict(object = lasso_model,
                              newdata = as.matrix(im_timer))
@@ -2181,7 +2181,7 @@ for(i in 1:length(vector)){
 }
 library(ggplot2)
 library(ggpubr)
-p <- ggplot(WNT_score_group_all, aes(fill=group, y=activity_score, x=datasets)) +
+p = ggplot(WNT_score_group_all, aes(fill=group, y=activity_score, x=datasets)) +
   geom_bar(position=position_dodge(),
            stat="summary",
            width=0.7,
@@ -2248,7 +2248,7 @@ WNT_score=WNT_Score$final_activity_score
 wnt_IMvigor=merge(WNT_score,Dai_Nature_2015_info,by.x="row.names",by.y="tag")
 wnt_IMvigor_prognosis=wnt_IMvigor[,c("activity_score","os.time","os.status")]
 wnt_IMvigor_prognosis$os.time=wnt_IMvigor_prognosis$os.time/30
-quartiles <- quantile(wnt_IMvigor_prognosis$activity_score, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+quartiles = quantile(wnt_IMvigor_prognosis$activity_score, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
 wnt_IMvigor_prognosis$level = cut(wnt_IMvigor_prognosis$activity_score, breaks = quartiles, include.lowest = TRUE,
                                   labels = c("Low","Medium","High"))
 wnt_IMvigor_prognosis$level=factor(wnt_IMvigor_prognosis$level,levels=c("Low","Medium","High"))
@@ -2319,7 +2319,7 @@ for(i in 1:length(gene)){
   data_prognosis=data[,c(gene[i],"time","status")]
   colnames(data_prognosis)=c("gene","time","status")
   data_prognosis=na.omit(data_prognosis)
-  quartiles <- quantile(data_prognosis$gene, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+  quartiles = quantile(data_prognosis$gene, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
   data_prognosis$level = cut(data_prognosis$gene, breaks = quartiles, include.lowest = TRUE,
                              labels = c("Low","Medium","High"))
   data_prognosis$level=factor(data_prognosis$level,levels=c("Low","Medium","High"))
@@ -2355,7 +2355,7 @@ for(i in 1:length(model)){
   WNT_score_pro_prognosis=WNT_score_pro[,c(model[i],"time","status")]
   colnames(WNT_score_pro_prognosis)=c("model","time","status")
   WNT_score_pro_prognosis=na.omit(WNT_score_pro_prognosis)
-  quartiles <- quantile(WNT_score_pro_prognosis$model, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+  quartiles = quantile(WNT_score_pro_prognosis$model, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
   WNT_score_pro_prognosis$level = cut(WNT_score_pro_prognosis$model, breaks = quartiles, include.lowest = TRUE,
                                       labels = c("Low","Medium","High"))
   WNT_score_pro_prognosis$level=factor(WNT_score_pro_prognosis$level,levels=c("Low","Medium","High"))
@@ -2402,7 +2402,7 @@ for(i in 1:length(signature)){
   ssGSEA_prognosis=im_ssGSEA_prognosis[,c(signature[i],"time","status")]
   colnames(ssGSEA_prognosis)=c("signature","time","status")
   ssGSEA_prognosis=na.omit(ssGSEA_prognosis)
-  quartiles <- quantile(ssGSEA_prognosis$signature, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+  quartiles = quantile(ssGSEA_prognosis$signature, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
   ssGSEA_prognosis$level = cut(ssGSEA_prognosis$signature, breaks = quartiles, include.lowest = TRUE,
                                labels = c("Low","Medium","High"))
   ssGSEA_prognosis$level=factor(ssGSEA_prognosis$level,levels=c("Low","Medium","High"))
@@ -2420,7 +2420,7 @@ p_all=rbind(gene_p,model_p)
 p_all=rbind(p_all,signature_p)
 p_all$value=-log10(p_all$value)
 library(ggplot2)
-y_intercept_value <- -log10(0.05)
+y_intercept_value = -log10(0.05)
 p_all$ID = gsub("_", " ", p_all$ID)
 p_all$ID = ifelse(p_all$ID=="Pan F TBRS","Pan-F-TBRS",p_all$ID)
 ggplot(p_all, aes(x = reorder(ID, -value), y = value, fill = value)) +
@@ -2482,7 +2482,7 @@ WNT_score=WNT_Score$final_activity_score
 wnt_IMvigor=merge(WNT_score,GSE106128_info,by.x="row.names",by.y="tag")
 wnt_IMvigor_prognosis=wnt_IMvigor[,c("activity_score","os.time","os.status")]
 wnt_IMvigor_prognosis$os.time=wnt_IMvigor_prognosis$os.time/30
-quartiles <- quantile(wnt_IMvigor_prognosis$activity_score, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+quartiles = quantile(wnt_IMvigor_prognosis$activity_score, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
 wnt_IMvigor_prognosis$level = cut(wnt_IMvigor_prognosis$activity_score, breaks = quartiles, include.lowest = TRUE,
                                   labels = c("Low","Medium","High"))
 wnt_IMvigor_prognosis$level=factor(wnt_IMvigor_prognosis$level,levels=c("Low","Medium","High"))
@@ -2553,7 +2553,7 @@ for(i in 1:length(gene)){
   data_prognosis=data[,c(gene[i],"time","status")]
   colnames(data_prognosis)=c("gene","time","status")
   data_prognosis=na.omit(data_prognosis)
-  quartiles <- quantile(data_prognosis$gene, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+  quartiles = quantile(data_prognosis$gene, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
   data_prognosis$level = cut(data_prognosis$gene, breaks = quartiles, include.lowest = TRUE,
                              labels = c("Low","Medium","High"))
   data_prognosis$level=factor(data_prognosis$level,levels=c("Low","Medium","High"))
@@ -2589,7 +2589,7 @@ for(i in 1:length(model)){
   WNT_score_pro_prognosis=WNT_score_pro[,c(model[i],"time","status")]
   colnames(WNT_score_pro_prognosis)=c("model","time","status")
   WNT_score_pro_prognosis=na.omit(WNT_score_pro_prognosis)
-  quartiles <- quantile(WNT_score_pro_prognosis$model, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+  quartiles = quantile(WNT_score_pro_prognosis$model, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
   WNT_score_pro_prognosis$level = cut(WNT_score_pro_prognosis$model, breaks = quartiles, include.lowest = TRUE,
                                       labels = c("Low","Medium","High"))
   WNT_score_pro_prognosis$level=factor(WNT_score_pro_prognosis$level,levels=c("Low","Medium","High"))
@@ -2636,7 +2636,7 @@ for(i in 1:length(signature)){
   ssGSEA_prognosis=im_ssGSEA_prognosis[,c(signature[i],"time","status")]
   colnames(ssGSEA_prognosis)=c("signature","time","status")
   ssGSEA_prognosis=na.omit(ssGSEA_prognosis)
-  quartiles <- quantile(ssGSEA_prognosis$signature, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+  quartiles = quantile(ssGSEA_prognosis$signature, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
   ssGSEA_prognosis$level = cut(ssGSEA_prognosis$signature, breaks = quartiles, include.lowest = TRUE,
                                labels = c("Low","Medium","High"))
   ssGSEA_prognosis$level=factor(ssGSEA_prognosis$level,levels=c("Low","Medium","High"))
@@ -2654,7 +2654,7 @@ p_all=rbind(gene_p,model_p)
 p_all=rbind(p_all,signature_p)
 p_all$value=-log10(p_all$value)
 library(ggplot2)
-y_intercept_value <- -log10(0.05)
+y_intercept_value = -log10(0.05)
 p_all$ID = gsub("_", " ", p_all$ID)
 p_all$ID = ifelse(p_all$ID=="Pan F TBRS","Pan-F-TBRS",p_all$ID)
 ggplot(p_all, aes(x = reorder(ID, -value), y = value, fill = value)) +
@@ -2716,7 +2716,7 @@ WNT_score=WNT_Score$final_activity_score
 wnt_IMvigor=merge(WNT_score,Braun_NatMed_2020_info,by.x="row.names",by.y="tag")
 wnt_IMvigor_prognosis=wnt_IMvigor[,c("activity_score","os.time","os.status")]
 wnt_IMvigor_prognosis$os.time=wnt_IMvigor_prognosis$os.time/30
-quartiles <- quantile(wnt_IMvigor_prognosis$activity_score, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+quartiles = quantile(wnt_IMvigor_prognosis$activity_score, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
 wnt_IMvigor_prognosis$level = cut(wnt_IMvigor_prognosis$activity_score, breaks = quartiles, include.lowest = TRUE,
                                   labels = c("Low","Medium","High"))
 wnt_IMvigor_prognosis$level=factor(wnt_IMvigor_prognosis$level,levels=c("Low","Medium","High"))
@@ -2787,7 +2787,7 @@ for(i in 1:length(gene)){
   data_prognosis=data[,c(gene[i],"time","status")]
   colnames(data_prognosis)=c("gene","time","status")
   data_prognosis=na.omit(data_prognosis)
-  quartiles <- quantile(data_prognosis$gene, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+  quartiles = quantile(data_prognosis$gene, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
   data_prognosis$level = cut(data_prognosis$gene, breaks = quartiles, include.lowest = TRUE,
                              labels = c("Low","Medium","High"))
   data_prognosis$level=factor(data_prognosis$level,levels=c("Low","Medium","High"))
@@ -2823,7 +2823,7 @@ for(i in 1:length(model)){
   WNT_score_pro_prognosis=WNT_score_pro[,c(model[i],"time","status")]
   colnames(WNT_score_pro_prognosis)=c("model","time","status")
   WNT_score_pro_prognosis=na.omit(WNT_score_pro_prognosis)
-  quartiles <- quantile(WNT_score_pro_prognosis$model, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+  quartiles = quantile(WNT_score_pro_prognosis$model, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
   WNT_score_pro_prognosis$level = cut(WNT_score_pro_prognosis$model, breaks = quartiles, include.lowest = TRUE,
                                       labels = c("Low","Medium","High"))
   WNT_score_pro_prognosis$level=factor(WNT_score_pro_prognosis$level,levels=c("Low","Medium","High"))
@@ -2870,7 +2870,7 @@ for(i in 1:length(signature)){
   ssGSEA_prognosis=im_ssGSEA_prognosis[,c(signature[i],"time","status")]
   colnames(ssGSEA_prognosis)=c("signature","time","status")
   ssGSEA_prognosis=na.omit(ssGSEA_prognosis)
-  quartiles <- quantile(ssGSEA_prognosis$signature, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+  quartiles = quantile(ssGSEA_prognosis$signature, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
   ssGSEA_prognosis$level = cut(ssGSEA_prognosis$signature, breaks = quartiles, include.lowest = TRUE,
                                labels = c("Low","Medium","High"))
   ssGSEA_prognosis$level=factor(ssGSEA_prognosis$level,levels=c("Low","Medium","High"))
@@ -2888,7 +2888,7 @@ p_all=rbind(gene_p,model_p)
 p_all=rbind(p_all,signature_p)
 p_all$value=-log10(p_all$value)
 library(ggplot2)
-y_intercept_value <- -log10(0.05)
+y_intercept_value = -log10(0.05)
 p_all$ID = gsub("_", " ", p_all$ID)
 p_all$ID = ifelse(p_all$ID=="Pan F TBRS","Pan-F-TBRS",p_all$ID)
 ggplot(p_all, aes(x = reorder(ID, -value), y = value, fill = value)) +
@@ -2950,7 +2950,7 @@ WNT_score=WNT_Score$final_activity_score
 wnt_IMvigor=merge(WNT_score,GSE253260_info,by.x="row.names",by.y="tag")
 wnt_IMvigor_prognosis=wnt_IMvigor[,c("activity_score","os.time","os.status")]
 wnt_IMvigor_prognosis$os.time=wnt_IMvigor_prognosis$os.time/30
-quartiles <- quantile(wnt_IMvigor_prognosis$activity_score, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+quartiles = quantile(wnt_IMvigor_prognosis$activity_score, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
 wnt_IMvigor_prognosis$level = cut(wnt_IMvigor_prognosis$activity_score, breaks = quartiles, include.lowest = TRUE,
                                   labels = c("Low","Medium","High"))
 wnt_IMvigor_prognosis$level=factor(wnt_IMvigor_prognosis$level,levels=c("Low","Medium","High"))
@@ -3021,15 +3021,15 @@ for(i in 1:length(gene)){
   data_prognosis=data[,c(gene[i],"time","status")]
   colnames(data_prognosis)=c("gene","time","status")
   data_prognosis=na.omit(data_prognosis)
-  quartiles <- quantile(data_prognosis$gene, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+  quartiles = quantile(data_prognosis$gene, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
   if(length(unique(quartiles)) < 4){
-    n <- nrow(data_prognosis)
-    ranks <- rank(data_prognosis$gene, ties.method = "first")
-    group_size <- ceiling(n / 3)
-    data_prognosis$level <- "Medium"
-    data_prognosis$level[ranks <= group_size] <- "Low"
-    data_prognosis$level[ranks > 2 * group_size] <- "High"
-    data_prognosis$level <- factor(data_prognosis$level, levels = c("Low","Medium","High"))
+    n = nrow(data_prognosis)
+    ranks = rank(data_prognosis$gene, ties.method = "first")
+    group_size = ceiling(n / 3)
+    data_prognosis$level = "Medium"
+    data_prognosis$level[ranks <= group_size] = "Low"
+    data_prognosis$level[ranks > 2 * group_size] = "High"
+    data_prognosis$level = factor(data_prognosis$level, levels = c("Low","Medium","High"))
   }else{
     data_prognosis$level = cut(data_prognosis$gene, breaks = quartiles, include.lowest = TRUE,
                                labels = c("Low","Medium","High"))
@@ -3067,7 +3067,7 @@ for(i in 1:length(model)){
   WNT_score_pro_prognosis=WNT_score_pro[,c(model[i],"time","status")]
   colnames(WNT_score_pro_prognosis)=c("model","time","status")
   WNT_score_pro_prognosis=na.omit(WNT_score_pro_prognosis)
-  quartiles <- quantile(WNT_score_pro_prognosis$model, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+  quartiles = quantile(WNT_score_pro_prognosis$model, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
   WNT_score_pro_prognosis$level = cut(WNT_score_pro_prognosis$model, breaks = quartiles, include.lowest = TRUE,
                                       labels = c("Low","Medium","High"))
   WNT_score_pro_prognosis$level=factor(WNT_score_pro_prognosis$level,levels=c("Low","Medium","High"))
@@ -3114,7 +3114,7 @@ for(i in 1:length(signature)){
   ssGSEA_prognosis=im_ssGSEA_prognosis[,c(signature[i],"time","status")]
   colnames(ssGSEA_prognosis)=c("signature","time","status")
   ssGSEA_prognosis=na.omit(ssGSEA_prognosis)
-  quartiles <- quantile(ssGSEA_prognosis$signature, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+  quartiles = quantile(ssGSEA_prognosis$signature, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
   ssGSEA_prognosis$level = cut(ssGSEA_prognosis$signature, breaks = quartiles, include.lowest = TRUE,
                                labels = c("Low","Medium","High"))
   ssGSEA_prognosis$level=factor(ssGSEA_prognosis$level,levels=c("Low","Medium","High"))
@@ -3132,7 +3132,7 @@ p_all=rbind(gene_p,model_p)
 p_all=rbind(p_all,signature_p)
 p_all$value=-log10(p_all$value)
 library(ggplot2)
-y_intercept_value <- -log10(0.05)
+y_intercept_value = -log10(0.05)
 p_all$ID = gsub("_", " ", p_all$ID)
 p_all$ID = ifelse(p_all$ID=="Pan F TBRS","Pan-F-TBRS",p_all$ID)
 ggplot(p_all, aes(x = reorder(ID, -value), y = value, fill = value)) +
@@ -3194,7 +3194,7 @@ WNT_score=WNT_Score$final_activity_score
 wnt_IMvigor=merge(WNT_score,Zhao_NatMed_2019_info,by.x="row.names",by.y="tag")
 wnt_IMvigor_prognosis=wnt_IMvigor[,c("activity_score","os.time","os.status")]
 wnt_IMvigor_prognosis$os.time=wnt_IMvigor_prognosis$os.time/30
-quartiles <- quantile(wnt_IMvigor_prognosis$activity_score, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+quartiles = quantile(wnt_IMvigor_prognosis$activity_score, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
 wnt_IMvigor_prognosis$level = cut(wnt_IMvigor_prognosis$activity_score, breaks = quartiles, include.lowest = TRUE,
                                   labels = c("Low","Medium","High"))
 wnt_IMvigor_prognosis$level=factor(wnt_IMvigor_prognosis$level,levels=c("Low","Medium","High"))
@@ -3265,15 +3265,15 @@ for(i in 1:length(gene)){
   data_prognosis=data[,c(gene[i],"time","status")]
   colnames(data_prognosis)=c("gene","time","status")
   data_prognosis=na.omit(data_prognosis)
-  quartiles <- quantile(data_prognosis$gene, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+  quartiles = quantile(data_prognosis$gene, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
   if(length(unique(quartiles)) < 4){
-    n <- nrow(data_prognosis)
-    ranks <- rank(data_prognosis$gene, ties.method = "first")
-    group_size <- ceiling(n / 3)
-    data_prognosis$level <- "Medium"
-    data_prognosis$level[ranks <= group_size] <- "Low"
-    data_prognosis$level[ranks > 2 * group_size] <- "High"
-    data_prognosis$level <- factor(data_prognosis$level, levels = c("Low","Medium","High"))
+    n = nrow(data_prognosis)
+    ranks = rank(data_prognosis$gene, ties.method = "first")
+    group_size = ceiling(n / 3)
+    data_prognosis$level = "Medium"
+    data_prognosis$level[ranks <= group_size] = "Low"
+    data_prognosis$level[ranks > 2 * group_size] = "High"
+    data_prognosis$level = factor(data_prognosis$level, levels = c("Low","Medium","High"))
   }else{
     data_prognosis$level = cut(data_prognosis$gene, breaks = quartiles, include.lowest = TRUE,
                                labels = c("Low","Medium","High"))
@@ -3311,7 +3311,7 @@ for(i in 1:length(model)){
   WNT_score_pro_prognosis=WNT_score_pro[,c(model[i],"time","status")]
   colnames(WNT_score_pro_prognosis)=c("model","time","status")
   WNT_score_pro_prognosis=na.omit(WNT_score_pro_prognosis)
-  quartiles <- quantile(WNT_score_pro_prognosis$model, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+  quartiles = quantile(WNT_score_pro_prognosis$model, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
   WNT_score_pro_prognosis$level = cut(WNT_score_pro_prognosis$model, breaks = quartiles, include.lowest = TRUE,
                                       labels = c("Low","Medium","High"))
   WNT_score_pro_prognosis$level=factor(WNT_score_pro_prognosis$level,levels=c("Low","Medium","High"))
@@ -3358,7 +3358,7 @@ for(i in 1:length(signature)){
   ssGSEA_prognosis=im_ssGSEA_prognosis[,c(signature[i],"time","status")]
   colnames(ssGSEA_prognosis)=c("signature","time","status")
   ssGSEA_prognosis=na.omit(ssGSEA_prognosis)
-  quartiles <- quantile(ssGSEA_prognosis$signature, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+  quartiles = quantile(ssGSEA_prognosis$signature, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
   ssGSEA_prognosis$level = cut(ssGSEA_prognosis$signature, breaks = quartiles, include.lowest = TRUE,
                                labels = c("Low","Medium","High"))
   ssGSEA_prognosis$level=factor(ssGSEA_prognosis$level,levels=c("Low","Medium","High"))
@@ -3376,7 +3376,7 @@ p_all=rbind(gene_p,model_p)
 p_all=rbind(p_all,signature_p)
 p_all$value=-log10(p_all$value)
 library(ggplot2)
-y_intercept_value <- -log10(0.05)
+y_intercept_value = -log10(0.05)
 p_all$ID = gsub("_", " ", p_all$ID)
 p_all$ID = ifelse(p_all$ID=="Pan F TBRS","Pan-F-TBRS",p_all$ID)
 ggplot(p_all, aes(x = reorder(ID, -value), y = value, fill = value)) +
@@ -3438,7 +3438,7 @@ WNT_score=WNT_Score$final_activity_score
 wnt_IMvigor=merge(WNT_score,Tsimberidou_JExpMed_2024_info,by.x="row.names",by.y="tag")
 wnt_IMvigor_prognosis=wnt_IMvigor[,c("activity_score","os.time","os.status")]
 wnt_IMvigor_prognosis$os.time=wnt_IMvigor_prognosis$os.time/30
-quartiles <- quantile(wnt_IMvigor_prognosis$activity_score, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+quartiles = quantile(wnt_IMvigor_prognosis$activity_score, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
 wnt_IMvigor_prognosis$level = cut(wnt_IMvigor_prognosis$activity_score, breaks = quartiles, include.lowest = TRUE,
                                   labels = c("Low","Medium","High"))
 wnt_IMvigor_prognosis$level=factor(wnt_IMvigor_prognosis$level,levels=c("Low","Medium","High"))
@@ -3509,15 +3509,15 @@ for(i in 1:length(gene)){
   data_prognosis=data[,c(gene[i],"time","status")]
   colnames(data_prognosis)=c("gene","time","status")
   data_prognosis=na.omit(data_prognosis)
-  quartiles <- quantile(data_prognosis$gene, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+  quartiles = quantile(data_prognosis$gene, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
   if(length(unique(quartiles)) < 4){
-    n <- nrow(data_prognosis)
-    ranks <- rank(data_prognosis$gene, ties.method = "first")
-    group_size <- ceiling(n / 3)
-    data_prognosis$level <- "Medium"
-    data_prognosis$level[ranks <= group_size] <- "Low"
-    data_prognosis$level[ranks > 2 * group_size] <- "High"
-    data_prognosis$level <- factor(data_prognosis$level, levels = c("Low","Medium","High"))
+    n = nrow(data_prognosis)
+    ranks = rank(data_prognosis$gene, ties.method = "first")
+    group_size = ceiling(n / 3)
+    data_prognosis$level = "Medium"
+    data_prognosis$level[ranks <= group_size] = "Low"
+    data_prognosis$level[ranks > 2 * group_size] = "High"
+    data_prognosis$level = factor(data_prognosis$level, levels = c("Low","Medium","High"))
   }else{
     data_prognosis$level = cut(data_prognosis$gene, breaks = quartiles, include.lowest = TRUE,
                                labels = c("Low","Medium","High"))
@@ -3555,7 +3555,7 @@ for(i in 1:length(model)){
   WNT_score_pro_prognosis=WNT_score_pro[,c(model[i],"time","status")]
   colnames(WNT_score_pro_prognosis)=c("model","time","status")
   WNT_score_pro_prognosis=na.omit(WNT_score_pro_prognosis)
-  quartiles <- quantile(WNT_score_pro_prognosis$model, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+  quartiles = quantile(WNT_score_pro_prognosis$model, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
   WNT_score_pro_prognosis$level = cut(WNT_score_pro_prognosis$model, breaks = quartiles, include.lowest = TRUE,
                                       labels = c("Low","Medium","High"))
   WNT_score_pro_prognosis$level=factor(WNT_score_pro_prognosis$level,levels=c("Low","Medium","High"))
@@ -3602,7 +3602,7 @@ for(i in 1:length(signature)){
   ssGSEA_prognosis=im_ssGSEA_prognosis[,c(signature[i],"time","status")]
   colnames(ssGSEA_prognosis)=c("signature","time","status")
   ssGSEA_prognosis=na.omit(ssGSEA_prognosis)
-  quartiles <- quantile(ssGSEA_prognosis$signature, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+  quartiles = quantile(ssGSEA_prognosis$signature, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
   ssGSEA_prognosis$level = cut(ssGSEA_prognosis$signature, breaks = quartiles, include.lowest = TRUE,
                                labels = c("Low","Medium","High"))
   ssGSEA_prognosis$level=factor(ssGSEA_prognosis$level,levels=c("Low","Medium","High"))
@@ -3620,7 +3620,7 @@ p_all=rbind(gene_p,model_p)
 p_all=rbind(p_all,signature_p)
 p_all$value=-log10(p_all$value)
 library(ggplot2)
-y_intercept_value <- -log10(0.05)
+y_intercept_value = -log10(0.05)
 p_all$ID = gsub("_", " ", p_all$ID)
 p_all$ID = ifelse(p_all$ID=="Pan F TBRS","Pan-F-TBRS",p_all$ID)
 ggplot(p_all, aes(x = reorder(ID, -value), y = value, fill = value)) +
@@ -3681,7 +3681,7 @@ WNT_Score=Calculate_bioactivity_scores(file_paths="C:/Users/user/Desktop/input",
 WNT_score=WNT_Score$final_activity_score
 wnt_IMvigor=merge(WNT_score,IMvigor_info,by.x="row.names",by.y="tag")
 wnt_IMvigor_prognosis=wnt_IMvigor[,c("activity_score","os.time","os.status")]
-quartiles <- quantile(wnt_IMvigor_prognosis$activity_score, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+quartiles = quantile(wnt_IMvigor_prognosis$activity_score, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
 wnt_IMvigor_prognosis$level = cut(wnt_IMvigor_prognosis$activity_score, breaks = quartiles, include.lowest = TRUE,
                                   labels = c("Low","Medium","High"))
 wnt_IMvigor_prognosis$level=factor(wnt_IMvigor_prognosis$level,levels=c("Low","Medium","High"))
@@ -3752,15 +3752,15 @@ for(i in 1:length(gene)){
   data_prognosis=data[,c(gene[i],"time","status")]
   colnames(data_prognosis)=c("gene","time","status")
   data_prognosis=na.omit(data_prognosis)
-  quartiles <- quantile(data_prognosis$gene, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+  quartiles = quantile(data_prognosis$gene, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
   if(length(unique(quartiles)) < 4){
-    n <- nrow(data_prognosis)
-    ranks <- rank(data_prognosis$gene, ties.method = "first")
-    group_size <- ceiling(n / 3)
-    data_prognosis$level <- "Medium"
-    data_prognosis$level[ranks <= group_size] <- "Low"
-    data_prognosis$level[ranks > 2 * group_size] <- "High"
-    data_prognosis$level <- factor(data_prognosis$level, levels = c("Low","Medium","High"))
+    n = nrow(data_prognosis)
+    ranks = rank(data_prognosis$gene, ties.method = "first")
+    group_size = ceiling(n / 3)
+    data_prognosis$level = "Medium"
+    data_prognosis$level[ranks <= group_size] = "Low"
+    data_prognosis$level[ranks > 2 * group_size] = "High"
+    data_prognosis$level = factor(data_prognosis$level, levels = c("Low","Medium","High"))
   }else{
     data_prognosis$level = cut(data_prognosis$gene, breaks = quartiles, include.lowest = TRUE,
                                labels = c("Low","Medium","High"))
@@ -3798,7 +3798,7 @@ for(i in 1:length(model)){
   WNT_score_pro_prognosis=WNT_score_pro[,c(model[i],"time","status")]
   colnames(WNT_score_pro_prognosis)=c("model","time","status")
   WNT_score_pro_prognosis=na.omit(WNT_score_pro_prognosis)
-  quartiles <- quantile(WNT_score_pro_prognosis$model, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+  quartiles = quantile(WNT_score_pro_prognosis$model, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
   WNT_score_pro_prognosis$level = cut(WNT_score_pro_prognosis$model, breaks = quartiles, include.lowest = TRUE,
                                       labels = c("Low","Medium","High"))
   WNT_score_pro_prognosis$level=factor(WNT_score_pro_prognosis$level,levels=c("Low","Medium","High"))
@@ -3845,7 +3845,7 @@ for(i in 1:length(signature)){
   ssGSEA_prognosis=im_ssGSEA_prognosis[,c(signature[i],"time","status")]
   colnames(ssGSEA_prognosis)=c("signature","time","status")
   ssGSEA_prognosis=na.omit(ssGSEA_prognosis)
-  quartiles <- quantile(ssGSEA_prognosis$signature, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+  quartiles = quantile(ssGSEA_prognosis$signature, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
   ssGSEA_prognosis$level = cut(ssGSEA_prognosis$signature, breaks = quartiles, include.lowest = TRUE,
                                labels = c("Low","Medium","High"))
   ssGSEA_prognosis$level=factor(ssGSEA_prognosis$level,levels=c("Low","Medium","High"))
@@ -3863,7 +3863,7 @@ p_all=rbind(gene_p,model_p)
 p_all=rbind(p_all,signature_p)
 p_all$value=-log10(p_all$value)
 library(ggplot2)
-y_intercept_value <- -log10(0.05)
+y_intercept_value = -log10(0.05)
 p_all$ID = gsub("_", " ", p_all$ID)
 p_all$ID = ifelse(p_all$ID=="Pan F TBRS","Pan-F-TBRS",p_all$ID)
 ggplot(p_all, aes(x = reorder(ID, -value), y = value, fill = value)) +
@@ -3925,7 +3925,7 @@ WNT_score=WNT_Score$final_activity_score
 wnt_IMvigor=merge(WNT_score,Dai_Nature_2015_info,by.x="row.names",by.y="tag")
 wnt_IMvigor_prognosis=wnt_IMvigor[,c("activity_score","pfs.time","pfs.status")]
 wnt_IMvigor_prognosis$pfs.time=wnt_IMvigor_prognosis$pfs.time/30
-quartiles <- quantile(wnt_IMvigor_prognosis$activity_score, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+quartiles = quantile(wnt_IMvigor_prognosis$activity_score, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
 wnt_IMvigor_prognosis$level = cut(wnt_IMvigor_prognosis$activity_score, breaks = quartiles, include.lowest = TRUE,
                                   labels = c("Low","Medium","High"))
 wnt_IMvigor_prognosis$level=factor(wnt_IMvigor_prognosis$level,levels=c("Low","Medium","High"))
@@ -3996,7 +3996,7 @@ for(i in 1:length(gene)){
   data_prognosis=data[,c(gene[i],"time","status")]
   colnames(data_prognosis)=c("gene","time","status")
   data_prognosis=na.omit(data_prognosis)
-  quartiles <- quantile(data_prognosis$gene, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+  quartiles = quantile(data_prognosis$gene, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
   data_prognosis$level = cut(data_prognosis$gene, breaks = quartiles, include.lowest = TRUE,
                              labels = c("Low","Medium","High"))
   data_prognosis$level=factor(data_prognosis$level,levels=c("Low","Medium","High"))
@@ -4032,7 +4032,7 @@ for(i in 1:length(model)){
   WNT_score_pro_prognosis=WNT_score_pro[,c(model[i],"time","status")]
   colnames(WNT_score_pro_prognosis)=c("model","time","status")
   WNT_score_pro_prognosis=na.omit(WNT_score_pro_prognosis)
-  quartiles <- quantile(WNT_score_pro_prognosis$model, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+  quartiles = quantile(WNT_score_pro_prognosis$model, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
   WNT_score_pro_prognosis$level = cut(WNT_score_pro_prognosis$model, breaks = quartiles, include.lowest = TRUE,
                                       labels = c("Low","Medium","High"))
   WNT_score_pro_prognosis$level=factor(WNT_score_pro_prognosis$level,levels=c("Low","Medium","High"))
@@ -4079,7 +4079,7 @@ for(i in 1:length(signature)){
   ssGSEA_prognosis=im_ssGSEA_prognosis[,c(signature[i],"time","status")]
   colnames(ssGSEA_prognosis)=c("signature","time","status")
   ssGSEA_prognosis=na.omit(ssGSEA_prognosis)
-  quartiles <- quantile(ssGSEA_prognosis$signature, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+  quartiles = quantile(ssGSEA_prognosis$signature, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
   ssGSEA_prognosis$level = cut(ssGSEA_prognosis$signature, breaks = quartiles, include.lowest = TRUE,
                                labels = c("Low","Medium","High"))
   ssGSEA_prognosis$level=factor(ssGSEA_prognosis$level,levels=c("Low","Medium","High"))
@@ -4097,7 +4097,7 @@ p_all=rbind(gene_p,model_p)
 p_all=rbind(p_all,signature_p)
 p_all$value=-log10(p_all$value)
 library(ggplot2)
-y_intercept_value <- -log10(0.05)
+y_intercept_value = -log10(0.05)
 p_all$ID = gsub("_", " ", p_all$ID)
 p_all$ID = ifelse(p_all$ID=="Pan F TBRS","Pan-F-TBRS",p_all$ID)
 ggplot(p_all, aes(x = reorder(ID, -value), y = value, fill = value)) +
@@ -4159,7 +4159,7 @@ WNT_score=WNT_Score$final_activity_score
 wnt_IMvigor=merge(WNT_score,GSE253260_info,by.x="row.names",by.y="tag")
 wnt_IMvigor_prognosis=wnt_IMvigor[,c("activity_score","pfs.time","pfs.status")]
 wnt_IMvigor_prognosis$pfs.time=wnt_IMvigor_prognosis$pfs.time/30
-quartiles <- quantile(wnt_IMvigor_prognosis$activity_score, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+quartiles = quantile(wnt_IMvigor_prognosis$activity_score, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
 wnt_IMvigor_prognosis$level = cut(wnt_IMvigor_prognosis$activity_score, breaks = quartiles, include.lowest = TRUE,
                                   labels = c("Low","Medium","High"))
 wnt_IMvigor_prognosis$level=factor(wnt_IMvigor_prognosis$level,levels=c("Low","Medium","High"))
@@ -4230,15 +4230,15 @@ for(i in 1:length(gene)){
   data_prognosis=data[,c(gene[i],"time","status")]
   colnames(data_prognosis)=c("gene","time","status")
   data_prognosis=na.omit(data_prognosis)
-  quartiles <- quantile(data_prognosis$gene, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+  quartiles = quantile(data_prognosis$gene, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
   if(length(unique(quartiles)) < 4){
-    n <- nrow(data_prognosis)
-    ranks <- rank(data_prognosis$gene, ties.method = "first")
-    group_size <- ceiling(n / 3)
-    data_prognosis$level <- "Medium"
-    data_prognosis$level[ranks <= group_size] <- "Low"
-    data_prognosis$level[ranks > 2 * group_size] <- "High"
-    data_prognosis$level <- factor(data_prognosis$level, levels = c("Low","Medium","High"))
+    n = nrow(data_prognosis)
+    ranks = rank(data_prognosis$gene, ties.method = "first")
+    group_size = ceiling(n / 3)
+    data_prognosis$level = "Medium"
+    data_prognosis$level[ranks <= group_size] = "Low"
+    data_prognosis$level[ranks > 2 * group_size] = "High"
+    data_prognosis$level = factor(data_prognosis$level, levels = c("Low","Medium","High"))
   }else{
     data_prognosis$level = cut(data_prognosis$gene, breaks = quartiles, include.lowest = TRUE,
                                labels = c("Low","Medium","High"))
@@ -4276,7 +4276,7 @@ for(i in 1:length(model)){
   WNT_score_pro_prognosis=WNT_score_pro[,c(model[i],"time","status")]
   colnames(WNT_score_pro_prognosis)=c("model","time","status")
   WNT_score_pro_prognosis=na.omit(WNT_score_pro_prognosis)
-  quartiles <- quantile(WNT_score_pro_prognosis$model, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+  quartiles = quantile(WNT_score_pro_prognosis$model, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
   WNT_score_pro_prognosis$level = cut(WNT_score_pro_prognosis$model, breaks = quartiles, include.lowest = TRUE,
                                       labels = c("Low","Medium","High"))
   WNT_score_pro_prognosis$level=factor(WNT_score_pro_prognosis$level,levels=c("Low","Medium","High"))
@@ -4323,7 +4323,7 @@ for(i in 1:length(signature)){
   ssGSEA_prognosis=im_ssGSEA_prognosis[,c(signature[i],"time","status")]
   colnames(ssGSEA_prognosis)=c("signature","time","status")
   ssGSEA_prognosis=na.omit(ssGSEA_prognosis)
-  quartiles <- quantile(ssGSEA_prognosis$signature, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
+  quartiles = quantile(ssGSEA_prognosis$signature, probs = seq(0, 1, by = 1/3), na.rm = TRUE)
   ssGSEA_prognosis$level = cut(ssGSEA_prognosis$signature, breaks = quartiles, include.lowest = TRUE,
                                labels = c("Low","Medium","High"))
   ssGSEA_prognosis$level=factor(ssGSEA_prognosis$level,levels=c("Low","Medium","High"))
@@ -4341,7 +4341,7 @@ p_all=rbind(gene_p,model_p)
 p_all=rbind(p_all,signature_p)
 p_all$value=-log10(p_all$value)
 library(ggplot2)
-y_intercept_value <- -log10(0.05)
+y_intercept_value = -log10(0.05)
 p_all$ID = gsub("_", " ", p_all$ID)
 p_all$ID = ifelse(p_all$ID=="Pan F TBRS","Pan-F-TBRS",p_all$ID)
 ggplot(p_all, aes(x = reorder(ID, -value), y = value, fill = value)) +
@@ -4372,7 +4372,7 @@ save(GSE253260_pfs_p,file="GSE253260_pfs_p.Rdata")
 rm(list = ls())
 gc()
 setwd("C:/Users/user/Desktop/input")
-vector <- c("Dai_Nature_2015_os", "GSE106128_os", "Braun_NatMed_2020_os", "GSE253260_os", "Zhao_NatMed_2019_os","Tsimberidou_JExpMed_2024_os",
+vector = c("Dai_Nature_2015_os", "GSE106128_os", "Braun_NatMed_2020_os", "GSE253260_os", "Zhao_NatMed_2019_os","Tsimberidou_JExpMed_2024_os",
             "Dai_Nature_2015_pfs","GSE253260_pfs","IMvigor_os")
 for (l in 1:length(vector)) {
   load(paste0("C:/Users/user/Desktop/input/", vector[l], "_p.Rdata"))
@@ -4393,10 +4393,10 @@ exp=exp[,-1]
 exp$sum=rowMeans(exp)
 
 # Sort by sum
-exp_sorted <- exp[order(exp$sum, decreasing = TRUE), ]
-annotation_data <- data.frame(Sum = exp_sorted$sum)
-rownames(annotation_data) <- rownames(exp_sorted)
-heatmap_data <- exp_sorted[, -which(colnames(exp_sorted) == "sum")]
+exp_sorted = exp[order(exp$sum, decreasing = TRUE), ]
+annotation_data = data.frame(Sum = exp_sorted$sum)
+rownames(annotation_data) = rownames(exp_sorted)
+heatmap_data = exp_sorted[, -which(colnames(exp_sorted) == "sum")]
 
 library(dplyr)
 library(ggplot2)
@@ -4405,21 +4405,21 @@ library(tidyr)
 library(tibble)
 
 # 1. Create the feature-name column and sort it
-heatmap_df <- as.data.frame(heatmap_data) %>%
+heatmap_df = as.data.frame(heatmap_data) %>%
   tibble::rownames_to_column("feature") %>%
   arrange(desc(exp_sorted$sum)) %>%  # Sort by the sum
   mutate(feature = factor(feature, levels = feature))  # Keep the sort order
 
 # 2. Convert to long format for the heatmap
-heatmap_long <- heatmap_df %>%
+heatmap_long = heatmap_df %>%
   pivot_longer(-feature, names_to = "dataset", values_to = "value")
 
 # 3. Build the data for the significance asterisks
-significance_df <- heatmap_long %>%
+significance_df = heatmap_long %>%
   mutate(star = ifelse(value > -log10(0.001), "***",ifelse(value > -log10(0.01), "**",ifelse(value > -log10(0.05), "*",""))))
 
 # 4. Draw the heatmap
-heatmap_plot <- ggplot(heatmap_long, aes(x = dataset, y = feature, fill = value)) +
+heatmap_plot = ggplot(heatmap_long, aes(x = dataset, y = feature, fill = value)) +
   geom_tile(color = "#a1a3a6", size = 0.5) +
   geom_text(data = significance_df, aes(label = star),
             size = 3, color = "black", fontface = "bold") +
@@ -4434,13 +4434,13 @@ heatmap_plot <- ggplot(heatmap_long, aes(x = dataset, y = feature, fill = value)
   )
 
 # 5. Prepare the bar chart data
-bar_data <- data.frame(
+bar_data = data.frame(
   feature = heatmap_df$feature,
   importance = exp_sorted$sum[match(heatmap_df$feature, rownames(exp_sorted))]
 )
 
 # 6. Draw the bar chart
-barplot_plot <- ggplot(bar_data, aes(x = feature, y = importance)) +
+barplot_plot = ggplot(bar_data, aes(x = feature, y = importance)) +
   geom_col(fill = "#ffce7b", width = 0.8) +
   coord_flip() +
   theme_minimal(base_size = 16) +
@@ -4452,7 +4452,7 @@ barplot_plot <- ggplot(bar_data, aes(x = feature, y = importance)) +
   )
 
 # 7. Combine the figures
-combined_plot <- heatmap_plot + barplot_plot +
+combined_plot = heatmap_plot + barplot_plot +
   plot_layout(widths = c(3, 1))  # Adjust the width ratio
 
 print(combined_plot)
@@ -4547,37 +4547,37 @@ scores=as.data.frame(scale(t(scores)))
 exp_im=merge(exp_im,scores,by="row.names")
 rownames(exp_im)=exp_im[,1]
 exp_im=exp_im[,-1]
-exp_im_pheno <- merge(xcell_pheno[, "phenotype", drop = FALSE], exp_im, by = "row.names")
-rownames(exp_im_pheno) <- exp_im_pheno[, 1]
-exp_im_pheno <- exp_im_pheno[, -1]
+exp_im_pheno = merge(xcell_pheno[, "phenotype", drop = FALSE], exp_im, by = "row.names")
+rownames(exp_im_pheno) = exp_im_pheno[, 1]
+exp_im_pheno = exp_im_pheno[, -1]
 library(pheatmap)
 library(RColorBrewer)
-phenotype_annotation <- data.frame(Phenotype = exp_im_pheno$phenotype)
-rownames(phenotype_annotation) <- rownames(exp_im_pheno)
-expression_matrix <- as.matrix(exp_im_pheno[, -which(colnames(exp_im_pheno) == "phenotype")])
-phenotype_order <- order(exp_im_pheno$phenotype)
-expression_matrix_ordered <- expression_matrix[phenotype_order, ]
-phenotype_annotation_ordered <- phenotype_annotation[phenotype_order, , drop = FALSE]
-signature_features <- c("Hot_cancer_signature", "Cold_cancer_signature")
-celltype_features <- setdiff(colnames(expression_matrix_ordered), signature_features)
-up_cells <- intersect(celltype_features, resultup$gene_id)
-down_cells <- intersect(celltype_features, resultdn$gene_id)
-ordered_features <- c("Hot_cancer_signature", up_cells, "Cold_cancer_signature", down_cells)
-expression_matrix_ordered_final <- expression_matrix_ordered[, ordered_features]
-feature_annotation <- data.frame(
+phenotype_annotation = data.frame(Phenotype = exp_im_pheno$phenotype)
+rownames(phenotype_annotation) = rownames(exp_im_pheno)
+expression_matrix = as.matrix(exp_im_pheno[, -which(colnames(exp_im_pheno) == "phenotype")])
+phenotype_order = order(exp_im_pheno$phenotype)
+expression_matrix_ordered = expression_matrix[phenotype_order, ]
+phenotype_annotation_ordered = phenotype_annotation[phenotype_order, , drop = FALSE]
+signature_features = c("Hot_cancer_signature", "Cold_cancer_signature")
+celltype_features = setdiff(colnames(expression_matrix_ordered), signature_features)
+up_cells = intersect(celltype_features, resultup$gene_id)
+down_cells = intersect(celltype_features, resultdn$gene_id)
+ordered_features = c("Hot_cancer_signature", up_cells, "Cold_cancer_signature", down_cells)
+expression_matrix_ordered_final = expression_matrix_ordered[, ordered_features]
+feature_annotation = data.frame(
   row.names = ordered_features,
   FeatureType = ifelse(ordered_features %in% signature_features, "Signature", "CellType"),
   Regulation = ifelse(ordered_features %in% c("Hot_cancer_signature", up_cells), "Up", "Down")
 )
-phenotype_colors <- list(
+phenotype_colors = list(
   Phenotype = c(cold = "#90d7ec", hot = "#f58f98"),
   Regulation = c(Up = "#e74c3c", Down = "#3498db"),
   FeatureType = c(Signature = "#f39c12", CellType = "#9b59b6")
 )
-data_range <- quantile(expression_matrix_ordered_final, probs = c(0.05, 0.95), na.rm = TRUE)
-color_limit <- max(abs(data_range))
-breaks <- seq(-color_limit, color_limit, length.out = 100)
-gaps_row_positions <- c(
+data_range = quantile(expression_matrix_ordered_final, probs = c(0.05, 0.95), na.rm = TRUE)
+color_limit = max(abs(data_range))
+breaks = seq(-color_limit, color_limit, length.out = 100)
+gaps_row_positions = c(
   1 + length(up_cells)
 )
 pheatmap(t(expression_matrix_ordered_final),
@@ -4633,45 +4633,45 @@ for(i in 1:length(fs)){
   library(RColorBrewer)
   library(ggplot2)
 
-  expression_matrix <- as.matrix(im_xcell)
+  expression_matrix = as.matrix(im_xcell)
 
   # Order the features to match exp_im
-  signature_features <- c("Hot_cancer_signature", "Cold_cancer_signature")
-  celltype_features <- setdiff(colnames(expression_matrix), signature_features)
+  signature_features = c("Hot_cancer_signature", "Cold_cancer_signature")
+  celltype_features = setdiff(colnames(expression_matrix), signature_features)
 
   # Order the cell types by regulatory direction (consistent with exp_im)
-  up_cells <- intersect(celltype_features, resultup$gene_id)
-  down_cells <- intersect(celltype_features, resultdn$gene_id)
+  up_cells = intersect(celltype_features, resultup$gene_id)
+  down_cells = intersect(celltype_features, resultdn$gene_id)
 
   # Final order: up-regulated features first (Hot signature + up-regulated cell types), then down-regulated features (Cold signature + down-regulated cell types)
-  ordered_features <- c("Hot_cancer_signature", up_cells, "Cold_cancer_signature", down_cells)
-  expression_matrix_ordered <- expression_matrix[, ordered_features]
+  ordered_features = c("Hot_cancer_signature", up_cells, "Cold_cancer_signature", down_cells)
+  expression_matrix_ordered = expression_matrix[, ordered_features]
 
   # Build the feature annotation (consistent with exp_im)
-  feature_annotation <- data.frame(
+  feature_annotation = data.frame(
     row.names = ordered_features,
     FeatureType = ifelse(ordered_features %in% signature_features, "Signature", "CellType"),
     Regulation = ifelse(ordered_features %in% c("Hot_cancer_signature", up_cells), "Up", "Down")
   )
 
   # Set the colours (consistent with exp_im)
-  feature_colors <- list(
+  feature_colors = list(
     FeatureType = c(Signature = "#f39c12", CellType = "#9b59b6"),
     Regulation = c(Up = "#e74c3c", Down = "#3498db")
   )
 
   # Compute the colour range
-  data_range <- quantile(expression_matrix_ordered, probs = c(0.05, 0.95), na.rm = TRUE)
-  color_limit <- max(abs(data_range))
-  breaks <- seq(-color_limit, color_limit, length.out = 100)
+  data_range = quantile(expression_matrix_ordered, probs = c(0.05, 0.95), na.rm = TRUE)
+  color_limit = max(abs(data_range))
+  breaks = seq(-color_limit, color_limit, length.out = 100)
 
   # Compute the gap position (between the Hot and Cold signatures)
-  gaps_row_positions <- c(
+  gaps_row_positions = c(
     1 + length(up_cells)  # Between the Hot signature and the up-regulated cells, before the Cold signature
   )
 
   # Create the heatmap (same style as exp_im)
-  p <- pheatmap(t(expression_matrix_ordered),
+  p = pheatmap(t(expression_matrix_ordered),
                 annotation_row = feature_annotation,
                 annotation_colors = feature_colors,
                 scale = "row",
@@ -4686,11 +4686,11 @@ for(i in 1:length(fs)){
                 border_color = NA,
                 gaps_row = gaps_row_positions,
                 silent = TRUE)
-  output_dir <- "C:/Users/user/Desktop/input/heatmaps"
+  output_dir = "C:/Users/user/Desktop/input/heatmaps"
   if(!dir.exists(output_dir)) {
     dir.create(output_dir)
   }
-  filename <- paste0(output_dir, "/", fs[i], "_consistent_immune_heatmap.png")
+  filename = paste0(output_dir, "/", fs[i], "_consistent_immune_heatmap.png")
   ggsave(filename, p$gtable, width = 12, height = 8, dpi = 300,bg = "white")
 }
 ################################################################################Pan-cancer loop heatmap (with predicted labels)####
@@ -4729,44 +4729,44 @@ for(i in 1:length(fs)){
   load("lasso_model.Rdata")
   im_xcell_phenotype=data.frame(Tag=rownames(im_xcell),subtype=predict(object = lasso_model,
                                                                        newdata = as.matrix(im_xcell)))
-  rownames(im_xcell_phenotype) <- im_xcell_phenotype$Tag
+  rownames(im_xcell_phenotype) = im_xcell_phenotype$Tag
 
   library(pheatmap)
   library(RColorBrewer)
   library(ggplot2)
 
-  expression_matrix <- as.matrix(im_xcell)
-  signature_features <- c("Hot_signature", "Cold_signature")
-  celltype_features <- setdiff(colnames(expression_matrix), signature_features)
-  up_cells <- intersect(celltype_features, resultup$gene_id)
-  down_cells <- intersect(celltype_features, resultdn$gene_id)
-  ordered_features <- c("Hot_signature", up_cells, "Cold_signature", down_cells)
-  expression_matrix_ordered <- expression_matrix[, ordered_features]
-  sample_annotation <- data.frame(
+  expression_matrix = as.matrix(im_xcell)
+  signature_features = c("Hot_signature", "Cold_signature")
+  celltype_features = setdiff(colnames(expression_matrix), signature_features)
+  up_cells = intersect(celltype_features, resultup$gene_id)
+  down_cells = intersect(celltype_features, resultdn$gene_id)
+  ordered_features = c("Hot_signature", up_cells, "Cold_signature", down_cells)
+  expression_matrix_ordered = expression_matrix[, ordered_features]
+  sample_annotation = data.frame(
     row.names = rownames(expression_matrix_ordered),
     Phenotype = im_xcell_phenotype[rownames(expression_matrix_ordered), "subtype"]
   )
-  phenotype_order <- order(sample_annotation$Phenotype,decreasing = T)
-  expression_matrix_ordered <- expression_matrix_ordered[phenotype_order, ]
-  sample_annotation_ordered <- sample_annotation[phenotype_order, , drop = FALSE]
-  cold_count <- sum(sample_annotation_ordered$Phenotype == "cold")
-  feature_annotation <- data.frame(
+  phenotype_order = order(sample_annotation$Phenotype,decreasing = T)
+  expression_matrix_ordered = expression_matrix_ordered[phenotype_order, ]
+  sample_annotation_ordered = sample_annotation[phenotype_order, , drop = FALSE]
+  cold_count = sum(sample_annotation_ordered$Phenotype == "cold")
+  feature_annotation = data.frame(
     row.names = ordered_features,
     FeatureType = ifelse(ordered_features %in% signature_features, "Signature", "CellType"),
     Regulation = ifelse(ordered_features %in% c("Hot_signature", up_cells), "Up", "Down")
   )
-  annotation_colors <- list(
+  annotation_colors = list(
     Phenotype = c(cold = "#90d7ec", hot = "#f58f98"),
     FeatureType = c(Signature = "#f39c12", CellType = "#9b59b6"),
     Regulation = c(Up = "#e74c3c", Down = "#3498db")
   )
-  data_range <- quantile(expression_matrix_ordered, probs = c(0.05, 0.95), na.rm = TRUE)
-  color_limit <- max(abs(data_range))
-  breaks <- seq(-color_limit, color_limit, length.out = 100)
-  gaps_row_positions <- c(
+  data_range = quantile(expression_matrix_ordered, probs = c(0.05, 0.95), na.rm = TRUE)
+  color_limit = max(abs(data_range))
+  breaks = seq(-color_limit, color_limit, length.out = 100)
+  gaps_row_positions = c(
     1 + length(up_cells)
   )
-  p <- pheatmap(t(expression_matrix_ordered),
+  p = pheatmap(t(expression_matrix_ordered),
                 annotation_col = sample_annotation_ordered,
                 annotation_row = feature_annotation,
                 annotation_colors = annotation_colors,
@@ -4784,11 +4784,11 @@ for(i in 1:length(fs)){
                 gaps_col = cold_count,
                 silent = TRUE)
 
-  output_dir <- "C:/Users/user/Desktop/input/heatmaps"
+  output_dir = "C:/Users/user/Desktop/input/heatmaps"
   if(!dir.exists(output_dir)) {
     dir.create(output_dir)
   }
 
-  filename <- paste0(output_dir, "/","a_", fs[i], "_consistent_immune_heatmap.png")
+  filename = paste0(output_dir, "/","a_", fs[i], "_consistent_immune_heatmap.png")
   ggsave(filename, p$gtable, width = 12, height = 8, dpi = 300,bg = "white")
 }

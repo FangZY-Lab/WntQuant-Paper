@@ -658,7 +658,7 @@ drawed_data=merge(all_scores,all_group,by.x="row.names",by.y="Tag")
 colnames(drawed_data)[6]="Group"
 library(ggplot2)
 library(ggpubr)
-p <- ggplot(drawed_data, aes(fill=Group, y=activity_score, x=ID)) +
+p = ggplot(drawed_data, aes(fill=Group, y=activity_score, x=ID)) +
   geom_bar(position=position_dodge(),
            stat="summary",
            width=0.7,
@@ -728,7 +728,7 @@ for(i in 1:length(vector)){
   WNT_HL=WNT_HL[,-1]
   WNT_HL_selected=WNT_HL[vector[i],,drop=F]
   group$group=ifelse(group$group==WNT_HL_selected$Group1,WNT_HL_selected$Group1_Status,WNT_HL_selected$Group2_Status)
-  group$Tag <- paste0(group$Tag,"_",vector[i])
+  group$Tag = paste0(group$Tag,"_",vector[i])
   if(i==1){
     all_group=group
   }else{
@@ -762,7 +762,7 @@ drawed_data=merge(all_scores,all_group_v,by.x="row.names",by.y="Tag")
 colnames(drawed_data)[6]="Group"
 library(ggplot2)
 library(ggpubr)
-p <- ggplot(drawed_data, aes(fill=Group, y=activity_score, x=ID)) +
+p = ggplot(drawed_data, aes(fill=Group, y=activity_score, x=ID)) +
   geom_bar(position=position_dodge(),
            stat="summary",
            width=0.7,
@@ -850,7 +850,7 @@ for(i in 1:length(vector)){
   WNT_HL=WNT_HL[,-1]
   WNT_HL_selected=WNT_HL[vector[i],,drop=F]
   group$group=ifelse(group$group==WNT_HL_selected$Group1,WNT_HL_selected$Group1_Status,WNT_HL_selected$Group2_Status)
-  group$Tag <- paste0(group$Tag,"_",vector[i])
+  group$Tag = paste0(group$Tag,"_",vector[i])
   if(i==1){
     all_group=group
   }else{
@@ -975,7 +975,7 @@ for(i in 1:length(vector)){
   WNT_HL=WNT_HL[,-1]
   WNT_HL_selected=WNT_HL[vector[i],,drop=F]
   group$group=ifelse(group$group==WNT_HL_selected$Group1,WNT_HL_selected$Group1_Status,WNT_HL_selected$Group2_Status)
-  group$Tag <- paste0(group$Tag,"_",vector[i])
+  group$Tag = paste0(group$Tag,"_",vector[i])
   if(i==1){
     all_group=group
   }else{

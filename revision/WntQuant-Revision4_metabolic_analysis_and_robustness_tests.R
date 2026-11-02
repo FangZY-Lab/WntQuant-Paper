@@ -326,7 +326,7 @@ activity_score=pancancer_WNT_Score$final_activity_score
 load("C:/Users/user/Desktop/input/TCGA_metabolism.Rdata")
 tme_all=as.data.frame(t(TCGA_metabolism))
 biomarker_group=merge(tme_all,activity_score,by="row.names")
-p <- ggscatter(biomarker_group, x = "Xenobiotics metabolism", y = "activity_score",
+p = ggscatter(biomarker_group, x = "Xenobiotics metabolism", y = "activity_score",
                add = "reg.line",
                conf.int = TRUE,
                add.params = list(color = "#d71345", fill = "#BBBDBE"),
@@ -361,7 +361,7 @@ library(GSEABase)
 setwd("C:/Users/user/Desktop/input")
 
 # Load all datasets
-vector_all <- c("GSE232944_a","GSE232944_b","GSE199835_a","GSE199835_b","GSE199835_c",
+vector_all = c("GSE232944_a","GSE232944_b","GSE199835_a","GSE199835_b","GSE199835_c",
                 "GSE120106","GSE234403","GSE39904_a","GSE39904_b","GSE128281",
                 "GSE62060","GSE33143","GSE18560_a","GSE18560_b","GSE44097_a","GSE44097_b",
                 "GSE73906_a","GSE73906_b","GSE73906_c","GSE73906_d","GSE73906_e",
@@ -373,36 +373,36 @@ for (q in 1:length(vector_all)) {
 }
 
 # Get the unique study identifier (strip the suffix)
-vector_marker <- unique(sub("_.*", "", vector_all))
+vector_marker = unique(sub("_.*", "", vector_all))
 
 # Set the number of repeats and the deletion proportion
-n_repeats <- 30
-delete_ratio <- 0.3
+n_repeats = 30
+delete_ratio = 0.3
 
 # Store all results
-robustness_results <- list()
+robustness_results = list()
 
 for (repeat_idx in 1:n_repeats) {
   set.seed(Sys.time() + sample(1:10000, 1))
   print(paste("Starting round ", repeat_idx, ""))
 
   # Randomly drop 30% of the studies
-  n_to_delete <- round(length(vector_marker) * delete_ratio)
-  random_studies <- sample(vector_marker, n_to_delete)
+  n_to_delete = round(length(vector_marker) * delete_ratio)
+  random_studies = sample(vector_marker, n_to_delete)
 
   # Build the vector of datasets to keep (drop every dataset belonging to the excluded study)
-  vector_remaining <- vector_all[!grepl(paste0(random_studies, collapse = "|"), vector_all)]
+  vector_remaining = vector_all[!grepl(paste0(random_studies, collapse = "|"), vector_all)]
 
   print(paste("Removed studies:", paste(random_studies, collapse = ", ")))
   print(paste("Datasets remaining:", length(vector_remaining)))
 
   # Read the group information
-  group_HL <- read.delim("WNT_HL.txt", header = TRUE, sep = '\t', check.names = F)
+  group_HL = read.delim("WNT_HL.txt", header = TRUE, sep = '\t', check.names = F)
 
   # Generate the de novo gene sets
   source("C:/Users/user/Desktop/functions_to_package/Get_denovo_genesets.R")
 
-  up.denovo_genesets <- Get_denovo_genesets(
+  up.denovo_genesets = Get_denovo_genesets(
     file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_remaining,
     group_HL = group_HL,
@@ -416,7 +416,7 @@ for (repeat_idx in 1:n_repeats) {
     export_file = F
   )
 
-  dn.denovo_genesets <- Get_denovo_genesets(
+  dn.denovo_genesets = Get_denovo_genesets(
     file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_remaining,
     group_HL = group_HL,
@@ -431,57 +431,57 @@ for (repeat_idx in 1:n_repeats) {
   )
 
   # Merge the de novo gene sets
-  WNT_denovo <- cbind(up.denovo_genesets, dn.denovo_genesets)
-  WNT_denovo <- rbind(colnames(WNT_denovo), WNT_denovo)
-  colnames(WNT_denovo) <- paste0("WPRGS", 1:ncol(WNT_denovo), "_denovo")
+  WNT_denovo = cbind(up.denovo_genesets, dn.denovo_genesets)
+  WNT_denovo = rbind(colnames(WNT_denovo), WNT_denovo)
+  colnames(WNT_denovo) = paste0("WPRGS", 1:ncol(WNT_denovo), "_denovo")
 
   # Read the known gene sets
-  WNT_knowledge <- read.delim("WNT_knowledge.txt", header = TRUE, sep = '\t', check.names = F)
+  WNT_knowledge = read.delim("WNT_knowledge.txt", header = TRUE, sep = '\t', check.names = F)
 
   # Adjust the row count to match
   if (nrow(WNT_knowledge) >= nrow(WNT_denovo)) {
-    empty <- data.frame(matrix("", nrow = (nrow(WNT_knowledge) - nrow(WNT_denovo)),
+    empty = data.frame(matrix("", nrow = (nrow(WNT_knowledge) - nrow(WNT_denovo)),
                                ncol = ncol(WNT_denovo)))
-    colnames(empty) <- colnames(WNT_denovo)
-    WNT_denovo <- rbind(WNT_denovo, empty)
-    all_genesets <- cbind(WNT_denovo, WNT_knowledge)
+    colnames(empty) = colnames(WNT_denovo)
+    WNT_denovo = rbind(WNT_denovo, empty)
+    all_genesets = cbind(WNT_denovo, WNT_knowledge)
   } else {
-    empty <- data.frame(matrix("", nrow = (nrow(WNT_denovo) - nrow(WNT_knowledge)),
+    empty = data.frame(matrix("", nrow = (nrow(WNT_denovo) - nrow(WNT_knowledge)),
                                ncol = ncol(WNT_knowledge)))
-    colnames(empty) <- colnames(WNT_knowledge)
-    WNT_knowledge <- rbind(WNT_knowledge, empty)
-    all_genesets <- cbind(WNT_denovo, WNT_knowledge)
+    colnames(empty) = colnames(WNT_knowledge)
+    WNT_knowledge = rbind(WNT_knowledge, empty)
+    all_genesets = cbind(WNT_denovo, WNT_knowledge)
   }
 
   # Add the enrichr gene sets
-  files <- c("WNT_enrichr1.gmt", "WNT_enrichr2.gmt", "WNT_enrichr3.gmt", "WNT_enrichr4.gmt")
-  combined_list <- list()
+  files = c("WNT_enrichr1.gmt", "WNT_enrichr2.gmt", "WNT_enrichr3.gmt", "WNT_enrichr4.gmt")
+  combined_list = list()
 
   for (file in files) {
-    gmt_lines <- readLines(file)
-    gene_sets <- strsplit(gmt_lines, "\t")
-    names(gene_sets) <- sapply(gene_sets, function(x) paste0(x[1], "(", x[2], ")", "_enrichr"))
+    gmt_lines = readLines(file)
+    gene_sets = strsplit(gmt_lines, "\t")
+    names(gene_sets) = sapply(gene_sets, function(x) paste0(x[1], "(", x[2], ")", "_enrichr"))
     for (i in 1:length(names(gene_sets))) {
-      gene_sets[[i]][1] <- names(gene_sets)[i]
-      gene_sets[[i]] <- gene_sets[[i]][-2]
+      gene_sets[[i]][1] = names(gene_sets)[i]
+      gene_sets[[i]] = gene_sets[[i]][-2]
     }
-    combined_list <- append(combined_list, gene_sets)
+    combined_list = append(combined_list, gene_sets)
   }
 
-  combined_list_names <- as.data.frame(table(names(combined_list)))
-  combined_list <- combined_list[combined_list_names$Var1]
+  combined_list_names = as.data.frame(table(names(combined_list)))
+  combined_list = combined_list[combined_list_names$Var1]
 
   for (i in 1:length(combined_list_names$Var1)) {
-    var_name <- paste("WPRGS", i + 152, "_knowledge", sep = "")
-    names(combined_list)[i] <- var_name
+    var_name = paste("WPRGS", i + 152, "_knowledge", sep = "")
+    names(combined_list)[i] = var_name
   }
 
   # Process the gene set data
-  all_genesets <- apply(all_genesets, 2, function(x) x[nchar(x) >= 1])
-  all_genesets <- append(all_genesets, combined_list)
+  all_genesets = apply(all_genesets, 2, function(x) x[nchar(x) >= 1])
+  all_genesets = append(all_genesets, combined_list)
 
-  max_length <- max(sapply(all_genesets, length))
-  all_wnt_genesets <- lapply(all_genesets, function(x) {
+  max_length = max(sapply(all_genesets, length))
+  all_wnt_genesets = lapply(all_genesets, function(x) {
     if (length(x) < max_length) {
       c(x, rep("", max_length - length(x)))
     } else {
@@ -489,19 +489,19 @@ for (repeat_idx in 1:n_repeats) {
     }
   })
 
-  all_wnt_genesets <- as.data.frame(all_wnt_genesets)
+  all_wnt_genesets = as.data.frame(all_wnt_genesets)
   save(all_wnt_genesets, file = "all_wnt_genesets.Rdata")
 
   # Load and process the gene sets
   load("C:/Users/user/Desktop/input/all_wnt_genesets.Rdata")
-  all_genesets <- all_wnt_genesets[-1, ]
-  UP.genesets <- all_genesets
-  DN.genesets <- all_genesets
+  all_genesets = all_wnt_genesets[-1, ]
+  UP.genesets = all_genesets
+  DN.genesets = all_genesets
 
   # Clean the environment
   source("C:/Users/user/Desktop/functions_to_package/Precise_cleaning_system.R")
 
-  UP.clean_genesets_rank <- Precise_cleaning_system(
+  UP.clean_genesets_rank = Precise_cleaning_system(
     file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_remaining,
     group_HL = group_HL,
@@ -524,7 +524,7 @@ for (repeat_idx in 1:n_repeats) {
     export_file = F
   )
 
-  DN.clean_genesets_rank <- Precise_cleaning_system(
+  DN.clean_genesets_rank = Precise_cleaning_system(
     file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_remaining,
     group_HL = group_HL,
@@ -547,13 +547,13 @@ for (repeat_idx in 1:n_repeats) {
     export_file = F
   )
 
-  UP.clean_genesets <- UP.clean_genesets_rank$update_activation_geneset
-  DN.clean_genesets <- DN.clean_genesets_rank$update_inhibition_geneset
+  UP.clean_genesets = UP.clean_genesets_rank$update_activation_geneset
+  DN.clean_genesets = DN.clean_genesets_rank$update_inhibition_geneset
 
   # Combined gene set
   source("C:/Users/user/Desktop/functions_to_package/Joint_genesets.R")
 
-  joint_genesets <- Joint_genesets(
+  joint_genesets = Joint_genesets(
     file_paths = "C:/Users/user/Desktop/input",
     activation_geneset = UP.clean_genesets,
     inhibition_geneset = DN.clean_genesets,
@@ -566,40 +566,40 @@ for (repeat_idx in 1:n_repeats) {
     export_file = F
   )
 
-  activation_geneset <- joint_genesets$joint_activation_geneset
-  inhibition_geneset <- joint_genesets$joint_inhibition_geneset
+  activation_geneset = joint_genesets$joint_activation_geneset
+  inhibition_geneset = joint_genesets$joint_inhibition_geneset
 
   # Pad rows so the lengths match
   if (nrow(activation_geneset) > nrow(inhibition_geneset)) {
-    empty <- data.frame(matrix("", nrow = (nrow(activation_geneset) - nrow(inhibition_geneset)),
+    empty = data.frame(matrix("", nrow = (nrow(activation_geneset) - nrow(inhibition_geneset)),
                                ncol = ncol(inhibition_geneset)))
-    colnames(empty) <- colnames(inhibition_geneset)
-    inhibition_geneset <- rbind(inhibition_geneset, empty)
+    colnames(empty) = colnames(inhibition_geneset)
+    inhibition_geneset = rbind(inhibition_geneset, empty)
   } else if (nrow(activation_geneset) < nrow(inhibition_geneset)) {
-    empty <- data.frame(matrix("", nrow = (nrow(inhibition_geneset) - nrow(activation_geneset)),
+    empty = data.frame(matrix("", nrow = (nrow(inhibition_geneset) - nrow(activation_geneset)),
                                ncol = ncol(activation_geneset)))
-    colnames(empty) <- colnames(activation_geneset)
-    activation_geneset <- rbind(activation_geneset, empty)
+    colnames(empty) = colnames(activation_geneset)
+    activation_geneset = rbind(activation_geneset, empty)
   }
 
   # Merge the activated and inhibited gene sets
-  wpags_wpigs <- cbind(activation_geneset, inhibition_geneset)
-  wpags_wpigs <- rbind(colnames(wpags_wpigs), wpags_wpigs)
-  colnames(wpags_wpigs) <- c(paste0("wpags", 1:ncol(activation_geneset)),
+  wpags_wpigs = cbind(activation_geneset, inhibition_geneset)
+  wpags_wpigs = rbind(colnames(wpags_wpigs), wpags_wpigs)
+  colnames(wpags_wpigs) = c(paste0("wpags", 1:ncol(activation_geneset)),
                              paste0("wpigs", 1:ncol(inhibition_geneset)))
 
-  wpags_wpigs <- apply(wpags_wpigs, 2, function(x) x[nchar(x) >= 1])
+  wpags_wpigs = apply(wpags_wpigs, 2, function(x) x[nchar(x) >= 1])
 
   # Write the GMT file
-  write.gmt <- function(gs.list, file) {
+  write.gmt = function(gs.list, file) {
     if (length(grep(".gmt$", file)) == 0)
       stop("write.gmt(): file should be .gmt")
-    gs.names <- names(gs.list)
-    gs.desc <- sapply(gs.list, function(x) x[1])
-    gs.lines <- unlist(lapply(gs.list, function(x) {
+    gs.names = names(gs.list)
+    gs.desc = sapply(gs.list, function(x) x[1])
+    gs.lines = unlist(lapply(gs.list, function(x) {
       paste(x[-1], collapse = "\t")
     }))
-    gs.lines <- paste(gs.names, gs.desc, gs.lines, sep = "\t")
+    gs.lines = paste(gs.names, gs.desc, gs.lines, sep = "\t")
     writeLines(gs.lines, con = file)
   }
 
@@ -608,13 +608,13 @@ for (repeat_idx in 1:n_repeats) {
   # Load the test data and compute the activity score
   load("C:/Users/user/Desktop/input/exp_data/UCSC.CRC_CMS2_CMS.Rdata")
 
-  crc_data_all <- UCSC.CRC_CMS2_CMS
+  crc_data_all = UCSC.CRC_CMS2_CMS
 
   source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
 
-  geneSets <- getGmt("wpags_wpigs_r.gmt")
+  geneSets = getGmt("wpags_wpigs_r.gmt")
 
-  WNT_Score <- Calculate_bioactivity_scores(
+  WNT_Score = Calculate_bioactivity_scores(
     file_paths = "C:/Users/user/Desktop/input",
     expression_profile = crc_data_all,
     foundation = c("relative_ssGSEA"),
@@ -628,11 +628,11 @@ for (repeat_idx in 1:n_repeats) {
   )
 
   # Save results
-  CMS_result <- WNT_Score$final_activity_score
-  CMS_result$rep <- paste0("repeat_", repeat_idx)
+  CMS_result = WNT_Score$final_activity_score
+  CMS_result$rep = paste0("repeat_", repeat_idx)
 
-  robustness_results[[repeat_idx]] <- CMS_result
-  names(robustness_results)[repeat_idx] <- paste0("repeat_", repeat_idx)
+  robustness_results[[repeat_idx]] = CMS_result
+  names(robustness_results)[repeat_idx] = paste0("repeat_", repeat_idx)
 
   print(paste("Finished round ", repeat_idx, ""))
 }
@@ -647,47 +647,47 @@ library(GSEABase)
 setwd("C:/Users/user/Desktop/input")
 
 # Load all datasets
-vector_all <- c("GSE232944_a","GSE232944_b","GSE199835_a","GSE199835_b","GSE199835_c",
+vector_all = c("GSE232944_a","GSE232944_b","GSE199835_a","GSE199835_b","GSE199835_c",
                 "GSE120106","GSE234403","GSE39904_a","GSE39904_b","GSE128281",
                 "GSE62060","GSE33143","GSE18560_a","GSE18560_b","GSE44097_a","GSE44097_b",
                 "GSE73906_a","GSE73906_b","GSE73906_c","GSE73906_d","GSE73906_e",
                 "GSE73906_f","GSE123807","GSE89124")
 
 # Load all data first
-all_data <- list()
-all_data_G <- list()
+all_data = list()
+all_data_G = list()
 
 for (q in 1:length(vector_all)) {
   load(paste0(vector_all[q], ".Rdata"))
   load(paste0(vector_all[q], "_G.Rdata"))
-  all_data[[vector_all[q]]] <- get(vector_all[q])
-  all_data_G[[vector_all[q]]] <- get(paste0(vector_all[q], "_G"))
+  all_data[[vector_all[q]]] = get(vector_all[q])
+  all_data_G[[vector_all[q]]] = get(paste0(vector_all[q], "_G"))
 }
 
 # Set the number of repeats and the deletion proportion
-n_repeats <- 30
-delete_ratio <- 0.3
+n_repeats = 30
+delete_ratio = 0.3
 
 # Store all results
-robustness_results <- list()
+robustness_results = list()
 
 for (repeat_idx in 1:n_repeats) {
   set.seed(Sys.time() + sample(1:10000, 1))
   print(paste("Starting round ", repeat_idx, ""))
 
   # Randomly delete 30% of the genes in each dataset
-  modified_data <- list()
+  modified_data = list()
 
   for (dataset_name in vector_all) {
-    original_data <- all_data[[dataset_name]]
-    original_genes <- rownames(original_data)
+    original_data = all_data[[dataset_name]]
+    original_genes = rownames(original_data)
 
     # Randomly select 30% of the genes for deletion
-    n_genes_to_delete <- round(length(original_genes) * delete_ratio)
-    genes_to_delete <- sample(original_genes, n_genes_to_delete)
+    n_genes_to_delete = round(length(original_genes) * delete_ratio)
+    genes_to_delete = sample(original_genes, n_genes_to_delete)
 
     # Build the modified data with the selected genes removed
-    modified_data[[dataset_name]] <- original_data[!rownames(original_data) %in% genes_to_delete, ]
+    modified_data[[dataset_name]] = original_data[!rownames(original_data) %in% genes_to_delete, ]
 
     print(paste("dataset", dataset_name, "removed", n_genes_to_delete, " genes"))
   }
@@ -699,12 +699,12 @@ for (repeat_idx in 1:n_repeats) {
   }
 
   # Read the group information
-  group_HL <- read.delim("WNT_HL.txt", header = TRUE, sep = '\t', check.names = F)
+  group_HL = read.delim("WNT_HL.txt", header = TRUE, sep = '\t', check.names = F)
 
   # Generate the de novo gene sets
   source("C:/Users/user/Desktop/functions_to_package/Get_denovo_genesets.R")
 
-  up.denovo_genesets <- Get_denovo_genesets(
+  up.denovo_genesets = Get_denovo_genesets(
     file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_all,
     group_HL = group_HL,
@@ -718,7 +718,7 @@ for (repeat_idx in 1:n_repeats) {
     export_file = F
   )
 
-  dn.denovo_genesets <- Get_denovo_genesets(
+  dn.denovo_genesets = Get_denovo_genesets(
     file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_all,
     group_HL = group_HL,
@@ -733,57 +733,57 @@ for (repeat_idx in 1:n_repeats) {
   )
 
   # Merge the de novo gene sets
-  WNT_denovo <- cbind(up.denovo_genesets, dn.denovo_genesets)
-  WNT_denovo <- rbind(colnames(WNT_denovo), WNT_denovo)
-  colnames(WNT_denovo) <- paste0("WPRGS", 1:ncol(WNT_denovo), "_denovo")
+  WNT_denovo = cbind(up.denovo_genesets, dn.denovo_genesets)
+  WNT_denovo = rbind(colnames(WNT_denovo), WNT_denovo)
+  colnames(WNT_denovo) = paste0("WPRGS", 1:ncol(WNT_denovo), "_denovo")
 
   # Read the known gene sets
-  WNT_knowledge <- read.delim("WNT_knowledge.txt", header = TRUE, sep = '\t', check.names = F)
+  WNT_knowledge = read.delim("WNT_knowledge.txt", header = TRUE, sep = '\t', check.names = F)
 
   # Adjust the row count to match
   if (nrow(WNT_knowledge) >= nrow(WNT_denovo)) {
-    empty <- data.frame(matrix("", nrow = (nrow(WNT_knowledge) - nrow(WNT_denovo)),
+    empty = data.frame(matrix("", nrow = (nrow(WNT_knowledge) - nrow(WNT_denovo)),
                                ncol = ncol(WNT_denovo)))
-    colnames(empty) <- colnames(WNT_denovo)
-    WNT_denovo <- rbind(WNT_denovo, empty)
-    all_genesets <- cbind(WNT_denovo, WNT_knowledge)
+    colnames(empty) = colnames(WNT_denovo)
+    WNT_denovo = rbind(WNT_denovo, empty)
+    all_genesets = cbind(WNT_denovo, WNT_knowledge)
   } else {
-    empty <- data.frame(matrix("", nrow = (nrow(WNT_denovo) - nrow(WNT_knowledge)),
+    empty = data.frame(matrix("", nrow = (nrow(WNT_denovo) - nrow(WNT_knowledge)),
                                ncol = ncol(WNT_knowledge)))
-    colnames(empty) <- colnames(WNT_knowledge)
-    WNT_knowledge <- rbind(WNT_knowledge, empty)
-    all_genesets <- cbind(WNT_denovo, WNT_knowledge)
+    colnames(empty) = colnames(WNT_knowledge)
+    WNT_knowledge = rbind(WNT_knowledge, empty)
+    all_genesets = cbind(WNT_denovo, WNT_knowledge)
   }
 
   # Add the enrichr gene sets
-  files <- c("WNT_enrichr1.gmt", "WNT_enrichr2.gmt", "WNT_enrichr3.gmt", "WNT_enrichr4.gmt")
-  combined_list <- list()
+  files = c("WNT_enrichr1.gmt", "WNT_enrichr2.gmt", "WNT_enrichr3.gmt", "WNT_enrichr4.gmt")
+  combined_list = list()
 
   for (file in files) {
-    gmt_lines <- readLines(file)
-    gene_sets <- strsplit(gmt_lines, "\t")
-    names(gene_sets) <- sapply(gene_sets, function(x) paste0(x[1], "(", x[2], ")", "_enrichr"))
+    gmt_lines = readLines(file)
+    gene_sets = strsplit(gmt_lines, "\t")
+    names(gene_sets) = sapply(gene_sets, function(x) paste0(x[1], "(", x[2], ")", "_enrichr"))
     for (i in 1:length(names(gene_sets))) {
-      gene_sets[[i]][1] <- names(gene_sets)[i]
-      gene_sets[[i]] <- gene_sets[[i]][-2]
+      gene_sets[[i]][1] = names(gene_sets)[i]
+      gene_sets[[i]] = gene_sets[[i]][-2]
     }
-    combined_list <- append(combined_list, gene_sets)
+    combined_list = append(combined_list, gene_sets)
   }
 
-  combined_list_names <- as.data.frame(table(names(combined_list)))
-  combined_list <- combined_list[combined_list_names$Var1]
+  combined_list_names = as.data.frame(table(names(combined_list)))
+  combined_list = combined_list[combined_list_names$Var1]
 
   for (i in 1:length(combined_list_names$Var1)) {
-    var_name <- paste("WPRGS", i + 152, "_knowledge", sep = "")
-    names(combined_list)[i] <- var_name
+    var_name = paste("WPRGS", i + 152, "_knowledge", sep = "")
+    names(combined_list)[i] = var_name
   }
 
   # Process the gene set data
-  all_genesets <- apply(all_genesets, 2, function(x) x[nchar(x) >= 1])
-  all_genesets <- append(all_genesets, combined_list)
+  all_genesets = apply(all_genesets, 2, function(x) x[nchar(x) >= 1])
+  all_genesets = append(all_genesets, combined_list)
 
-  max_length <- max(sapply(all_genesets, length))
-  all_wnt_genesets <- lapply(all_genesets, function(x) {
+  max_length = max(sapply(all_genesets, length))
+  all_wnt_genesets = lapply(all_genesets, function(x) {
     if (length(x) < max_length) {
       c(x, rep("", max_length - length(x)))
     } else {
@@ -791,19 +791,19 @@ for (repeat_idx in 1:n_repeats) {
     }
   })
 
-  all_wnt_genesets <- as.data.frame(all_wnt_genesets)
+  all_wnt_genesets = as.data.frame(all_wnt_genesets)
   save(all_wnt_genesets, file = "all_wnt_genesets.Rdata")
 
   # Load and process the gene sets
   load("C:/Users/user/Desktop/input/all_wnt_genesets.Rdata")
-  all_genesets <- all_wnt_genesets[-1, ]
-  UP.genesets <- all_genesets
-  DN.genesets <- all_genesets
+  all_genesets = all_wnt_genesets[-1, ]
+  UP.genesets = all_genesets
+  DN.genesets = all_genesets
 
   # Clean the environment
   source("C:/Users/user/Desktop/functions_to_package/Precise_cleaning_system.R")
 
-  UP.clean_genesets_rank <- Precise_cleaning_system(
+  UP.clean_genesets_rank = Precise_cleaning_system(
     file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_all,
     group_HL = group_HL,
@@ -826,7 +826,7 @@ for (repeat_idx in 1:n_repeats) {
     export_file = F
   )
 
-  DN.clean_genesets_rank <- Precise_cleaning_system(
+  DN.clean_genesets_rank = Precise_cleaning_system(
     file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_all,
     group_HL = group_HL,
@@ -849,13 +849,13 @@ for (repeat_idx in 1:n_repeats) {
     export_file = F
   )
 
-  UP.clean_genesets <- UP.clean_genesets_rank$update_activation_geneset
-  DN.clean_genesets <- DN.clean_genesets_rank$update_inhibition_geneset
+  UP.clean_genesets = UP.clean_genesets_rank$update_activation_geneset
+  DN.clean_genesets = DN.clean_genesets_rank$update_inhibition_geneset
 
   # Combined gene set
   source("C:/Users/user/Desktop/functions_to_package/Joint_genesets.R")
 
-  joint_genesets <- Joint_genesets(
+  joint_genesets = Joint_genesets(
     file_paths = "C:/Users/user/Desktop/input",
     activation_geneset = UP.clean_genesets,
     inhibition_geneset = DN.clean_genesets,
@@ -868,40 +868,40 @@ for (repeat_idx in 1:n_repeats) {
     export_file = F
   )
 
-  activation_geneset <- joint_genesets$joint_activation_geneset
-  inhibition_geneset <- joint_genesets$joint_inhibition_geneset
+  activation_geneset = joint_genesets$joint_activation_geneset
+  inhibition_geneset = joint_genesets$joint_inhibition_geneset
 
   # Pad rows so the lengths match
   if (nrow(activation_geneset) > nrow(inhibition_geneset)) {
-    empty <- data.frame(matrix("", nrow = (nrow(activation_geneset) - nrow(inhibition_geneset)),
+    empty = data.frame(matrix("", nrow = (nrow(activation_geneset) - nrow(inhibition_geneset)),
                                ncol = ncol(inhibition_geneset)))
-    colnames(empty) <- colnames(inhibition_geneset)
-    inhibition_geneset <- rbind(inhibition_geneset, empty)
+    colnames(empty) = colnames(inhibition_geneset)
+    inhibition_geneset = rbind(inhibition_geneset, empty)
   } else if (nrow(activation_geneset) < nrow(inhibition_geneset)) {
-    empty <- data.frame(matrix("", nrow = (nrow(inhibition_geneset) - nrow(activation_geneset)),
+    empty = data.frame(matrix("", nrow = (nrow(inhibition_geneset) - nrow(activation_geneset)),
                                ncol = ncol(activation_geneset)))
-    colnames(empty) <- colnames(activation_geneset)
-    activation_geneset <- rbind(activation_geneset, empty)
+    colnames(empty) = colnames(activation_geneset)
+    activation_geneset = rbind(activation_geneset, empty)
   }
 
   # Merge the activated and inhibited gene sets
-  wpags_wpigs <- cbind(activation_geneset, inhibition_geneset)
-  wpags_wpigs <- rbind(colnames(wpags_wpigs), wpags_wpigs)
-  colnames(wpags_wpigs) <- c(paste0("wpags", 1:ncol(activation_geneset)),
+  wpags_wpigs = cbind(activation_geneset, inhibition_geneset)
+  wpags_wpigs = rbind(colnames(wpags_wpigs), wpags_wpigs)
+  colnames(wpags_wpigs) = c(paste0("wpags", 1:ncol(activation_geneset)),
                              paste0("wpigs", 1:ncol(inhibition_geneset)))
 
-  wpags_wpigs <- apply(wpags_wpigs, 2, function(x) x[nchar(x) >= 1])
+  wpags_wpigs = apply(wpags_wpigs, 2, function(x) x[nchar(x) >= 1])
 
   # Write the GMT file
-  write.gmt <- function(gs.list, file) {
+  write.gmt = function(gs.list, file) {
     if (length(grep(".gmt$", file)) == 0)
       stop("write.gmt(): file should be .gmt")
-    gs.names <- names(gs.list)
-    gs.desc <- sapply(gs.list, function(x) x[1])
-    gs.lines <- unlist(lapply(gs.list, function(x) {
+    gs.names = names(gs.list)
+    gs.desc = sapply(gs.list, function(x) x[1])
+    gs.lines = unlist(lapply(gs.list, function(x) {
       paste(x[-1], collapse = "\t")
     }))
-    gs.lines <- paste(gs.names, gs.desc, gs.lines, sep = "\t")
+    gs.lines = paste(gs.names, gs.desc, gs.lines, sep = "\t")
     writeLines(gs.lines, con = file)
   }
 
@@ -910,13 +910,13 @@ for (repeat_idx in 1:n_repeats) {
   # Load the test data and compute the activity score
   load("C:/Users/user/Desktop/input/exp_data/UCSC.CRC_CMS2_CMS.Rdata")
 
-  crc_data_all <- UCSC.CRC_CMS2_CMS
+  crc_data_all = UCSC.CRC_CMS2_CMS
 
   source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
 
-  geneSets <- getGmt("wpags_wpigs_r.gmt")
+  geneSets = getGmt("wpags_wpigs_r.gmt")
 
-  WNT_Score <- Calculate_bioactivity_scores(
+  WNT_Score = Calculate_bioactivity_scores(
     file_paths = "C:/Users/user/Desktop/input",
     expression_profile = crc_data_all,
     foundation = c("relative_ssGSEA"),
@@ -930,11 +930,11 @@ for (repeat_idx in 1:n_repeats) {
   )
 
   # Save results
-  CMS_result <- WNT_Score$final_activity_score
-  CMS_result$rep <- paste0("repeat_", repeat_idx)
+  CMS_result = WNT_Score$final_activity_score
+  CMS_result$rep = paste0("repeat_", repeat_idx)
 
-  robustness_results[[repeat_idx]] <- CMS_result
-  names(robustness_results)[repeat_idx] <- paste0("repeat_", repeat_idx)
+  robustness_results[[repeat_idx]] = CMS_result
+  names(robustness_results)[repeat_idx] = paste0("repeat_", repeat_idx)
 
   print(paste("Finished round ", repeat_idx, ""))
 
@@ -954,58 +954,58 @@ library(GSEABase)
 setwd("C:/Users/user/Desktop/input")
 
 # Load all datasets
-vector_all <- c("GSE232944_a","GSE232944_b","GSE199835_a","GSE199835_b","GSE199835_c",
+vector_all = c("GSE232944_a","GSE232944_b","GSE199835_a","GSE199835_b","GSE199835_c",
                 "GSE120106","GSE234403","GSE39904_a","GSE39904_b","GSE128281",
                 "GSE62060","GSE33143","GSE18560_a","GSE18560_b","GSE44097_a","GSE44097_b",
                 "GSE73906_a","GSE73906_b","GSE73906_c","GSE73906_d","GSE73906_e",
                 "GSE73906_f","GSE123807","GSE89124")
 
 # Load all data first
-all_data <- list()
-all_data_G <- list()
+all_data = list()
+all_data_G = list()
 
 for (q in 1:length(vector_all)) {
   load(paste0(vector_all[q], ".Rdata"))
   load(paste0(vector_all[q], "_G.Rdata"))
-  all_data[[vector_all[q]]] <- get(vector_all[q])
-  all_data_G[[vector_all[q]]] <- get(paste0(vector_all[q], "_G"))
+  all_data[[vector_all[q]]] = get(vector_all[q])
+  all_data_G[[vector_all[q]]] = get(paste0(vector_all[q], "_G"))
 }
 
 # Set the number of repeats and the noise parameters
-n_repeats <- 30
-noise_sd_ratio <- 0.1  # Noise SD as a ratio of the data SD
+n_repeats = 30
+noise_sd_ratio = 0.1  # Noise SD as a ratio of the data SD
 
 # Store all results
-robustness_results <- list()
+robustness_results = list()
 
 for (repeat_idx in 1:n_repeats) {
   set.seed(Sys.time() + sample(1:10000, 1))
   print(paste("Starting round ", repeat_idx, ""))
 
   # Add Gaussian noise to each dataset
-  noisy_data <- list()
+  noisy_data = list()
 
   for (dataset_name in vector_all) {
-    original_data <- all_data[[dataset_name]]
+    original_data = all_data[[dataset_name]]
 
     # Use the SD of the data as the noise baseline
-    data_sd <- sd(as.matrix(original_data), na.rm = TRUE)
-    noise_sd <- data_sd * noise_sd_ratio
+    data_sd = sd(as.matrix(original_data), na.rm = TRUE)
+    noise_sd = data_sd * noise_sd_ratio
 
     # Generate random Gaussian noise with the same dimensions as the data
-    noise_matrix <- matrix(rnorm(nrow(original_data) * ncol(original_data),
+    noise_matrix = matrix(rnorm(nrow(original_data) * ncol(original_data),
                                  mean = 0, sd = noise_sd),
                            nrow = nrow(original_data), ncol = ncol(original_data))
 
     # Add the noise to the original data
-    noisy_data[[dataset_name]] <- as.matrix(original_data) + noise_matrix
+    noisy_data[[dataset_name]] = as.matrix(original_data) + noise_matrix
 
     # Keep the row and column names
-    rownames(noisy_data[[dataset_name]]) <- rownames(original_data)
-    colnames(noisy_data[[dataset_name]]) <- colnames(original_data)
+    rownames(noisy_data[[dataset_name]]) = rownames(original_data)
+    colnames(noisy_data[[dataset_name]]) = colnames(original_data)
 
     # Convert to a data frame
-    noisy_data[[dataset_name]] <- as.data.frame(noisy_data[[dataset_name]])
+    noisy_data[[dataset_name]] = as.data.frame(noisy_data[[dataset_name]])
 
     print(paste("dataset", dataset_name, "Added Gaussian noise with SD ", round(noise_sd, 4), ""))
   }
@@ -1017,12 +1017,12 @@ for (repeat_idx in 1:n_repeats) {
   }
 
   # Read the group information
-  group_HL <- read.delim("WNT_HL.txt", header = TRUE, sep = '\t', check.names = F)
+  group_HL = read.delim("WNT_HL.txt", header = TRUE, sep = '\t', check.names = F)
 
   # Generate the de novo gene sets
   source("C:/Users/user/Desktop/functions_to_package/Get_denovo_genesets.R")
 
-  up.denovo_genesets <- Get_denovo_genesets(
+  up.denovo_genesets = Get_denovo_genesets(
     file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_all,
     group_HL = group_HL,
@@ -1036,7 +1036,7 @@ for (repeat_idx in 1:n_repeats) {
     export_file = F
   )
 
-  dn.denovo_genesets <- Get_denovo_genesets(
+  dn.denovo_genesets = Get_denovo_genesets(
     file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_all,
     group_HL = group_HL,
@@ -1051,57 +1051,57 @@ for (repeat_idx in 1:n_repeats) {
   )
 
   # Merge the de novo gene sets
-  WNT_denovo <- cbind(up.denovo_genesets, dn.denovo_genesets)
-  WNT_denovo <- rbind(colnames(WNT_denovo), WNT_denovo)
-  colnames(WNT_denovo) <- paste0("WPRGS", 1:ncol(WNT_denovo), "_denovo")
+  WNT_denovo = cbind(up.denovo_genesets, dn.denovo_genesets)
+  WNT_denovo = rbind(colnames(WNT_denovo), WNT_denovo)
+  colnames(WNT_denovo) = paste0("WPRGS", 1:ncol(WNT_denovo), "_denovo")
 
   # Read the known gene sets
-  WNT_knowledge <- read.delim("WNT_knowledge.txt", header = TRUE, sep = '\t', check.names = F)
+  WNT_knowledge = read.delim("WNT_knowledge.txt", header = TRUE, sep = '\t', check.names = F)
 
   # Adjust the row count to match
   if (nrow(WNT_knowledge) >= nrow(WNT_denovo)) {
-    empty <- data.frame(matrix("", nrow = (nrow(WNT_knowledge) - nrow(WNT_denovo)),
+    empty = data.frame(matrix("", nrow = (nrow(WNT_knowledge) - nrow(WNT_denovo)),
                                ncol = ncol(WNT_denovo)))
-    colnames(empty) <- colnames(WNT_denovo)
-    WNT_denovo <- rbind(WNT_denovo, empty)
-    all_genesets <- cbind(WNT_denovo, WNT_knowledge)
+    colnames(empty) = colnames(WNT_denovo)
+    WNT_denovo = rbind(WNT_denovo, empty)
+    all_genesets = cbind(WNT_denovo, WNT_knowledge)
   } else {
-    empty <- data.frame(matrix("", nrow = (nrow(WNT_denovo) - nrow(WNT_knowledge)),
+    empty = data.frame(matrix("", nrow = (nrow(WNT_denovo) - nrow(WNT_knowledge)),
                                ncol = ncol(WNT_knowledge)))
-    colnames(empty) <- colnames(WNT_knowledge)
-    WNT_knowledge <- rbind(WNT_knowledge, empty)
-    all_genesets <- cbind(WNT_denovo, WNT_knowledge)
+    colnames(empty) = colnames(WNT_knowledge)
+    WNT_knowledge = rbind(WNT_knowledge, empty)
+    all_genesets = cbind(WNT_denovo, WNT_knowledge)
   }
 
   # Add the enrichr gene sets
-  files <- c("WNT_enrichr1.gmt", "WNT_enrichr2.gmt", "WNT_enrichr3.gmt", "WNT_enrichr4.gmt")
-  combined_list <- list()
+  files = c("WNT_enrichr1.gmt", "WNT_enrichr2.gmt", "WNT_enrichr3.gmt", "WNT_enrichr4.gmt")
+  combined_list = list()
 
   for (file in files) {
-    gmt_lines <- readLines(file)
-    gene_sets <- strsplit(gmt_lines, "\t")
-    names(gene_sets) <- sapply(gene_sets, function(x) paste0(x[1], "(", x[2], ")", "_enrichr"))
+    gmt_lines = readLines(file)
+    gene_sets = strsplit(gmt_lines, "\t")
+    names(gene_sets) = sapply(gene_sets, function(x) paste0(x[1], "(", x[2], ")", "_enrichr"))
     for (i in 1:length(names(gene_sets))) {
-      gene_sets[[i]][1] <- names(gene_sets)[i]
-      gene_sets[[i]] <- gene_sets[[i]][-2]
+      gene_sets[[i]][1] = names(gene_sets)[i]
+      gene_sets[[i]] = gene_sets[[i]][-2]
     }
-    combined_list <- append(combined_list, gene_sets)
+    combined_list = append(combined_list, gene_sets)
   }
 
-  combined_list_names <- as.data.frame(table(names(combined_list)))
-  combined_list <- combined_list[combined_list_names$Var1]
+  combined_list_names = as.data.frame(table(names(combined_list)))
+  combined_list = combined_list[combined_list_names$Var1]
 
   for (i in 1:length(combined_list_names$Var1)) {
-    var_name <- paste("WPRGS", i + 152, "_knowledge", sep = "")
-    names(combined_list)[i] <- var_name
+    var_name = paste("WPRGS", i + 152, "_knowledge", sep = "")
+    names(combined_list)[i] = var_name
   }
 
   # Process the gene set data
-  all_genesets <- apply(all_genesets, 2, function(x) x[nchar(x) >= 1])
-  all_genesets <- append(all_genesets, combined_list)
+  all_genesets = apply(all_genesets, 2, function(x) x[nchar(x) >= 1])
+  all_genesets = append(all_genesets, combined_list)
 
-  max_length <- max(sapply(all_genesets, length))
-  all_wnt_genesets <- lapply(all_genesets, function(x) {
+  max_length = max(sapply(all_genesets, length))
+  all_wnt_genesets = lapply(all_genesets, function(x) {
     if (length(x) < max_length) {
       c(x, rep("", max_length - length(x)))
     } else {
@@ -1109,19 +1109,19 @@ for (repeat_idx in 1:n_repeats) {
     }
   })
 
-  all_wnt_genesets <- as.data.frame(all_wnt_genesets)
+  all_wnt_genesets = as.data.frame(all_wnt_genesets)
   save(all_wnt_genesets, file = "all_wnt_genesets.Rdata")
 
   # Load and process the gene sets
   load("C:/Users/user/Desktop/input/all_wnt_genesets.Rdata")
-  all_genesets <- all_wnt_genesets[-1, ]
-  UP.genesets <- all_genesets
-  DN.genesets <- all_genesets
+  all_genesets = all_wnt_genesets[-1, ]
+  UP.genesets = all_genesets
+  DN.genesets = all_genesets
 
   # Clean the environment
   source("C:/Users/user/Desktop/functions_to_package/Precise_cleaning_system.R")
 
-  UP.clean_genesets_rank <- Precise_cleaning_system(
+  UP.clean_genesets_rank = Precise_cleaning_system(
     file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_all,
     group_HL = group_HL,
@@ -1144,7 +1144,7 @@ for (repeat_idx in 1:n_repeats) {
     export_file = F
   )
 
-  DN.clean_genesets_rank <- Precise_cleaning_system(
+  DN.clean_genesets_rank = Precise_cleaning_system(
     file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_all,
     group_HL = group_HL,
@@ -1167,13 +1167,13 @@ for (repeat_idx in 1:n_repeats) {
     export_file = F
   )
 
-  UP.clean_genesets <- UP.clean_genesets_rank$update_activation_geneset
-  DN.clean_genesets <- DN.clean_genesets_rank$update_inhibition_geneset
+  UP.clean_genesets = UP.clean_genesets_rank$update_activation_geneset
+  DN.clean_genesets = DN.clean_genesets_rank$update_inhibition_geneset
 
   # Combined gene set
   source("C:/Users/user/Desktop/functions_to_package/Joint_genesets.R")
 
-  joint_genesets <- Joint_genesets(
+  joint_genesets = Joint_genesets(
     file_paths = "C:/Users/user/Desktop/input",
     activation_geneset = UP.clean_genesets,
     inhibition_geneset = DN.clean_genesets,
@@ -1186,40 +1186,40 @@ for (repeat_idx in 1:n_repeats) {
     export_file = F
   )
 
-  activation_geneset <- joint_genesets$joint_activation_geneset
-  inhibition_geneset <- joint_genesets$joint_inhibition_geneset
+  activation_geneset = joint_genesets$joint_activation_geneset
+  inhibition_geneset = joint_genesets$joint_inhibition_geneset
 
   # Pad rows so the lengths match
   if (nrow(activation_geneset) > nrow(inhibition_geneset)) {
-    empty <- data.frame(matrix("", nrow = (nrow(activation_geneset) - nrow(inhibition_geneset)),
+    empty = data.frame(matrix("", nrow = (nrow(activation_geneset) - nrow(inhibition_geneset)),
                                ncol = ncol(inhibition_geneset)))
-    colnames(empty) <- colnames(inhibition_geneset)
-    inhibition_geneset <- rbind(inhibition_geneset, empty)
+    colnames(empty) = colnames(inhibition_geneset)
+    inhibition_geneset = rbind(inhibition_geneset, empty)
   } else if (nrow(activation_geneset) < nrow(inhibition_geneset)) {
-    empty <- data.frame(matrix("", nrow = (nrow(inhibition_geneset) - nrow(activation_geneset)),
+    empty = data.frame(matrix("", nrow = (nrow(inhibition_geneset) - nrow(activation_geneset)),
                                ncol = ncol(activation_geneset)))
-    colnames(empty) <- colnames(activation_geneset)
-    activation_geneset <- rbind(activation_geneset, empty)
+    colnames(empty) = colnames(activation_geneset)
+    activation_geneset = rbind(activation_geneset, empty)
   }
 
   # Merge the activated and inhibited gene sets
-  wpags_wpigs <- cbind(activation_geneset, inhibition_geneset)
-  wpags_wpigs <- rbind(colnames(wpags_wpigs), wpags_wpigs)
-  colnames(wpags_wpigs) <- c(paste0("wpags", 1:ncol(activation_geneset)),
+  wpags_wpigs = cbind(activation_geneset, inhibition_geneset)
+  wpags_wpigs = rbind(colnames(wpags_wpigs), wpags_wpigs)
+  colnames(wpags_wpigs) = c(paste0("wpags", 1:ncol(activation_geneset)),
                              paste0("wpigs", 1:ncol(inhibition_geneset)))
 
-  wpags_wpigs <- apply(wpags_wpigs, 2, function(x) x[nchar(x) >= 1])
+  wpags_wpigs = apply(wpags_wpigs, 2, function(x) x[nchar(x) >= 1])
 
   # Write the GMT file
-  write.gmt <- function(gs.list, file) {
+  write.gmt = function(gs.list, file) {
     if (length(grep(".gmt$", file)) == 0)
       stop("write.gmt(): file should be .gmt")
-    gs.names <- names(gs.list)
-    gs.desc <- sapply(gs.list, function(x) x[1])
-    gs.lines <- unlist(lapply(gs.list, function(x) {
+    gs.names = names(gs.list)
+    gs.desc = sapply(gs.list, function(x) x[1])
+    gs.lines = unlist(lapply(gs.list, function(x) {
       paste(x[-1], collapse = "\t")
     }))
-    gs.lines <- paste(gs.names, gs.desc, gs.lines, sep = "\t")
+    gs.lines = paste(gs.names, gs.desc, gs.lines, sep = "\t")
     writeLines(gs.lines, con = file)
   }
 
@@ -1228,13 +1228,13 @@ for (repeat_idx in 1:n_repeats) {
   # Load the test data and compute the activity score
   load("C:/Users/user/Desktop/input/exp_data/UCSC.CRC_CMS2_CMS.Rdata")
 
-  crc_data_all <- UCSC.CRC_CMS2_CMS
+  crc_data_all = UCSC.CRC_CMS2_CMS
 
   source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
 
-  geneSets <- getGmt("wpags_wpigs_r.gmt")
+  geneSets = getGmt("wpags_wpigs_r.gmt")
 
-  WNT_Score <- Calculate_bioactivity_scores(
+  WNT_Score = Calculate_bioactivity_scores(
     file_paths = "C:/Users/user/Desktop/input",
     expression_profile = crc_data_all,
     foundation = c("relative_ssGSEA"),
@@ -1248,12 +1248,12 @@ for (repeat_idx in 1:n_repeats) {
   )
 
   # Save results
-  CMS_result <- WNT_Score$final_activity_score
-  CMS_result$rep <- paste0("repeat_", repeat_idx)
-  CMS_result$noise_sd_ratio <- noise_sd_ratio
+  CMS_result = WNT_Score$final_activity_score
+  CMS_result$rep = paste0("repeat_", repeat_idx)
+  CMS_result$noise_sd_ratio = noise_sd_ratio
 
-  robustness_results[[repeat_idx]] <- CMS_result
-  names(robustness_results)[repeat_idx] <- paste0("repeat_", repeat_idx)
+  robustness_results[[repeat_idx]] = CMS_result
+  names(robustness_results)[repeat_idx] = paste0("repeat_", repeat_idx)
 
   print(paste("Finished round ", repeat_idx, ""))
 
@@ -1276,8 +1276,8 @@ load("C:/Users/user/Desktop/input/robustness_30percent_30repeats.Rdata")
 source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
 load("C:/Users/user/Desktop/input/exp_data/UCSC.CRC_CMS2_CMS.Rdata")
 crc_data_all=UCSC.CRC_CMS2_CMS
-geneSets <- getGmt("wpags_wpigs.gmt")
-WNT_Score <- Calculate_bioactivity_scores(
+geneSets = getGmt("wpags_wpigs.gmt")
+WNT_Score = Calculate_bioactivity_scores(
   file_paths = "C:/Users/user/Desktop/input",
   expression_profile = crc_data_all,
   foundation = c("relative_ssGSEA"),
@@ -1289,7 +1289,7 @@ WNT_Score <- Calculate_bioactivity_scores(
   geneset_direction=c(rep("pos",sum(grepl("WPAGS", names(geneSets)))),
                       rep("neg",sum(grepl("WPIGS", names(geneSets)))))
 )
-WNT_Score <- WNT_Score$final_activity_score
+WNT_Score = WNT_Score$final_activity_score
 cor.data_all=data.frame()
 for(i in 1:length(names(robustness_results))){
   score=robustness_results[[i]]
@@ -1303,12 +1303,12 @@ library(dplyr)
 library(patchwork) # Helper to add statistics to the plot elegantly
 
 # Compute the key summary statistics
-n_samples <- nrow(cor.data_all)
-mean_value <- mean(cor.data_all$cor)
-median_value <- median(cor.data_all$cor)
+n_samples = nrow(cor.data_all)
+mean_value = mean(cor.data_all$cor)
+median_value = median(cor.data_all$cor)
 
 # Create the labels for the statistics
-stats_label <- paste(
+stats_label = paste(
   sprintf("n: %d", n_samples),
   sprintf("Mean: %.4f", mean_value),
   sprintf("Median: %.4f", median_value),
@@ -1316,7 +1316,7 @@ stats_label <- paste(
 )
 
 # Draw the density distribution with ggplot2
-p <- ggplot(cor.data_all, aes(x = cor)) +
+p = ggplot(cor.data_all, aes(x = cor)) +
   # Draw the density curve with fill
   geom_density(fill = "#69b3a2",
                alpha = 0.6,
@@ -1378,8 +1378,8 @@ load("C:/Users/user/Desktop/input/robustness_30percent_genes_30repeats.Rdata")
 source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
 load("C:/Users/user/Desktop/input/exp_data/UCSC.CRC_CMS2_CMS.Rdata")
 crc_data_all=UCSC.CRC_CMS2_CMS
-geneSets <- getGmt("wpags_wpigs.gmt")
-WNT_Score <- Calculate_bioactivity_scores(
+geneSets = getGmt("wpags_wpigs.gmt")
+WNT_Score = Calculate_bioactivity_scores(
   file_paths = "C:/Users/user/Desktop/input",
   expression_profile = crc_data_all,
   foundation = c("relative_ssGSEA"),
@@ -1391,7 +1391,7 @@ WNT_Score <- Calculate_bioactivity_scores(
   geneset_direction=c(rep("pos",sum(grepl("WPAGS", names(geneSets)))),
                       rep("neg",sum(grepl("WPIGS", names(geneSets)))))
 )
-WNT_Score <- WNT_Score$final_activity_score
+WNT_Score = WNT_Score$final_activity_score
 cor.data_all=data.frame()
 for(i in 1:length(names(robustness_results))){
   score=robustness_results[[i]]
@@ -1405,12 +1405,12 @@ library(dplyr)
 library(patchwork) # Helper to add statistics to the plot elegantly
 
 # Compute the key summary statistics
-n_samples <- nrow(cor.data_all)
-mean_value <- mean(cor.data_all$cor)
-median_value <- median(cor.data_all$cor)
+n_samples = nrow(cor.data_all)
+mean_value = mean(cor.data_all$cor)
+median_value = median(cor.data_all$cor)
 
 # Create the labels for the statistics
-stats_label <- paste(
+stats_label = paste(
   sprintf("n: %d", n_samples),
   sprintf("Mean: %.4f", mean_value),
   sprintf("Median: %.4f", median_value),
@@ -1418,7 +1418,7 @@ stats_label <- paste(
 )
 
 # Draw the density distribution with ggplot2
-p <- ggplot(cor.data_all, aes(x = cor)) +
+p = ggplot(cor.data_all, aes(x = cor)) +
   # Draw the density curve with fill
   geom_density(fill = "#69b3a2",
                alpha = 0.6,
@@ -1480,8 +1480,8 @@ load("C:/Users/user/Desktop/input/robustness_gaussian_noise_30repeats.Rdata")
 source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
 load("C:/Users/user/Desktop/input/exp_data/UCSC.CRC_CMS2_CMS.Rdata")
 crc_data_all=UCSC.CRC_CMS2_CMS
-geneSets <- getGmt("wpags_wpigs.gmt")
-WNT_Score <- Calculate_bioactivity_scores(
+geneSets = getGmt("wpags_wpigs.gmt")
+WNT_Score = Calculate_bioactivity_scores(
   file_paths = "C:/Users/user/Desktop/input",
   expression_profile = crc_data_all,
   foundation = c("relative_ssGSEA"),
@@ -1493,7 +1493,7 @@ WNT_Score <- Calculate_bioactivity_scores(
   geneset_direction=c(rep("pos",sum(grepl("WPAGS", names(geneSets)))),
                       rep("neg",sum(grepl("WPIGS", names(geneSets)))))
 )
-WNT_Score <- WNT_Score$final_activity_score
+WNT_Score = WNT_Score$final_activity_score
 cor.data_all=data.frame()
 for(i in 1:length(names(robustness_results))){
   score=robustness_results[[i]]
@@ -1507,12 +1507,12 @@ library(dplyr)
 library(patchwork) # Helper to add statistics to the plot elegantly
 
 # Compute the key summary statistics
-n_samples <- nrow(cor.data_all)
-mean_value <- mean(cor.data_all$cor)
-median_value <- median(cor.data_all$cor)
+n_samples = nrow(cor.data_all)
+mean_value = mean(cor.data_all$cor)
+median_value = median(cor.data_all$cor)
 
 # Create the labels for the statistics
-stats_label <- paste(
+stats_label = paste(
   sprintf("n: %d", n_samples),
   sprintf("Mean: %.4f", mean_value),
   sprintf("Median: %.4f", median_value),
@@ -1520,7 +1520,7 @@ stats_label <- paste(
 )
 
 # Draw the density distribution with ggplot2
-p <- ggplot(cor.data_all, aes(x = cor)) +
+p = ggplot(cor.data_all, aes(x = cor)) +
   # Draw the density curve with fill
   geom_density(fill = "#69b3a2",
                alpha = 0.6,
@@ -1580,7 +1580,7 @@ library(GSEABase)
 setwd("C:/Users/user/Desktop/input")
 
 # Load all datasets
-vector_all <- c("GSE232944_a","GSE232944_b","GSE199835_a","GSE199835_b","GSE199835_c",
+vector_all = c("GSE232944_a","GSE232944_b","GSE199835_a","GSE199835_b","GSE199835_c",
                 "GSE120106","GSE234403","GSE39904_a","GSE39904_b","GSE128281",
                 "GSE62060","GSE33143","GSE18560_a","GSE18560_b","GSE44097_a","GSE44097_b",
                 "GSE73906_a","GSE73906_b","GSE73906_c","GSE73906_d","GSE73906_e",
@@ -1592,14 +1592,14 @@ for (q in 1:length(vector_all)) {
 }
 
 # Use the full dataset
-vector_remaining <- vector_all
+vector_remaining = vector_all
 
 # Set the similarity range (0 to 1, step 0.1)
-similarity_values <- seq(0, 1, by = 0.1)
+similarity_values = seq(0, 1, by = 0.1)
 
 # Store all results and the gene-set statistics
-similarity_results <- list()
-geneset_count_summary <- data.frame(
+similarity_results = list()
+geneset_count_summary = data.frame(
   similarity = numeric(),
   n_activation = integer(),
   n_inhibition = integer(),
@@ -1611,12 +1611,12 @@ for (sim in similarity_values) {
   print(paste("Computing similarity =", sim))
 
   # Read the group information
-  group_HL <- read.delim("WNT_HL.txt", header = TRUE, sep = '\t', check.names = F)
+  group_HL = read.delim("WNT_HL.txt", header = TRUE, sep = '\t', check.names = F)
 
   # Generate the de novo gene sets
   source("C:/Users/user/Desktop/functions_to_package/Get_denovo_genesets.R")
 
-  up.denovo_genesets <- Get_denovo_genesets(
+  up.denovo_genesets = Get_denovo_genesets(
     file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_remaining,
     group_HL = group_HL,
@@ -1630,7 +1630,7 @@ for (sim in similarity_values) {
     export_file = F
   )
 
-  dn.denovo_genesets <- Get_denovo_genesets(
+  dn.denovo_genesets = Get_denovo_genesets(
     file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_remaining,
     group_HL = group_HL,
@@ -1645,57 +1645,57 @@ for (sim in similarity_values) {
   )
 
   # Merge the de novo gene sets
-  WNT_denovo <- cbind(up.denovo_genesets, dn.denovo_genesets)
-  WNT_denovo <- rbind(colnames(WNT_denovo), WNT_denovo)
-  colnames(WNT_denovo) <- paste0("WPRGS", 1:ncol(WNT_denovo), "_denovo")
+  WNT_denovo = cbind(up.denovo_genesets, dn.denovo_genesets)
+  WNT_denovo = rbind(colnames(WNT_denovo), WNT_denovo)
+  colnames(WNT_denovo) = paste0("WPRGS", 1:ncol(WNT_denovo), "_denovo")
 
   # Read the known gene sets
-  WNT_knowledge <- read.delim("WNT_knowledge.txt", header = TRUE, sep = '\t', check.names = F)
+  WNT_knowledge = read.delim("WNT_knowledge.txt", header = TRUE, sep = '\t', check.names = F)
 
   # Adjust the row count to match
   if (nrow(WNT_knowledge) >= nrow(WNT_denovo)) {
-    empty <- data.frame(matrix("", nrow = (nrow(WNT_knowledge) - nrow(WNT_denovo)),
+    empty = data.frame(matrix("", nrow = (nrow(WNT_knowledge) - nrow(WNT_denovo)),
                                ncol = ncol(WNT_denovo)))
-    colnames(empty) <- colnames(WNT_denovo)
-    WNT_denovo <- rbind(WNT_denovo, empty)
-    all_genesets <- cbind(WNT_denovo, WNT_knowledge)
+    colnames(empty) = colnames(WNT_denovo)
+    WNT_denovo = rbind(WNT_denovo, empty)
+    all_genesets = cbind(WNT_denovo, WNT_knowledge)
   } else {
-    empty <- data.frame(matrix("", nrow = (nrow(WNT_denovo) - nrow(WNT_knowledge)),
+    empty = data.frame(matrix("", nrow = (nrow(WNT_denovo) - nrow(WNT_knowledge)),
                                ncol = ncol(WNT_knowledge)))
-    colnames(empty) <- colnames(WNT_knowledge)
-    WNT_knowledge <- rbind(WNT_knowledge, empty)
-    all_genesets <- cbind(WNT_denovo, WNT_knowledge)
+    colnames(empty) = colnames(WNT_knowledge)
+    WNT_knowledge = rbind(WNT_knowledge, empty)
+    all_genesets = cbind(WNT_denovo, WNT_knowledge)
   }
 
   # Add the enrichr gene sets
-  files <- c("WNT_enrichr1.gmt", "WNT_enrichr2.gmt", "WNT_enrichr3.gmt", "WNT_enrichr4.gmt")
-  combined_list <- list()
+  files = c("WNT_enrichr1.gmt", "WNT_enrichr2.gmt", "WNT_enrichr3.gmt", "WNT_enrichr4.gmt")
+  combined_list = list()
 
   for (file in files) {
-    gmt_lines <- readLines(file)
-    gene_sets <- strsplit(gmt_lines, "\t")
-    names(gene_sets) <- sapply(gene_sets, function(x) paste0(x[1], "(", x[2], ")", "_enrichr"))
+    gmt_lines = readLines(file)
+    gene_sets = strsplit(gmt_lines, "\t")
+    names(gene_sets) = sapply(gene_sets, function(x) paste0(x[1], "(", x[2], ")", "_enrichr"))
     for (i in 1:length(names(gene_sets))) {
-      gene_sets[[i]][1] <- names(gene_sets)[i]
-      gene_sets[[i]] <- gene_sets[[i]][-2]
+      gene_sets[[i]][1] = names(gene_sets)[i]
+      gene_sets[[i]] = gene_sets[[i]][-2]
     }
-    combined_list <- append(combined_list, gene_sets)
+    combined_list = append(combined_list, gene_sets)
   }
 
-  combined_list_names <- as.data.frame(table(names(combined_list)))
-  combined_list <- combined_list[combined_list_names$Var1]
+  combined_list_names = as.data.frame(table(names(combined_list)))
+  combined_list = combined_list[combined_list_names$Var1]
 
   for (i in 1:length(combined_list_names$Var1)) {
-    var_name <- paste("WPRGS", i + 152, "_knowledge", sep = "")
-    names(combined_list)[i] <- var_name
+    var_name = paste("WPRGS", i + 152, "_knowledge", sep = "")
+    names(combined_list)[i] = var_name
   }
 
   # Process the gene set data
-  all_genesets <- apply(all_genesets, 2, function(x) x[nchar(x) >= 1])
-  all_genesets <- append(all_genesets, combined_list)
+  all_genesets = apply(all_genesets, 2, function(x) x[nchar(x) >= 1])
+  all_genesets = append(all_genesets, combined_list)
 
-  max_length <- max(sapply(all_genesets, length))
-  all_wnt_genesets <- lapply(all_genesets, function(x) {
+  max_length = max(sapply(all_genesets, length))
+  all_wnt_genesets = lapply(all_genesets, function(x) {
     if (length(x) < max_length) {
       c(x, rep("", max_length - length(x)))
     } else {
@@ -1703,19 +1703,19 @@ for (sim in similarity_values) {
     }
   })
 
-  all_wnt_genesets <- as.data.frame(all_wnt_genesets)
+  all_wnt_genesets = as.data.frame(all_wnt_genesets)
   save(all_wnt_genesets, file = "all_wnt_genesets.Rdata")
 
   # Load and process the gene sets
   load("C:/Users/user/Desktop/input/all_wnt_genesets.Rdata")
-  all_genesets <- all_wnt_genesets[-1, ]
-  UP.genesets <- all_genesets
-  DN.genesets <- all_genesets
+  all_genesets = all_wnt_genesets[-1, ]
+  UP.genesets = all_genesets
+  DN.genesets = all_genesets
 
   # Clean the environment
   source("C:/Users/user/Desktop/functions_to_package/Precise_cleaning_system.R")
 
-  UP.clean_genesets_rank <- Precise_cleaning_system(
+  UP.clean_genesets_rank = Precise_cleaning_system(
     file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_remaining,
     group_HL = group_HL,
@@ -1738,7 +1738,7 @@ for (sim in similarity_values) {
     export_file = F
   )
 
-  DN.clean_genesets_rank <- Precise_cleaning_system(
+  DN.clean_genesets_rank = Precise_cleaning_system(
     file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_remaining,
     group_HL = group_HL,
@@ -1761,13 +1761,13 @@ for (sim in similarity_values) {
     export_file = F
   )
 
-  UP.clean_genesets <- UP.clean_genesets_rank$update_activation_geneset
-  DN.clean_genesets <- DN.clean_genesets_rank$update_inhibition_geneset
+  UP.clean_genesets = UP.clean_genesets_rank$update_activation_geneset
+  DN.clean_genesets = DN.clean_genesets_rank$update_inhibition_geneset
 
   # Combined gene set
   source("C:/Users/user/Desktop/functions_to_package/Joint_genesets.R")
 
-  joint_genesets <- Joint_genesets(
+  joint_genesets = Joint_genesets(
     file_paths = "C:/Users/user/Desktop/input",
     activation_geneset = UP.clean_genesets,
     inhibition_geneset = DN.clean_genesets,
@@ -1780,18 +1780,18 @@ for (sim in similarity_values) {
     export_file = F
   )
 
-  activation_geneset <- joint_genesets$joint_activation_geneset
-  inhibition_geneset <- joint_genesets$joint_inhibition_geneset
+  activation_geneset = joint_genesets$joint_activation_geneset
+  inhibition_geneset = joint_genesets$joint_inhibition_geneset
 
   # Count the gene sets generated so far
-  n_act <- ncol(activation_geneset)
-  n_inh <- ncol(inhibition_geneset)
-  n_total <- n_act + n_inh
+  n_act = ncol(activation_geneset)
+  n_inh = ncol(inhibition_geneset)
+  n_total = n_act + n_inh
 
   print(paste("[Gene sets] activated:", n_act, "| inhibited:", n_inh, "| total:", n_total))
 
   # Record in the summary table
-  geneset_count_summary <- rbind(geneset_count_summary, data.frame(
+  geneset_count_summary = rbind(geneset_count_summary, data.frame(
     similarity = sim,
     n_activation = n_act,
     n_inhibition = n_inh,
@@ -1800,35 +1800,35 @@ for (sim in similarity_values) {
 
   # Pad rows so the lengths match
   if (nrow(activation_geneset) > nrow(inhibition_geneset)) {
-    empty <- data.frame(matrix("", nrow = (nrow(activation_geneset) - nrow(inhibition_geneset)),
+    empty = data.frame(matrix("", nrow = (nrow(activation_geneset) - nrow(inhibition_geneset)),
                                ncol = ncol(inhibition_geneset)))
-    colnames(empty) <- colnames(inhibition_geneset)
-    inhibition_geneset <- rbind(inhibition_geneset, empty)
+    colnames(empty) = colnames(inhibition_geneset)
+    inhibition_geneset = rbind(inhibition_geneset, empty)
   } else if (nrow(activation_geneset) < nrow(inhibition_geneset)) {
-    empty <- data.frame(matrix("", nrow = (nrow(inhibition_geneset) - nrow(activation_geneset)),
+    empty = data.frame(matrix("", nrow = (nrow(inhibition_geneset) - nrow(activation_geneset)),
                                ncol = ncol(activation_geneset)))
-    colnames(empty) <- colnames(activation_geneset)
-    activation_geneset <- rbind(activation_geneset, empty)
+    colnames(empty) = colnames(activation_geneset)
+    activation_geneset = rbind(activation_geneset, empty)
   }
 
   # Merge the activated and inhibited gene sets
-  wpags_wpigs <- cbind(activation_geneset, inhibition_geneset)
-  wpags_wpigs <- rbind(colnames(wpags_wpigs), wpags_wpigs)
-  colnames(wpags_wpigs) <- c(paste0("wpags", 1:ncol(activation_geneset)),
+  wpags_wpigs = cbind(activation_geneset, inhibition_geneset)
+  wpags_wpigs = rbind(colnames(wpags_wpigs), wpags_wpigs)
+  colnames(wpags_wpigs) = c(paste0("wpags", 1:ncol(activation_geneset)),
                              paste0("wpigs", 1:ncol(inhibition_geneset)))
 
-  wpags_wpigs <- apply(wpags_wpigs, 2, function(x) x[nchar(x) >= 1])
+  wpags_wpigs = apply(wpags_wpigs, 2, function(x) x[nchar(x) >= 1])
 
   # Write the GMT file
-  write.gmt <- function(gs.list, file) {
+  write.gmt = function(gs.list, file) {
     if (length(grep(".gmt$", file)) == 0)
       stop("write.gmt(): file should be .gmt")
-    gs.names <- names(gs.list)
-    gs.desc <- sapply(gs.list, function(x) x[1])
-    gs.lines <- unlist(lapply(gs.list, function(x) {
+    gs.names = names(gs.list)
+    gs.desc = sapply(gs.list, function(x) x[1])
+    gs.lines = unlist(lapply(gs.list, function(x) {
       paste(x[-1], collapse = "\t")
     }))
-    gs.lines <- paste(gs.names, gs.desc, gs.lines, sep = "\t")
+    gs.lines = paste(gs.names, gs.desc, gs.lines, sep = "\t")
     writeLines(gs.lines, con = file)
   }
 
@@ -1837,13 +1837,13 @@ for (sim in similarity_values) {
   # Load the test data and compute the activity score
   load("C:/Users/user/Desktop/input/exp_data/UCSC.CRC_CMS2_CMS.Rdata")
 
-  crc_data_all <- UCSC.CRC_CMS2_CMS
+  crc_data_all = UCSC.CRC_CMS2_CMS
 
   source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
 
-  geneSets <- getGmt("wpags_wpigs_r.gmt")
+  geneSets = getGmt("wpags_wpigs_r.gmt")
 
-  WNT_Score <- Calculate_bioactivity_scores(
+  WNT_Score = Calculate_bioactivity_scores(
     file_paths = "C:/Users/user/Desktop/input",
     expression_profile = crc_data_all,
     foundation = c("relative_ssGSEA"),
@@ -1857,10 +1857,10 @@ for (sim in similarity_values) {
   )
 
   # Save the results for the current similarity (scores plus the gene-set statistics for that setting)
-  CMS_result <- WNT_Score$final_activity_score
-  CMS_result$similarity <- sim
+  CMS_result = WNT_Score$final_activity_score
+  CMS_result$similarity = sim
 
-  similarity_results[[paste0("sim_", sim)]] <- list(
+  similarity_results[[paste0("sim_", sim)]] = list(
     activity_score = CMS_result,
     n_activation = n_act,
     n_inhibition = n_inh,
@@ -1887,19 +1887,19 @@ library(dplyr)
 load("similarity_sensitivity_results.Rdata")
 
 # 2. Data conversion (long format)
-df_long <- geneset_count_summary %>%
+df_long = geneset_count_summary %>%
   select(similarity, n_activation, n_inhibition) %>%
   pivot_longer(cols = c(n_activation, n_inhibition),
                names_to = "Geneset_Type",
                values_to = "Count")
 
 # Convert to plain English labels
-df_long$Geneset_Type <- factor(df_long$Geneset_Type,
+df_long$Geneset_Type = factor(df_long$Geneset_Type,
                                levels = c("n_activation", "n_inhibition"),
                                labels = c("Activation", "Inhibition"))
 
 # 3. Draw the stacked bar chart
-p <- ggplot(df_long, aes(x = as.factor(similarity), y = Count, fill = Geneset_Type)) +
+p = ggplot(df_long, aes(x = as.factor(similarity), y = Count, fill = Geneset_Type)) +
   geom_bar(stat = "identity", position = "stack", width = 0.6, alpha = 0.85) +
   # Add a total label above each bar (black, 14 pt, not bold)
   geom_text(data = geneset_count_summary,
@@ -1939,58 +1939,58 @@ library(reshape2)
 load("similarity_sensitivity_results.Rdata")
 
 # 2. Extract final scores into a matrix
-sims <- seq(0, 1, by = 0.1)
-score_list <- list()
+sims = seq(0, 1, by = 0.1)
+score_list = list()
 
 for (sim in sims) {
-  key <- paste0("sim_", sim)
-  df <- similarity_results[[key]]$activity_score
-  num_col <- which(sapply(df, is.numeric))[1]
-  score_list[[paste0("sim_", sim)]] <- df[, num_col]
+  key = paste0("sim_", sim)
+  df = similarity_results[[key]]$activity_score
+  num_col = which(sapply(df, is.numeric))[1]
+  score_list[[paste0("sim_", sim)]] = df[, num_col]
 }
 
-score_matrix <- do.call(cbind, score_list)
-colnames(score_matrix) <- as.character(sims)
+score_matrix = do.call(cbind, score_list)
+colnames(score_matrix) = as.character(sims)
 
 # 3. Compute correlation matrix and p-value matrix
-cor_matrix <- cor(score_matrix, use = "complete.obs", method = "pearson")
+cor_matrix = cor(score_matrix, use = "complete.obs", method = "pearson")
 
-p_matrix <- matrix(NA, nrow = ncol(score_matrix), ncol = ncol(score_matrix))
-rownames(p_matrix) <- colnames(p_matrix) <- colnames(score_matrix)
+p_matrix = matrix(NA, nrow = ncol(score_matrix), ncol = ncol(score_matrix))
+rownames(p_matrix) = colnames(p_matrix) = colnames(score_matrix)
 
 for(i in 1:ncol(score_matrix)) {
   for(j in 1:ncol(score_matrix)) {
-    test <- cor.test(score_matrix[,i], score_matrix[,j], method = "pearson")
-    p_matrix[i, j] <- test$p.value
+    test = cor.test(score_matrix[,i], score_matrix[,j], method = "pearson")
+    p_matrix[i, j] = test$p.value
   }
 }
 
 # 4. Melt matrices for ggplot2
-cor_melt <- melt(cor_matrix)
-colnames(cor_melt) <- c("Var1", "Var2", "Correlation")
+cor_melt = melt(cor_matrix)
+colnames(cor_melt) = c("Var1", "Var2", "Correlation")
 
-p_melt <- melt(p_matrix)
-colnames(p_melt) <- c("Var1", "Var2", "Pvalue")
+p_melt = melt(p_matrix)
+colnames(p_melt) = c("Var1", "Var2", "Pvalue")
 
-plot_data <- merge(cor_melt, p_melt, by = c("Var1", "Var2"))
+plot_data = merge(cor_melt, p_melt, by = c("Var1", "Var2"))
 
 # Keep the axes strictly aligned and in the same order
-sim_labels <- as.character(sims)
-plot_data$Var1 <- factor(plot_data$Var1, levels = sim_labels)
-plot_data$Var2 <- factor(plot_data$Var2, levels = sim_labels)
+sim_labels = as.character(sims)
+plot_data$Var1 = factor(plot_data$Var1, levels = sim_labels)
+plot_data$Var2 = factor(plot_data$Var2, levels = sim_labels)
 
 # Add significance stars
-plot_data$Sig <- ifelse(plot_data$Pvalue < 0.001, "***",
+plot_data$Sig = ifelse(plot_data$Pvalue < 0.001, "***",
                         ifelse(plot_data$Pvalue < 0.01, "**",
                                ifelse(plot_data$Pvalue < 0.05, "*", "")))
 
 # Combine correlation coefficient R and significance stars into label
-plot_data$Label <- ifelse(plot_data$Sig == "",
+plot_data$Label = ifelse(plot_data$Sig == "",
                           sprintf("%.2f", plot_data$Correlation),
                           paste0(sprintf("%.2f", plot_data$Correlation), "\n", plot_data$Sig))
 
 # 5. Plot Modern Bubble Correlation Matrix with lighter colors
-p <- ggplot(plot_data, aes(x = Var1, y = Var2)) +
+p = ggplot(plot_data, aes(x = Var1, y = Var2)) +
   # Light grid at the bottom to aid alignment
   geom_point(color = "gray95", size = 6) +
   # Show the correlation with dot size and colour
@@ -2024,7 +2024,7 @@ library(GSEABase)
 setwd("C:/Users/user/Desktop/input")
 
 # Load all datasets
-vector_all <- c("GSE232944_a","GSE232944_b","GSE199835_a","GSE199835_b","GSE199835_c",
+vector_all = c("GSE232944_a","GSE232944_b","GSE199835_a","GSE199835_b","GSE199835_c",
                 "GSE120106","GSE234403","GSE39904_a","GSE39904_b","GSE128281",
                 "GSE62060","GSE33143","GSE18560_a","GSE18560_b","GSE44097_a","GSE44097_b",
                 "GSE73906_a","GSE73906_b","GSE73906_c","GSE73906_d","GSE73906_e",
@@ -2036,21 +2036,21 @@ for (q in 1:length(vector_all)) {
 }
 
 # Use the full dataset
-vector_remaining <- vector_all
+vector_remaining = vector_all
 
 # Fix the similarity parameter at 0.5
-fixed_similarity <- 0.5
+fixed_similarity = 0.5
 
 # Set the 7 redundancy-reduction methods
-de_redundant_methods <- c(
+de_redundant_methods = c(
   "igraph_component", "agglomeration_ward.D",
   "agglomeration_ward.D2", "agglomeration_single", "agglomeration_complete",
   "agglomeration_average", "agglomeration_mcquitty"
 )
 
 # Store the results and gene-set statistics of every method
-de_redundant_results <- list()
-geneset_count_summary_methods <- data.frame(
+de_redundant_results = list()
+geneset_count_summary_methods = data.frame(
   method = character(),
   n_activation = integer(),
   n_inhibition = integer(),
@@ -2060,18 +2060,18 @@ geneset_count_summary_methods <- data.frame(
 
 # Loop over the 7 redundancy-reduction methods
 for (method_idx in 1:length(de_redundant_methods)) {
-  current_method <- de_redundant_methods[method_idx]
+  current_method = de_redundant_methods[method_idx]
   print(paste("################################################"))
   print(paste("Running redundancy method [", method_idx, "/ 7]:", current_method, "| fixed similarity =", fixed_similarity))
   print(paste("################################################"))
 
   # Read the group information
-  group_HL <- read.delim("WNT_HL.txt", header = TRUE, sep = '\t', check.names = F)
+  group_HL = read.delim("WNT_HL.txt", header = TRUE, sep = '\t', check.names = F)
 
   # Generate the de novo gene sets
   source("C:/Users/user/Desktop/functions_to_package/Get_denovo_genesets.R")
 
-  up.denovo_genesets <- Get_denovo_genesets(
+  up.denovo_genesets = Get_denovo_genesets(
     file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_remaining,
     group_HL = group_HL,
@@ -2085,7 +2085,7 @@ for (method_idx in 1:length(de_redundant_methods)) {
     export_file = F
   )
 
-  dn.denovo_genesets <- Get_denovo_genesets(
+  dn.denovo_genesets = Get_denovo_genesets(
     file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_remaining,
     group_HL = group_HL,
@@ -2100,57 +2100,57 @@ for (method_idx in 1:length(de_redundant_methods)) {
   )
 
   # Merge the de novo gene sets
-  WNT_denovo <- cbind(up.denovo_genesets, dn.denovo_genesets)
-  WNT_denovo <- rbind(colnames(WNT_denovo), WNT_denovo)
-  colnames(WNT_denovo) <- paste0("WPRGS", 1:ncol(WNT_denovo), "_denovo")
+  WNT_denovo = cbind(up.denovo_genesets, dn.denovo_genesets)
+  WNT_denovo = rbind(colnames(WNT_denovo), WNT_denovo)
+  colnames(WNT_denovo) = paste0("WPRGS", 1:ncol(WNT_denovo), "_denovo")
 
   # Read the known gene sets
-  WNT_knowledge <- read.delim("WNT_knowledge.txt", header = TRUE, sep = '\t', check.names = F)
+  WNT_knowledge = read.delim("WNT_knowledge.txt", header = TRUE, sep = '\t', check.names = F)
 
   # Adjust the row count to match
   if (nrow(WNT_knowledge) >= nrow(WNT_denovo)) {
-    empty <- data.frame(matrix("", nrow = (nrow(WNT_knowledge) - nrow(WNT_denovo)),
+    empty = data.frame(matrix("", nrow = (nrow(WNT_knowledge) - nrow(WNT_denovo)),
                                ncol = ncol(WNT_denovo)))
-    colnames(empty) <- colnames(WNT_denovo)
-    WNT_denovo <- rbind(WNT_denovo, empty)
-    all_genesets <- cbind(WNT_denovo, WNT_knowledge)
+    colnames(empty) = colnames(WNT_denovo)
+    WNT_denovo = rbind(WNT_denovo, empty)
+    all_genesets = cbind(WNT_denovo, WNT_knowledge)
   } else {
-    empty <- data.frame(matrix("", nrow = (nrow(WNT_denovo) - nrow(WNT_knowledge)),
+    empty = data.frame(matrix("", nrow = (nrow(WNT_denovo) - nrow(WNT_knowledge)),
                                ncol = ncol(WNT_knowledge)))
-    colnames(empty) <- colnames(WNT_knowledge)
-    WNT_knowledge <- rbind(WNT_knowledge, empty)
-    all_genesets <- cbind(WNT_denovo, WNT_knowledge)
+    colnames(empty) = colnames(WNT_knowledge)
+    WNT_knowledge = rbind(WNT_knowledge, empty)
+    all_genesets = cbind(WNT_denovo, WNT_knowledge)
   }
 
   # Add the enrichr gene sets
-  files <- c("WNT_enrichr1.gmt", "WNT_enrichr2.gmt", "WNT_enrichr3.gmt", "WNT_enrichr4.gmt")
-  combined_list <- list()
+  files = c("WNT_enrichr1.gmt", "WNT_enrichr2.gmt", "WNT_enrichr3.gmt", "WNT_enrichr4.gmt")
+  combined_list = list()
 
   for (file in files) {
-    gmt_lines <- readLines(file)
-    gene_sets <- strsplit(gmt_lines, "\t")
-    names(gene_sets) <- sapply(gene_sets, function(x) paste0(x[1], "(", x[2], ")", "_enrichr"))
+    gmt_lines = readLines(file)
+    gene_sets = strsplit(gmt_lines, "\t")
+    names(gene_sets) = sapply(gene_sets, function(x) paste0(x[1], "(", x[2], ")", "_enrichr"))
     for (i in 1:length(names(gene_sets))) {
-      gene_sets[[i]][1] <- names(gene_sets)[i]
-      gene_sets[[i]] <- gene_sets[[i]][-2]
+      gene_sets[[i]][1] = names(gene_sets)[i]
+      gene_sets[[i]] = gene_sets[[i]][-2]
     }
-    combined_list <- append(combined_list, gene_sets)
+    combined_list = append(combined_list, gene_sets)
   }
 
-  combined_list_names <- as.data.frame(table(names(combined_list)))
-  combined_list <- combined_list[combined_list_names$Var1]
+  combined_list_names = as.data.frame(table(names(combined_list)))
+  combined_list = combined_list[combined_list_names$Var1]
 
   for (i in 1:length(combined_list_names$Var1)) {
-    var_name <- paste("WPRGS", i + 152, "_knowledge", sep = "")
-    names(combined_list)[i] <- var_name
+    var_name = paste("WPRGS", i + 152, "_knowledge", sep = "")
+    names(combined_list)[i] = var_name
   }
 
   # Process the gene set data
-  all_genesets <- apply(all_genesets, 2, function(x) x[nchar(x) >= 1])
-  all_genesets <- append(all_genesets, combined_list)
+  all_genesets = apply(all_genesets, 2, function(x) x[nchar(x) >= 1])
+  all_genesets = append(all_genesets, combined_list)
 
-  max_length <- max(sapply(all_genesets, length))
-  all_wnt_genesets <- lapply(all_genesets, function(x) {
+  max_length = max(sapply(all_genesets, length))
+  all_wnt_genesets = lapply(all_genesets, function(x) {
     if (length(x) < max_length) {
       c(x, rep("", max_length - length(x)))
     } else {
@@ -2158,19 +2158,19 @@ for (method_idx in 1:length(de_redundant_methods)) {
     }
   })
 
-  all_wnt_genesets <- as.data.frame(all_wnt_genesets)
+  all_wnt_genesets = as.data.frame(all_wnt_genesets)
   save(all_wnt_genesets, file = "all_wnt_genesets.Rdata")
 
   # Load and process the gene sets
   load("C:/Users/user/Desktop/input/all_wnt_genesets.Rdata")
-  all_genesets <- all_wnt_genesets[-1, ]
-  UP.genesets <- all_genesets
-  DN.genesets <- all_genesets
+  all_genesets = all_wnt_genesets[-1, ]
+  UP.genesets = all_genesets
+  DN.genesets = all_genesets
 
   # Clean the environment
   source("C:/Users/user/Desktop/functions_to_package/Precise_cleaning_system.R")
 
-  UP.clean_genesets_rank <- Precise_cleaning_system(
+  UP.clean_genesets_rank = Precise_cleaning_system(
     file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_remaining,
     group_HL = group_HL,
@@ -2193,7 +2193,7 @@ for (method_idx in 1:length(de_redundant_methods)) {
     export_file = F
   )
 
-  DN.clean_genesets_rank <- Precise_cleaning_system(
+  DN.clean_genesets_rank = Precise_cleaning_system(
     file_paths = "C:/Users/user/Desktop/input",
     expression_accession_vector = vector_remaining,
     group_HL = group_HL,
@@ -2216,13 +2216,13 @@ for (method_idx in 1:length(de_redundant_methods)) {
     export_file = F
   )
 
-  UP.clean_genesets <- UP.clean_genesets_rank$update_activation_geneset
-  DN.clean_genesets <- DN.clean_genesets_rank$update_inhibition_geneset
+  UP.clean_genesets = UP.clean_genesets_rank$update_activation_geneset
+  DN.clean_genesets = DN.clean_genesets_rank$update_inhibition_geneset
 
   # Combined gene set (current de_redundant_basis with similarity fixed at 0.5)
   source("C:/Users/user/Desktop/functions_to_package/Joint_genesets.R")
 
-  joint_genesets <- Joint_genesets(
+  joint_genesets = Joint_genesets(
     file_paths = "C:/Users/user/Desktop/input",
     activation_geneset = UP.clean_genesets,
     inhibition_geneset = DN.clean_genesets,
@@ -2235,18 +2235,18 @@ for (method_idx in 1:length(de_redundant_methods)) {
     export_file = F
   )
 
-  activation_geneset <- joint_genesets$joint_activation_geneset
-  inhibition_geneset <- joint_genesets$joint_inhibition_geneset
+  activation_geneset = joint_genesets$joint_activation_geneset
+  inhibition_geneset = joint_genesets$joint_inhibition_geneset
 
   # Count the gene sets generated so far
-  n_act <- ncol(activation_geneset)
-  n_inh <- ncol(inhibition_geneset)
-  n_total <- n_act + n_inh
+  n_act = ncol(activation_geneset)
+  n_inh = ncol(inhibition_geneset)
+  n_total = n_act + n_inh
 
   print(paste("[Gene sets] activated:", n_act, "| inhibited:", n_inh, "| total:", n_total))
 
   # Record in the summary table
-  geneset_count_summary_methods <- rbind(geneset_count_summary_methods, data.frame(
+  geneset_count_summary_methods = rbind(geneset_count_summary_methods, data.frame(
     method = current_method,
     n_activation = n_act,
     n_inhibition = n_inh,
@@ -2255,35 +2255,35 @@ for (method_idx in 1:length(de_redundant_methods)) {
 
   # Pad rows so the lengths match
   if (nrow(activation_geneset) > nrow(inhibition_geneset)) {
-    empty <- data.frame(matrix("", nrow = (nrow(activation_geneset) - nrow(inhibition_geneset)),
+    empty = data.frame(matrix("", nrow = (nrow(activation_geneset) - nrow(inhibition_geneset)),
                                ncol = ncol(inhibition_geneset)))
-    colnames(empty) <- colnames(inhibition_geneset)
-    inhibition_geneset <- rbind(inhibition_geneset, empty)
+    colnames(empty) = colnames(inhibition_geneset)
+    inhibition_geneset = rbind(inhibition_geneset, empty)
   } else if (nrow(activation_geneset) < nrow(inhibition_geneset)) {
-    empty <- data.frame(matrix("", nrow = (nrow(inhibition_geneset) - nrow(activation_geneset)),
+    empty = data.frame(matrix("", nrow = (nrow(inhibition_geneset) - nrow(activation_geneset)),
                                ncol = ncol(activation_geneset)))
-    colnames(empty) <- colnames(activation_geneset)
-    activation_geneset <- rbind(activation_geneset, empty)
+    colnames(empty) = colnames(activation_geneset)
+    activation_geneset = rbind(activation_geneset, empty)
   }
 
   # Merge the activated and inhibited gene sets
-  wpags_wpigs <- cbind(activation_geneset, inhibition_geneset)
-  wpags_wpigs <- rbind(colnames(wpags_wpigs), wpags_wpigs)
-  colnames(wpags_wpigs) <- c(paste0("wpags", 1:ncol(activation_geneset)),
+  wpags_wpigs = cbind(activation_geneset, inhibition_geneset)
+  wpags_wpigs = rbind(colnames(wpags_wpigs), wpags_wpigs)
+  colnames(wpags_wpigs) = c(paste0("wpags", 1:ncol(activation_geneset)),
                              paste0("wpigs", 1:ncol(inhibition_geneset)))
 
-  wpags_wpigs <- apply(wpags_wpigs, 2, function(x) x[nchar(x) >= 1])
+  wpags_wpigs = apply(wpags_wpigs, 2, function(x) x[nchar(x) >= 1])
 
   # Write the GMT file
-  write.gmt <- function(gs.list, file) {
+  write.gmt = function(gs.list, file) {
     if (length(grep(".gmt$", file)) == 0)
       stop("write.gmt(): file should be .gmt")
-    gs.names <- names(gs.list)
-    gs.desc <- sapply(gs.list, function(x) x[1])
-    gs.lines <- unlist(lapply(gs.list, function(x) {
+    gs.names = names(gs.list)
+    gs.desc = sapply(gs.list, function(x) x[1])
+    gs.lines = unlist(lapply(gs.list, function(x) {
       paste(x[-1], collapse = "\t")
     }))
-    gs.lines <- paste(gs.names, gs.desc, gs.lines, sep = "\t")
+    gs.lines = paste(gs.names, gs.desc, gs.lines, sep = "\t")
     writeLines(gs.lines, con = file)
   }
 
@@ -2292,13 +2292,13 @@ for (method_idx in 1:length(de_redundant_methods)) {
   # Load the test data and compute the activity score
   load("C:/Users/user/Desktop/input/exp_data/UCSC.CRC_CMS2_CMS.Rdata")
 
-  crc_data_all <- UCSC.CRC_CMS2_CMS
+  crc_data_all = UCSC.CRC_CMS2_CMS
 
   source("C:/Users/user/Desktop/functions_to_package/Calculate_bioactivity_scores.R")
 
-  geneSets <- getGmt("wpags_wpigs_r.gmt")
+  geneSets = getGmt("wpags_wpigs_r.gmt")
 
-  WNT_Score <- Calculate_bioactivity_scores(
+  WNT_Score = Calculate_bioactivity_scores(
     file_paths = "C:/Users/user/Desktop/input",
     expression_profile = crc_data_all,
     foundation = c("relative_ssGSEA"),
@@ -2311,10 +2311,10 @@ for (method_idx in 1:length(de_redundant_methods)) {
                           rep("neg", ncol(inhibition_geneset)))
   )
 
-  CMS_result <- WNT_Score$final_activity_score
-  CMS_result$method <- current_method
+  CMS_result = WNT_Score$final_activity_score
+  CMS_result$method = current_method
 
-  de_redundant_results[[current_method]] <- list(
+  de_redundant_results[[current_method]] = list(
     activity_score = CMS_result,
     n_activation = n_act,
     n_inhibition = n_inh,
@@ -2341,11 +2341,11 @@ library(tidyr)
 # load("de_redundant_fixed_sim0.5_results.Rdata")
 
 # 1. Reshape to long format, drop agglomeration_single, and strip the "agglomeration_" prefix from the method names
-df_summary_clean <- geneset_count_summary_methods %>%
+df_summary_clean = geneset_count_summary_methods %>%
   filter(method != "agglomeration_single") %>% # <--- Remove agglomeration_single here
   mutate(method = gsub("agglomeration_", "", method))
 
-df_long <- df_summary_clean %>%
+df_long = df_summary_clean %>%
   pivot_longer(cols = c(n_activation, n_inhibition),
                names_to = "type",
                values_to = "count") %>%
@@ -2355,13 +2355,13 @@ df_long <- df_summary_clean %>%
   ))
 
 # 2. Count the total per method, used for sorting
-df_total <- df_summary_clean %>%
+df_total = df_summary_clean %>%
   mutate(method = factor(method, levels = method[order(total_genesets)]))
 
-df_long$method <- factor(df_long$method, levels = levels(df_total$method))
+df_long$method = factor(df_long$method, levels = levels(df_total$method))
 
 # 3. Draw the stacked bar chart: no title, no subtitle, plain black, 14 pt
-p_stacked <- ggplot(df_long, aes(x = method, y = count, fill = type)) +
+p_stacked = ggplot(df_long, aes(x = method, y = count, fill = type)) +
   geom_bar(stat = "identity", width = 0.6) +
   # Segment labels inside the bars (14 pt, not bold)
   geom_text(aes(label = count),
@@ -2399,32 +2399,32 @@ library(ggplot2)
 library(dplyr)
 
 # 1. Extract the activity score vector of each method (excluding agglomeration_single)
-methods_to_compare <- setdiff(names(de_redundant_results), "agglomeration_single")
-score_list <- lapply(methods_to_compare, function(m) de_redundant_results[[m]]$activity_score$activity_score)
-score_df <- as.data.frame(score_list)
-colnames(score_df) <- methods_to_compare
+methods_to_compare = setdiff(names(de_redundant_results), "agglomeration_single")
+score_list = lapply(methods_to_compare, function(m) de_redundant_results[[m]]$activity_score$activity_score)
+score_df = as.data.frame(score_list)
+colnames(score_df) = methods_to_compare
 
 # 2. Pearson correlation of the other methods against igraph_component as baseline
-baseline_scores <- score_df$igraph_component
-cor_results <- sapply(colnames(score_df), function(m) {
+baseline_scores = score_df$igraph_component
+cor_results = sapply(colnames(score_df), function(m) {
   if (m == "igraph_component") return(1.0) # baseline correlates with itself at 1
   cor(score_df[[m]], baseline_scores, method = "pearson", use = "complete.obs")
 })
 
 # 3. Prepare the plotting data and strip the agglomeration_ prefix
-cor_df <- data.frame(
+cor_df = data.frame(
   Method = names(cor_results),
   Correlation = cor_results
 )
 # Strip the agglomeration_ prefix for display
-cor_df$Method <- gsub("agglomeration_", "", cor_df$Method)
+cor_df$Method = gsub("agglomeration_", "", cor_df$Method)
 
 # Sort by correlation
-cor_df <- cor_df %>% arrange(Correlation)
-cor_df$Method <- factor(cor_df$Method, levels = cor_df$Method)
+cor_df = cor_df %>% arrange(Correlation)
+cor_df$Method = factor(cor_df$Method, levels = cor_df$Method)
 
 # 4. Draw the horizontal bar chart (14 pt, plain black, regular weight, no title, no bold, x-range 0.98-1)
-p_cor <- ggplot(cor_df, aes(x = Method, y = Correlation)) +
+p_cor = ggplot(cor_df, aes(x = Method, y = Correlation)) +
   geom_col(fill = "gray50", width = 0.6) +
   coord_flip(ylim = c(0.99, 1)) + # <--- Edit here to restrict the displayed range to 0.98-1
   labs(
