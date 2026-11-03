@@ -131,7 +131,7 @@ for (m in pred_cols) {
     device = "pdf"
   )
 }
-################################################################################Prognostic analysis: high Wnt activity predicts a better outcome####
+################################################################################Prognostic analysis: high Wnt predicts a better outcome####
 rm(list=ls())
 gc()
 
@@ -3118,7 +3118,6 @@ ggforest(
   noDigits = 3
 )
 
-
 # ========== 6. Interaction visualisation: KM by Wnt high/low within each response stratum
 
 library(survival)
@@ -3130,7 +3129,6 @@ multi_data$WntGroup = factor(
          "Wnt High", "Wnt Low"),
   levels = c("Wnt Low", "Wnt High")
 )
-
 
 # ---- 6.2 Stratify by response, two panels in one figure
 
@@ -3172,7 +3170,6 @@ ggsurvplot(
   pval.size = 5                              # P-value font size (default 5, about 14 pt)
 )
 
-
 # ========== 6. WntQuant x BinaryResponse interaction
 
 library(ggplot2)
@@ -3193,6 +3190,242 @@ fit_int = coxph(form_int, data = multi_data)
 int_term = grep(":", rownames(summary(fit_int)$coefficients), value = TRUE)
 int_p = round(summary(fit_int)$coefficients[int_term, "Pr(>|z|)"], 3)
 int_p
+################################################################################Multivariable Cox regression analysis - 2####
+rm(list=ls())
+gc()
+
+library(survival)
+library(survminer)
+library(ggplot2)
+
+# ========== 1. Load Data
+load("C:/Users/user/Desktop/input/IMvigor_WNT_score.Rdata")
+load("C:/Users/user/Desktop/input/IMvigor210CoreBiologies.Rdata")
+
+# Merge activity score with phenotype data
+data = merge(IMvigor_WNT_score$final_activity_score, phenoData, by="row.names")
+
+# Filter for cold tumor phenotypes (excluded & desert)
+data = data[data$`Immune phenotype` %in% c("excluded", "desert"), ]
+
+# Select required variables (removed binaryResponse, updated TCGA Subtype column)
+data = data[, c("os", "censOS", "activity_score",
+                "FMOne mutation burden per MB", "Enrollment IC",
+                "Sex", "Race", "Intravesical BCG administered",
+                "Baseline ECOG Score", "Tobacco Use History", "Met Disease Status",
+                "Received platinum", "Sample collected pre-platinum",
+                "Neoantigen burden per MB", "TCGA Subtype")]
+colnames(data)
+
+# Rename columns (TCGA Subtype -> Tumor_stages)
+colnames(data) = c(
+  "OS", "CensOS", "WntQuant",
+  "FMOne_mutation_burden", "Enrollment_IC",
+  "Sex", "Race", "BCG", "ECOG", "Tobacco", "Met_status",
+  "Platinum_received", "Pre_platinum_samples",
+  "Neoantigen_burden", "Tumor_stages"
+)
+
+# ========== 2. Data Type Conversion & Factor Leveling
+num_vars = c("OS", "CensOS", "WntQuant",
+              "FMOne_mutation_burden", "Neoantigen_burden")
+for (v in num_vars) data[[v]] = as.numeric(data[[v]])
+
+chr_vars = c("Race", "Pre_platinum_samples")
+for (v in chr_vars) data[[v]] = as.factor(data[[v]])
+
+data$ECOG              = as.factor(data$ECOG)
+data$Sex               = factor(data$Sex, levels = c("F", "M"))
+data$BCG               = factor(data$BCG, levels = c("N", "Y"))
+data$Platinum_received = factor(data$Platinum_received, levels = c("N", "Y"))
+data$Met_status        = factor(data$Met_status)
+data$Tobacco           = factor(data$Tobacco)
+data$Tumor_stages      = factor(data$Tumor_stages)
+data$Enrollment_IC     = factor(data$Enrollment_IC, levels = c("IC0", "IC1", "IC2"))
+
+# ========== 3. Multivariable Cox Regression Analysis
+
+# Filter complete cases for baseline OS data
+data_cc = data[complete.cases(data[, c("OS", "CensOS", "WntQuant")]), ]
+cat("Complete survival data sample size:", nrow(data_cc), "\n")
+
+# Define variables for multivariable Cox model (excluding ECOG and BinaryResponse)
+multi_vars = c("WntQuant", "Sex",
+                "BCG", "Met_status", "Platinum_received",
+                "FMOne_mutation_burden", "Neoantigen_burden",
+                "Tumor_stages", "Enrollment_IC")
+
+# Subset data with complete covariate values
+multi_data = data_cc[complete.cases(data_cc[, multi_vars]), ]
+cat("Multivariable Cox analysis sample size:", nrow(multi_data), "\n")
+
+# Fit multivariable Cox model
+form_multi = as.formula(
+  paste0("Surv(OS, CensOS) ~ ", paste(multi_vars, collapse = " + "))
+)
+fit_multi = coxph(form_multi, data = multi_data)
+print(summary(fit_multi))
+
+# Format model results into summary table
+multi_res = data.frame(
+  Variable = rownames(summary(fit_multi)$coefficients),
+  HR       = round(summary(fit_multi)$coefficients[, "exp(coef)"], 3),
+  lower95  = round(summary(fit_multi)$conf.int[, "lower .95"], 3),
+  upper95  = round(summary(fit_multi)$conf.int[, "upper .95"], 3),
+  Pvalue   = round(summary(fit_multi)$coefficients[, "Pr(>|z|)"], 4)
+)
+print(multi_res)
+
+cat("\n===== WntQuant Statistics =====\n")
+print(multi_res[grep("WntQuant", multi_res$Variable), ])
+
+# ========== 4. Forest Plot Visualization (ggforest)
+ggforest(
+  fit_multi,
+  data = multi_data,
+  main = "Multivariable Cox regression for OS in cold tumors",
+  cpositions = c(0.02, 0.22, 0.4),
+  fontsize = 0.8,
+  refLabel = "Reference",
+  noDigits = 3
+)
+
+# ========== 5. Kaplan-Meier Survival Analysis (Wnt High vs Low)
+
+# ---- 5.1 Stratify WntQuant by median split
+multi_data$WntGroup = factor(
+  ifelse(multi_data$WntQuant > median(multi_data$WntQuant, na.rm = TRUE),
+         "Wnt High", "Wnt Low"),
+  levels = c("Wnt Low", "Wnt High")
+)
+
+# ---- 5.2 Fit and plot overall KM curve
+fit_km = survfit(Surv(OS, CensOS) ~ WntGroup, data = multi_data)
+
+ggsurvplot(
+  fit_km,
+  data          = multi_data,
+  pval          = TRUE,
+  pval.method   = TRUE,
+  risk.table    = TRUE,
+  conf.int      = FALSE,
+  palette       = c("#2C7FB8", "#D7301F"),
+  legend.title  = "WntQuant",
+  legend.labs   = c("Low", "High"),
+  xlab          = "Time (months)",
+  ylab          = "Overall survival",
+  ggtheme       = theme_bw(base_size = 14),
+
+  # ---- Font styling options
+  font.title    = c(14, "plain", "black"),
+  font.subtitle = c(14, "plain", "black"),
+  font.caption  = c(14, "plain", "black"),
+  font.x        = c(14, "plain", "black"),
+  font.y        = c(14, "plain", "black"),
+  font.xtickslab = c(14, "plain", "black"),
+  font.ytickslab = c(14, "plain", "black"),
+  font.legend   = c(14, "plain", "black"),
+
+  # ---- Risk table styling
+  tables.theme  = theme_cleantable(base_size = 14),
+  risk.table.fontsize = 4.5,
+
+  # ---- P-value font size
+  pval.size     = 5
+)
+
+library(survival)
+library(ggplot2)
+
+# ========== Center WntQuant variable
+multi_data$WntQuant_c = as.numeric(scale(multi_data$WntQuant,
+                                          center = TRUE, scale = FALSE))
+
+# ==============================================================================
+# 1. Interaction Analysis: WntQuant × BCG
+# ==============================================================================
+covars_no_int_bcg = setdiff(multi_vars, c("WntQuant", "BCG"))
+
+form_int_bcg = as.formula(
+  paste0("Surv(OS, CensOS) ~ WntQuant_c * BCG + ",
+         paste(covars_no_int_bcg, collapse = " + "))
+)
+fit_int_bcg = coxph(form_int_bcg, data = multi_data)
+
+# Extract interaction terms and their corresponding P-values for BCG
+int_terms_bcg = grep("WntQuant_c:BCG", rownames(summary(fit_int_bcg)$coefficients), value = TRUE)
+int_p_bcg = round(summary(fit_int_bcg)$coefficients[int_terms_bcg, "Pr(>|z|)"], 3)
+
+cat("--- Interaction P-values for WntQuant × BCG ---\n")
+print(int_p_bcg)
+
+# ==============================================================================
+# 2. Interaction Analysis: WntQuant × Platinum_received
+# ==============================================================================
+covars_no_int_plat = setdiff(multi_vars, c("WntQuant", "Platinum_received"))
+
+form_int_plat = as.formula(
+  paste0("Surv(OS, CensOS) ~ WntQuant_c * Platinum_received + ",
+         paste(covars_no_int_plat, collapse = " + "))
+)
+fit_int_plat = coxph(form_int_plat, data = multi_data)
+
+# Extract interaction terms and their corresponding P-values for Platinum_received
+int_terms_plat = grep("WntQuant_c:Platinum_received", rownames(summary(fit_int_plat)$coefficients), value = TRUE)
+int_p_plat = round(summary(fit_int_plat)$coefficients[int_terms_plat, "Pr(>|z|)"], 3)
+
+cat("\n--- Interaction P-values for WntQuant × Platinum_received ---\n")
+print(int_p_plat)
+
+# ==============================================================================
+# Updated Plot Code (Removing hardcoded limits to prevent clipping warnings)
+# ==============================================================================
+
+# ---- 1. Build Plot for BCG (Auto-scaled log scale)
+p_bcg = ggplot(bcg_results, aes(x = Level, y = HR, ymin = Lower95, ymax = Upper95)) +
+  geom_pointrange(size = 0.8, color = "#2C7FB8") +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "gray50") +
+  coord_flip() +
+  scale_y_log10() + # Removed limits = c(0.2, 5) to avoid dropping out-of-bounds CIs
+  labs(
+    title = "BCG subgroup",
+    subtitle = paste0("Interaction P = ", int_p_bcg),
+    x = NULL,
+    y = "Hazard Ratio (HR)"
+  ) +
+  theme_bw(base_size = 14) +
+  theme(
+    plot.title = element_text(face = "plain", size = 14, color = "black"),
+    plot.subtitle = element_text(face = "plain", size = 14, color = "black"),
+    axis.title = element_text(face = "plain", size = 14, color = "black"),
+    axis.text = element_text(face = "plain", size = 14, color = "black")
+  )
+
+# ---- 2. Build Plot for Platinum_received (Auto-scaled log scale)
+p_plat = ggplot(plat_results, aes(x = Level, y = HR, ymin = Lower95, ymax = Upper95)) +
+  geom_pointrange(size = 0.8, color = "#D7301F") +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "gray50") +
+  coord_flip() +
+  scale_y_log10() + # Removed limits = c(0.2, 5) to avoid dropping out-of-bounds CIs
+  labs(
+    title = "Platinum received subgroup",
+    subtitle = paste0("Interaction P = ", int_p_plat),
+    x = NULL,
+    y = "Hazard Ratio (HR)"
+  ) +
+  theme_bw(base_size = 14) +
+  theme(
+    plot.title = element_text(face = "plain", size = 14, color = "black"),
+    plot.subtitle = element_text(face = "plain", size = 14, color = "black"),
+    axis.title = element_text(face = "plain", size = 14, color = "black"),
+    axis.text = element_text(face = "plain", size = 14, color = "black")
+  )
+
+# ---- 3. Combine Plots Side-by-Side
+combined_plot = p_bcg + p_plat + plot_layout(ncol = 2)
+
+# Print combined plot
+print(combined_plot)
 ################################################################################Multivariable Cox regression analysis with KNN####
 rm(list=ls())
 gc()
@@ -3284,3 +3517,4 @@ ggforest(
   refLabel = "Reference",
   noDigits = 3
 )
+
